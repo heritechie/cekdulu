@@ -1,0 +1,62 @@
+---
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+interface Props {
+  id: string;
+  label: string;
+  required?: boolean;
+  layout?: 'vertical' | 'row';
+}
+
+const { id, label, required = false, layout = 'vertical' } = Astro.props;
+---
+
+{
+  layout === 'row' ? (
+    <div class="flex items-center justify-between gap-3">
+      <Label htmlFor={id} className="min-w-0 flex-1 text-sm leading-snug text-foreground">
+        {label}
+      </Label>
+      <div class="relative w-32 shrink-0 sm:w-40">
+        <span
+          class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-muted-foreground"
+          aria-hidden="true"
+        >
+          Rp
+        </span>
+        <Input
+          type="text"
+          id={id}
+          inputMode="numeric"
+          placeholder="0"
+          aria-label={label}
+          className="h-auto w-full rounded-lg py-2.5 pl-8 pr-3 text-sm"
+        />
+      </div>
+    </div>
+  ) : (
+    <div>
+      <Label htmlFor={id} className="mb-1.5 text-sm font-medium text-muted-foreground">
+        {label}
+      </Label>
+      <div class="relative">
+        <span
+          class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-medium text-muted-foreground"
+          aria-hidden="true"
+        >
+          Rp
+        </span>
+        <Input
+          type="text"
+          id={id}
+          inputMode="numeric"
+          required={required}
+          placeholder="0"
+          aria-label={label}
+          className="h-auto w-full rounded-xl px-4 py-3 pl-10 text-lg"
+        />
+      </div>
+    </div>
+  )
+}

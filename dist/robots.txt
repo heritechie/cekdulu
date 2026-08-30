@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /dist/
-Disallow: /.astro/
-
-Sitemap: https://cekdulu.id/sitemap.xml

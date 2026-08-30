@@ -137,5 +137,3 @@ export function calculateRequiredIncome(
   }
   return (totalDebt * 100) / targetDbr;
 }
-
-export type { FinancialCalculationResult };

@@ -1,0 +1,72 @@
+---
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Home,
+  Car,
+  Bike,
+  CreditCard,
+  Briefcase,
+  Utensils,
+  Building2,
+  Zap,
+  Bus,
+  GraduationCap,
+  HeartPulse,
+  Clapperboard,
+  Ellipsis,
+  type LucideIcon,
+} from 'lucide-react';
+
+interface Props {
+  id: string;
+  label: string;
+  icon: string;
+}
+
+const icons: Record<string, LucideIcon> = {
+  home: Home,
+  car: Car,
+  bike: Bike,
+  card: CreditCard,
+  briefcase: Briefcase,
+  utensils: Utensils,
+  building: Building2,
+  zap: Zap,
+  bus: Bus,
+  graduation: GraduationCap,
+  heart: HeartPulse,
+  clapperboard: Clapperboard,
+  ellipsis: Ellipsis,
+};
+
+const { id, label, icon } = Astro.props;
+const Icon = icons[icon] ?? Ellipsis;
+---
+
+<div class="flex items-center justify-between gap-3">
+  <div class="flex min-w-0 flex-1 items-center gap-2.5">
+    <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
+      <Icon className="h-5 w-5" aria-hidden="true" />
+    </span>
+    <Label htmlFor={id} className="min-w-0 text-sm leading-snug text-foreground">
+      {label}
+    </Label>
+  </div>
+  <div class="relative w-32 shrink-0 sm:w-40">
+    <span
+      class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-muted-foreground"
+      aria-hidden="true"
+    >
+      Rp
+    </span>
+    <Input
+      type="text"
+      id={id}
+      inputMode="numeric"
+      placeholder="0"
+      aria-label={label}
+      className="h-auto w-full rounded-lg py-2.5 pl-8 pr-3 text-sm"
+    />
+  </div>
+</div>
