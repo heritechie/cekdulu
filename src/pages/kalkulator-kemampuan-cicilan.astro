@@ -5,7 +5,8 @@ import MoneyRow from '../components/money-row.astro';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Info, ArrowLeft, ArrowRight } from 'lucide-astro';
+import { Info, ArrowLeft, ArrowRight, Share2, RefreshCw } from 'lucide-astro';
+import BalanceScale from '../components/balance-scale.astro';
 import AdSlotBetween from '../components/ad-slot-between.astro';
 import AdSlotAfterResult from '../components/ad-slot-after-result.astro';
 
@@ -53,7 +54,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
         <span data-seg="5" class="h-1.5 flex-1 rounded-full bg-border"></span>
       </div>
 
-      <div class="mt-4 flex items-center justify-center">
+      <div id="wizard-illustration-wrap" class="mt-4 flex items-center justify-center">
         <img
           id="wizard-illustration"
           src="/images/wizard/income.webp"
@@ -194,11 +195,15 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
         tabIndex={-1}
         className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
       >
-        <CardContent className="p-5 sm:p-6">
-          <h2 class="text-center text-lg font-semibold text-foreground sm:text-xl">Hasil Perhitungan Kamu</h2>
+        <CardContent className="p-5 sm:p-6" aria-live="polite">
+          <h2 class="text-center text-lg font-semibold text-foreground sm:text-xl">Hasil Cek</h2>
 
-          <div class="mt-5 rounded-2xl border border-border bg-muted/40 p-4 text-center">
-            <p class="text-sm text-muted-foreground">Sisa Uang Setelah Semua</p>
+          <div class="mt-3 flex justify-center">
+            <BalanceScale id="result-balance" class="mx-auto block w-full max-w-[200px] sm:max-w-[240px]" showLabels />
+          </div>
+
+          <div class="mt-4 rounded-2xl border border-border bg-muted/40 p-4 text-center">
+            <p class="text-sm text-muted-foreground">Sisa uang setelah semua beban</p>
             <p id="result-sisa" class="mt-1 text-3xl font-bold text-foreground">Rp 0</p>
             <p class="text-xs text-muted-foreground">per bulan</p>
             <span id="result-badge" class="mt-3 inline-block rounded-full px-3 py-1 text-sm font-medium"></span>
@@ -207,61 +212,89 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
 
           <Separator className="my-5" />
 
-          <dl class="mx-auto max-w-xs space-y-1.5 text-sm">
+          <div class="mx-auto max-w-xs space-y-1.5 text-sm">
             <div class="flex justify-between">
-              <dt class="text-muted-foreground">Rasio Cicilan (DBR)</dt>
-              <dd id="result-dbr" class="font-medium"></dd>
+              <span class="text-muted-foreground">Penghasilan bersih</span>
+              <span id="result-income" class="font-medium"></span>
             </div>
             <div class="flex justify-between">
-              <dt class="text-muted-foreground">Total Cicilan</dt>
-              <dd id="result-debt" class="font-medium"></dd>
+              <span class="text-muted-foreground">Cicilan lama</span>
+              <span id="result-existing" class="font-medium"></span>
             </div>
             <div class="flex justify-between">
-              <dt class="text-muted-foreground">Total Pengeluaran</dt>
-              <dd id="result-expenses-total" class="font-medium"></dd>
+              <span class="text-muted-foreground">Cicilan baru</span>
+              <span id="result-new" class="font-medium"></span>
             </div>
-          </dl>
+            <div class="flex justify-between">
+              <span class="text-muted-foreground">Pengeluaran bulanan</span>
+              <span id="result-expense" class="font-medium"></span>
+            </div>
+            <div class="flex justify-between border-t border-border/60 pt-1.5">
+              <span class="font-medium text-foreground">Total beban</span>
+              <span id="result-total-beban" class="font-medium"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-muted-foreground">Sisa uang</span>
+              <span id="result-breakdown-sisa" class="font-medium"></span>
+            </div>
+          </div>
 
-          <Separator className="my-5" />
-
-          <div class="mx-auto max-w-xs text-sm">
-            <p class="font-medium text-foreground">Rincian</p>
-            <div class="mt-2 space-y-1.5">
-              <div class="flex justify-between">
-                <span class="text-muted-foreground">Penghasilan bersih</span>
-                <span id="result-income" class="font-medium"></span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-muted-foreground">Total cicilan</span>
-                <span id="result-breakdown-debt" class="font-medium"></span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-muted-foreground">Total pengeluaran</span>
-                <span id="result-breakdown-exp" class="font-medium"></span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-muted-foreground">Sisa uang</span>
-                <span id="result-breakdown-sisa" class="font-medium"></span>
-              </div>
+          <div class="mx-auto mt-4 max-w-xs rounded-xl bg-muted/50 p-3 text-xs leading-relaxed text-muted-foreground">
+            <div class="flex items-baseline justify-between gap-2">
+              <span>Rasio Cicilan (DBR)</span>
+              <span id="result-dbr" class="text-sm font-semibold text-foreground"></span>
             </div>
+            <p class="mt-1.5">
+              <a href="/apa-itu-dbr" class="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4 hover:text-primary/80">
+                Apa itu DBR?
+                <ArrowRight class="h-3 w-3" aria-hidden="true" />
+              </a>
+            </p>
+            <p class="mt-1.5">
+              Ini hanya indikator ilustrasi dan bisa berbeda tergantung kebijakan bank atau lembaga pembiayaan.
+            </p>
           </div>
 
           <Separator className="my-5" />
 
+          <div id="scenario-panel" class="hidden">
+            <p class="font-medium text-foreground">Coba skenario cicilan baru</p>
+            <p class="mt-0.5 text-sm text-muted-foreground">Geser nilai di bawah untuk melihat dampaknya pada sisa uang.</p>
+            <div class="mt-4">
+              <label for="scenarioInput" class="mb-1.5 block text-sm font-medium text-muted-foreground">Cicilan baru per bulan</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-medium text-muted-foreground" aria-hidden="true">Rp</span>
+                <input
+                  id="scenarioInput"
+                  type="text"
+                  inputmode="numeric"
+                  placeholder="0"
+                  autocomplete="off"
+                  class="h-auto w-full rounded-xl border border-input bg-transparent px-4 py-3 pl-10 text-lg outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                />
+              </div>
+              <div class="mt-3 rounded-xl bg-muted/50 p-3 text-center">
+                <p class="text-xs text-muted-foreground">Sisa uang jika cicilan ini</p>
+                <p id="scenario-sisa" class="mt-0.5 text-xl font-bold text-foreground">Rp 0</p>
+              </div>
+            </div>
+          </div>
+
           <div class="flex flex-col gap-2">
-            <Button id="ubahDataBtn" type="button" variant="outline" className="h-auto w-full rounded-full px-6 py-3 text-base">
-              Ubah Data
-            </Button>
             <Button id="skenarioBtn" type="button" className="h-auto w-full gap-2 rounded-full px-6 py-3 text-base font-semibold">
+              <RefreshCw class="h-4 w-4" aria-hidden="true" />
               Coba Skenario Lain
-              <ArrowRight class="h-4 w-4" aria-hidden="true" />
             </Button>
-            <Button id="shareResultBtn" type="button" variant="secondary" className="h-auto w-full rounded-full px-6 py-3 text-base" disabled>
+            <Button id="shareResultBtn" type="button" variant="outline" className="h-auto w-full gap-2 rounded-full px-6 py-3 text-base" disabled>
+              <Share2 class="h-4 w-4" aria-hidden="true" />
               Bagikan Hasil
+            </Button>
+            <Button id="ubahDataBtn" type="button" variant="secondary" className="h-auto w-full rounded-full px-6 py-3 text-base">
+              Ubah Data
             </Button>
             <button type="button" data-back class="mx-auto mt-1 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground underline-offset-4 hover:underline">
               <ArrowLeft class="h-4 w-4" aria-hidden="true" />
-              Kembali
+              Kembali ke Data
             </button>
           </div>
         </CardContent>
@@ -309,6 +342,27 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       if (!el) return 0;
       const raw = el.dataset.value ?? el.value.replace(/\D/g, '');
       return raw ? parseFloat(raw) || 0 : 0;
+    }
+
+    function setRupiahInput(id: string, value: number): void {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (!el || value < 0) return;
+      const v = value.toLocaleString('id-ID');
+      el.value = v;
+      el.dataset.value = String(Math.round(value));
+    }
+
+    function buildShareUrl(): string {
+      const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
+      const expenses = step4Ids.reduce((sum, id) => sum + readNumber(id), 0);
+      const params = new URLSearchParams({
+        type: typeSlug,
+        i: String(Math.round(readNumber('monthlyIncome'))),
+        x: String(Math.round(existing)),
+        n: String(Math.round(readNumber('newInstallment'))),
+        e: String(Math.round(expenses)),
+      });
+      return `${location.origin}${location.pathname}?${params.toString()}`;
     }
 
     // ---- wizard state ----
@@ -419,6 +473,12 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     }
 
     function updateIllustration() {
+      const wrap = document.getElementById('wizard-illustration-wrap');
+      if (currentStep === 5) {
+        wrap?.classList.add('hidden');
+        return;
+      }
+      wrap?.classList.remove('hidden');
       const ill = illustrations[currentStep];
       if (wizardIllustration && ill) {
         wizardIllustration.setAttribute('src', ill.src);
@@ -476,44 +536,39 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
 
     function fillResult() {
       const { result, income } = compute();
+      const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
+      const newInst = readNumber('newInstallment');
+      const expenses = step4Ids.reduce((sum, id) => sum + readNumber(id), 0);
 
       const statusText =
         result.financialStatusClass === 'healthy'
-          ? 'Masih Aman'
+          ? 'Masih cukup'
           : result.financialStatusClass === 'warning'
-            ? 'Perlu Diperhatikan'
-            : 'Beban Terlalu Besar';
+            ? 'Cukup, tapi mulai terbatas'
+            : 'Beban terlalu besar';
 
       const badgeClass =
         result.remainingAfterDebtAndExpenses < 0
           ? 'bg-[#ef4444]/10 text-[#ef4444]'
           : result.financialStatusClass === 'healthy'
             ? 'bg-[#10b981]/10 text-[#10b981]'
-            : result.financialStatusClass === 'warning'
-              ? 'bg-[#f59e0b]/10 text-[#f59e0b]'
-              : 'bg-[#ef4444]/10 text-[#ef4444]';
-
-      const sisaClass =
-        result.remainingAfterDebtAndExpenses < 0
-          ? 'text-[#ef4444]'
-          : result.financialStatusClass === 'healthy'
-            ? 'text-[#10b981]'
-            : 'text-[#f59e0b]';
+            : 'bg-[#f59e0b]/10 text-[#f59e0b]';
+      const sisaClass = result.remainingAfterDebtAndExpenses < 0 ? 'text-[#ef4444]' : 'text-[#10b981]';
 
       const sisaEl = document.getElementById('result-sisa');
       const badgeEl = document.getElementById('result-badge');
       const noteEl = document.getElementById('result-note');
       const dbrEl = document.getElementById('result-dbr');
-      const debtEl = document.getElementById('result-debt');
-      const expTotalEl = document.getElementById('result-expenses-total');
       const incomeEl = document.getElementById('result-income');
-      const breakdownDebtEl = document.getElementById('result-breakdown-debt');
-      const breakdownExpEl = document.getElementById('result-breakdown-exp');
+      const existingEl = document.getElementById('result-existing');
+      const newEl = document.getElementById('result-new');
+      const expenseEl = document.getElementById('result-expense');
+      const totalBebanEl = document.getElementById('result-total-beban');
       const breakdownSisaEl = document.getElementById('result-breakdown-sisa');
       const shareBtn = document.getElementById('shareResultBtn') as HTMLButtonElement | null;
       if (
-        !sisaEl || !badgeEl || !noteEl || !dbrEl || !debtEl || !expTotalEl ||
-        !incomeEl || !breakdownDebtEl || !breakdownExpEl || !breakdownSisaEl || !shareBtn
+        !sisaEl || !badgeEl || !noteEl || !dbrEl || !incomeEl ||
+        !existingEl || !newEl || !expenseEl || !totalBebanEl || !breakdownSisaEl || !shareBtn
       ) {
         return;
       }
@@ -521,24 +576,89 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       sisaEl.textContent = formatRupiah(result.remainingAfterDebtAndExpenses);
       sisaEl.className = `mt-1 text-3xl font-bold ${sisaClass}`;
       badgeEl.textContent = statusText;
-      badgeEl.className = `mt-3 inline-block rounded-full px-3 py-1 text-sm font-medium ${badgeClass}`;
-      noteEl.textContent =
-        result.remainingAfterDebtAndExpenses >= 0
-          ? 'Setelah cicilan dan semua pengeluaran, kamu masih memiliki sisa uang.'
-          : 'Setelah cicilan dan semua pengeluaran, sisa uangmu minus bulan ini.';
+      badgeEl.className = `mt-3 inline-block rounded-full px-3 py-1 text-sm font-semibold ${badgeClass}`;
+      noteEl.textContent = resultNote(result);
       dbrEl.textContent = formatPercentage(result.debtRatio);
-      debtEl.textContent = `${formatRupiah(result.totalMonthlyDebt)} / bulan`;
-      expTotalEl.textContent = `${formatRupiah(result.totalMonthlyExpenses)} / bulan`;
       incomeEl.textContent = formatRupiah(income);
-      breakdownDebtEl.textContent = formatRupiah(result.totalMonthlyDebt);
-      breakdownExpEl.textContent = formatRupiah(result.totalMonthlyExpenses);
+      existingEl.textContent = formatRupiah(existing);
+      newEl.textContent = formatRupiah(newInst);
+      expenseEl.textContent = formatRupiah(expenses);
+      totalBebanEl.textContent = formatRupiah(result.totalMonthlyDebt + expenses);
       breakdownSisaEl.textContent = formatRupiah(result.remainingAfterDebtAndExpenses);
 
       shareBtn.disabled = false;
+      updateBalance(result);
+      initScenario(newInst, existing, expenses);
+    }
+
+    function resultNote(result: { remainingAfterDebtAndExpenses: number; financialStatusClass: string }): string {
+      if (result.remainingAfterDebtAndExpenses < 0) {
+        return 'Tagihan dan pengeluaran bulananmu lebih besar dari penghasilan. Kondisi ini berisiko, sebaiknya ditinjau kembali sebelum mengambil cicilan baru.';
+      }
+      if (result.financialStatusClass === 'critical') {
+        return 'Meski masih bersisa, sebagian besar penghasilan sudah dipakai untuk cicilan. Ruang untuk kebutuhan lain sangat terbatas.';
+      }
+      if (result.financialStatusClass === 'warning') {
+        return 'Masih ada sisa uang, tapi porsi cicilan sudah cukup besar. Pertimbangkan lagi sebelum menambah kewajiban.';
+      }
+      return 'Setelah semua cicilan dan pengeluaran, kamu masih punya sisa uang yang cukup.';
+    }
+
+    function dbrToAngle(dbr: unknown): number {
+      const d = Number(dbr);
+      if (!Number.isFinite(d) || d < 0) return 0;
+      // Continuous: the heavier the cicilan side, the more the beam tilts toward it.
+      const angle = (d - 20) * 0.5;
+      const clamped = Math.max(-5, Math.min(25, angle));
+      return Math.round(clamped * 100) / 100;
+    }
+
+    function updateBalance(result: { debtRatio: number }) {
+      const svg = document.getElementById('result-balance') as SVGElement | null;
+      if (!svg) return;
+      svg.style.setProperty('--scale-angle', `${dbrToAngle(result.debtRatio)}deg`);
+    }
+
+    function initScenario(baseNew: number, existing: number, expenses: number) {
+      const input = document.getElementById('scenarioInput') as HTMLInputElement | null;
+      if (!input) return;
+      if (!(input.dataset.hooked === '1')) {
+        input.dataset.hooked = '1';
+        input.addEventListener('input', () => {
+          formatMoneyInput(input);
+          updateScenarioSisa(existing, expenses);
+        });
+      }
+      const raw = input.dataset.value ?? input.value.replace(/\D/g, '');
+      if (raw === '') {
+        input.value = baseNew ? baseNew.toLocaleString('id-ID') : '';
+        input.dataset.value = baseNew ? String(baseNew) : '';
+      }
+      updateScenarioSisa(existing, expenses);
+    }
+
+    function updateScenarioSisa(existing: number, expenses: number) {
+      const imgIncome = readNumber('monthlyIncome');
+      const input = document.getElementById('scenarioInput') as HTMLInputElement | null;
+      const sisaEl = document.getElementById('scenario-sisa');
+      if (!input || !sisaEl) return;
+      const raw = input.dataset.value ?? input.value.replace(/\D/g, '');
+      const newVal = raw ? parseFloat(raw) || 0 : 0;
+      const r = calculateFinancialBalance(imgIncome, existing, newVal, expenses);
+      sisaEl.textContent = formatRupiah(r.remainingAfterDebtAndExpenses);
+      sisaEl.className = `mt-0.5 text-xl font-bold ${r.remainingAfterDebtAndExpenses < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`;
     }
 
     document.getElementById('ubahDataBtn')?.addEventListener('click', () => goTo(1));
-    document.getElementById('skenarioBtn')?.addEventListener('click', () => goTo(3));
+    document.getElementById('skenarioBtn')?.addEventListener('click', () => {
+      const panel = document.getElementById('scenario-panel');
+      if (!panel) return;
+      const open = panel.classList.toggle('hidden');
+      document.getElementById('skenarioBtn')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      if (open === false) {
+        document.getElementById('scenarioInput')?.focus();
+      }
+    });
 
     // ---- browser back restores the wizard step without losing values ----
     window.addEventListener('popstate', (e) => {
@@ -548,45 +668,83 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     });
 
     // ---- share ----
-    document.getElementById('shareResultBtn')?.addEventListener('click', async () => {
+    async function shareResult() {
       const { result } = compute();
       const income = readNumber('monthlyIncome');
       const shareBtn = document.getElementById('shareResultBtn') as HTMLButtonElement | null;
       if (!shareBtn) return;
 
-      const shareData = {
-        title: 'CekDulu - Hasil Kalkulator Kemampuan Cicilan',
-        text: `Penghasilan ${formatRupiah(income)}, total cicilan ${formatRupiah(result.totalMonthlyDebt)}, sisa ${formatRupiah(result.remainingAfterDebtAndExpenses)}, DBR ${formatPercentage(result.debtRatio)}%`,
-      };
+      const url = buildShareUrl();
+      const text =
+        `Sisa uang bulananku ${formatRupiah(result.remainingAfterDebtAndExpenses)} ` +
+        `dari penghasilan ${formatRupiah(income)}. Cek sebelum nyicil di CekDulu:`;
 
-      if (navigator.share) {
+      if (navigator.share && navigator.canShare?.({ url })) {
         try {
-          await navigator.share(shareData);
+          await navigator.share({ title: 'CekDulu - Cek Kemampuan Cicilan', text, url });
+          return;
         } catch {
-          fallbackShare(shareBtn);
+          // user cancelled or sharing failed -> fall through to copy
         }
-      } else {
-        fallbackShare(shareBtn);
       }
+      copyLink(shareBtn, url);
+    }
 
-      function fallbackShare(btn: HTMLButtonElement) {
-        const tempInput = document.createElement('input');
-        tempInput.value = `${formatRupiah(income)} | ${formatRupiah(result.totalMonthlyDebt)} | ${formatPercentage(result.debtRatio)}`;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-
-        btn.textContent = 'Disalin!';
+    function copyLink(btn: HTMLButtonElement, url: string) {
+      const done = () => {
+        const original = btn.innerHTML;
+        btn.innerHTML = 'Link disalin!';
         btn.classList.add('bg-[#10b981]', 'text-white');
         setTimeout(() => {
-          btn.textContent = 'Bagikan Hasil';
+          btn.innerHTML = original;
           btn.classList.remove('bg-[#10b981]', 'text-white');
         }, 2000);
+      };
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(url).then(done).catch(() => legacyCopy(url, done));
+      } else {
+        legacyCopy(url, done);
       }
-    });
+    }
+
+    function legacyCopy(text: string, done: () => void) {
+      const tempInput = document.createElement('input');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+      } catch {
+        // ignore
+      }
+      document.body.removeChild(tempInput);
+      done();
+    }
+
+    document.getElementById('shareResultBtn')?.addEventListener('click', shareResult);
+
+    // ---- restore calculation from shared URL (client-side only) ----
+    const hadSharedParams = (function restoreFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const hasCalc = ['i', 'x', 'n', 'e'].some((k) => params.has(k));
+      if (!hasCalc) return false;
+
+      setRupiahInput('monthlyIncome', Number(params.get('i')) || 0);
+      step2Ids.forEach((id) => setRupiahInput(id, 0));
+      step4Ids.forEach((id) => setRupiahInput(id, 0));
+      setRupiahInput('newInstallment', Number(params.get('n')) || 0);
+      const x = Number(params.get('x')) || 0;
+      const e = Number(params.get('e')) || 0;
+      if (x > 0) setRupiahInput('kpr', x);
+      if (e > 0) setRupiahInput('foodHousing', e);
+      updateTotal(step2Ids, 'step2-total');
+      updateTotal(step4Ids, 'step4-total');
+      fillResult();
+      goTo(5);
+      return true;
+    })();
 
     // ---- initial render ----
-    render(false);
+    if (!hadSharedParams) render(false);
   </script>
 </Layout>

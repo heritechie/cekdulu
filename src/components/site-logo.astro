@@ -1,0 +1,44 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<a
+  href="/"
+  class={`inline-flex items-center ${className}`}
+  aria-label="CekDulu.co.id"
+  data-cekdulu-logo
+>
+  <img
+    src="/images/logo-cekdulu.png"
+    alt=""
+    aria-hidden="true"
+    width="480"
+    height="160"
+    decoding="async"
+    class="h-auto w-[135px] object-contain md:w-[160px]"
+  />
+  <span data-cekdulu-suffix class="-ml-[5px] translate-y-[4px] text-sm font-semibold leading-none text-foreground/70"></span>
+</a>
+
+<script is:inline>
+  (function () {
+    var host = (window.location.hostname || '').toLowerCase();
+    var isDev =
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === '::1' ||
+      host === '[::1]' ||
+      host.endsWith('.workers.dev');
+    var suffix = isDev ? '.local' : '.co.id';
+    var el = document.querySelector('[data-cekdulu-suffix]');
+    if (el) {
+      el.textContent = suffix;
+      var a = el.closest('a');
+      if (a) a.setAttribute('aria-label', 'CekDulu' + suffix);
+    }
+  })();
+</script>

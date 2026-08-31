@@ -1,0 +1,463 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Info, ArrowRight, ExternalLink } from 'lucide-astro';
+import AdSlotContent from '../components/ad-slot-content.astro';
+
+const canonical = new URL('apa-itu-dbr', Astro.site).href;
+
+const faq = [
+  {
+    q: 'Apa itu DBR?',
+    a: 'DBR atau Debt Burden Ratio adalah rasio yang menunjukkan perbandingan total cicilan utang bulanan dengan penghasilan bulanan.',
+  },
+  {
+    q: 'Bagaimana cara menghitung DBR?',
+    a: 'Gunakan rumus: DBR = Total cicilan bulanan ÷ Penghasilan bulanan × 100%. Jika penghasilan Rp10 juta dan cicilan Rp3 juta, DBR adalah 30%.',
+  },
+  {
+    q: 'Apakah DBR 30% aman?',
+    a: 'DBR 30% dapat menjadi salah satu acuan untuk melihat beban cicilan, tetapi tidak otomatis berarti kondisi keuangan seseorang aman. Pengeluaran, tanggungan, tabungan, dana darurat, dan kebutuhan lainnya juga perlu dipertimbangkan.',
+  },
+  {
+    q: 'Apakah OJK menetapkan DBR maksimal 30%?',
+    a: 'Lebih tepat dikatakan bahwa OJK menggunakan angka 30% sebagai acuan dalam materi edukasi pengelolaan keuangan. Angka tersebut tidak sebaiknya dianggap sebagai batas universal yang berlaku untuk seluruh jenis kredit atau pembiayaan.',
+  },
+  {
+    q: 'Apakah DBR sama dengan DTI?',
+    a: 'DBR dan DTI sama-sama digunakan untuk menggambarkan beban utang terhadap penghasilan, tetapi definisi dan komponen yang dihitung dapat berbeda tergantung konteks penggunaannya. Karena itu, selalu perhatikan definisi rasio yang digunakan oleh masing-masing lembaga atau produk.',
+  },
+];
+
+const faqJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a,
+    },
+  })),
+});
+
+const ojkUrl = 'https://www.ojk.go.id/id/berita-dan-kegiatan/info-terkini/Documents/Pages/Buku-Saku-Cerdas-Mengelola-Keuangan/Buku_Saku_OJK_-_Bagi_Calon_Pengantin.pdf';
+const cnnUrl = 'https://www.cnnindonesia.com/ekonomi/20260112163314-78-1316215/ojk-batasi-utang-pinjol-maksimal-30-persen-dari-penghasilan';
+const calcUrl = '/kalkulator-kemampuan-cicilan';
+---
+
+<Layout
+  title="Apa Itu DBR? Cara Menghitung Rasio Cicilan | CekDulu"
+  description="Kenali apa itu DBR, cara menghitung rasio cicilan terhadap penghasilan, arti DBR 30%, dan kenapa DBR bukan satu-satunya indikator kemampuan cicilan."
+  canonical={canonical}
+  ogTitle="Apa Itu DBR? Cara Menghitung Rasio Cicilan | CekDulu"
+  ogDescription="Kenali apa itu DBR, cara menghitung rasio cicilan terhadap penghasilan, arti DBR 30%, dan kenapa DBR bukan satu-satunya indikator kemampuan cicilan."
+  ogType="article"
+  ogUrl={canonical}
+>
+  <script is:inline type="application/ld+json" set:html={faqJsonLd} slot="head" />
+
+  <main>
+    <!-- 1. HERO -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+      <div class="grid gap-6 lg:grid-cols-2 lg:items-center lg:gap-10">
+        <div class="text-center lg:text-left">
+          <p class="text-sm font-medium text-muted-foreground">Artikel Edukasi · Kemampuan Cicilan</p>
+          <h1 class="mt-2 text-balance text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+            Apa Itu DBR?<span class="text-primary"> Kenali Rasio Cicilan terhadap Penghasilan</span>
+          </h1>
+          <p class="mx-auto mt-4 max-w-md text-base text-muted-foreground sm:text-lg lg:mx-0">
+            DBR (Debt Burden Ratio) adalah rasio yang menunjukkan seberapa besar penghasilan bulanan yang digunakan untuk membayar cicilan utang.
+          </p>
+          <p class="mt-4">Sederhananya, DBR membantu kamu melihat:</p>
+          <blockquote class="mx-auto mt-2 max-w-md border-l-2 border-primary pl-4 text-left lg:mx-0">
+            “Berapa persen penghasilan saya yang digunakan untuk membayar cicilan?”
+          </blockquote>
+        </div>
+
+        <div class="flex justify-center lg:justify-end">
+          <img
+            src="/images/cekdulu_dbr_assets/01_hero_dbr.png"
+            alt="Ilustrasi timbangan penghasilan dan cicilan dengan DBR 30 persen"
+            width="880"
+            height="425"
+            fetchpriority="high"
+            decoding="async"
+            class="h-auto w-full max-w-[300px] sm:max-w-[340px] lg:max-w-[420px]"
+          />
+        </div>
+      </div>
+
+      <div class="mt-6 rounded-2xl border border-border bg-muted/40 p-5 sm:p-6">
+        <p class="text-sm font-semibold text-foreground">Contoh singkat</p>
+        <dl class="mt-3 space-y-2 text-sm">
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-muted-foreground">Penghasilan</dt>
+            <dd class="font-medium text-foreground">Rp10.000.000 / bulan</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-muted-foreground">Total cicilan</dt>
+            <dd class="font-medium text-foreground">Rp3.000.000 / bulan</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3 border-t border-border/60 pt-2">
+            <dt class="text-foreground">DBR</dt>
+            <dd class="text-base font-bold text-primary">30%</dd>
+          </div>
+        </dl>
+        <p class="mt-3 text-sm text-muted-foreground">
+          Artinya, sekitar 30% penghasilan bulanan digunakan untuk membayar cicilan.
+        </p>
+      </div>
+
+      <p class="mt-5">
+        Semakin besar bagian penghasilan yang digunakan untuk cicilan, semakin kecil ruang yang tersisa untuk kebutuhan sehari-hari, tabungan, dana darurat, dan pengeluaran tak terduga.
+      </p>
+    </section>
+
+    <AdSlotContent />
+
+    <!-- 2. CARA MENGHITUNG DBR -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Cara Menghitung DBR</h2>
+      <p class="mt-3">Jelaskan rumus:</p>
+      <div class="mt-3 rounded-xl bg-muted/50 px-4 py-3 text-center font-mono text-sm text-foreground sm:text-base">
+        DBR = Total Cicilan Bulanan ÷ Penghasilan Bulanan × 100%
+      </div>
+
+      <div class="mt-4 flex justify-center">
+        <img
+          src="/images/cekdulu_dbr_assets/02_formula_dbr.png"
+          alt="Ilustrasi rumus DBR antara cicilan bulanan dan penghasilan"
+          width="550"
+          height="180"
+          loading="lazy"
+          decoding="async"
+          class="h-auto w-full max-w-[360px] sm:max-w-[440px]"
+        />
+      </div>
+
+      <div class="mt-4 rounded-2xl border border-border bg-muted/40 p-5">
+        <p class="text-sm font-semibold text-foreground">Contoh perhitungan</p>
+        <dl class="mt-3 space-y-2 text-sm">
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-muted-foreground">Penghasilan</dt>
+            <dd class="font-medium">Rp10.000.000</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-muted-foreground">Total cicilan</dt>
+            <dd class="font-medium">Rp3.000.000</dd>
+          </div>
+        </dl>
+        <p class="mt-3 text-center font-mono text-sm text-foreground">
+          Rp3.000.000 ÷ Rp10.000.000 × 100% = 30%
+        </p>
+        <p class="mt-2 text-sm text-muted-foreground">
+          Jadi, DBR-nya adalah <strong class="text-foreground">30%</strong>.
+        </p>
+      </div>
+
+      <div class="mt-4 rounded-2xl border border-border bg-muted/40 p-5">
+        <p class="text-sm font-semibold text-foreground">Contoh kedua</p>
+        <p class="mt-2 text-sm text-muted-foreground">
+          Jika cicilan menjadi <strong class="text-foreground">Rp4.000.000</strong>:
+        </p>
+        <p class="mt-2 text-center font-mono text-sm text-foreground">
+          Rp4.000.000 ÷ Rp10.000.000 × 100% = 40%
+        </p>
+        <p class="mt-2 text-sm text-muted-foreground">
+          DBR menjadi <strong class="text-foreground">40%</strong>.
+        </p>
+      </div>
+
+      <p class="mt-4">
+        Semakin besar persentase tersebut, semakin besar bagian penghasilan yang digunakan untuk membayar cicilan.
+      </p>
+    </section>
+
+    <!-- 3. APA ARTI DBR 20%, 30%, ATAU 40%? -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Apa Arti DBR 20%, 30%, atau 40%?</h2>
+
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-border text-left text-muted-foreground">
+              <th scope="col" class="py-2.5 pr-3 font-medium">Penghasilan</th>
+              <th scope="col" class="py-2.5 pr-3 text-right font-medium">Cicilan per Bulan</th>
+              <th scope="col" class="py-2.5 text-right font-medium">DBR</th>
+            </tr>
+          </thead>
+          <tbody class="text-foreground">
+            <tr class="border-b border-border/60"><td class="py-2.5 pr-3">Rp5 juta</td><td class="py-2.5 pr-3 text-right">Rp1 juta</td><td class="py-2.5 text-right font-semibold">20%</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2.5 pr-3">Rp5 juta</td><td class="py-2.5 pr-3 text-right">Rp1,5 juta</td><td class="py-2.5 text-right font-semibold">30%</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2.5 pr-3">Rp5 juta</td><td class="py-2.5 pr-3 text-right">Rp2 juta</td><td class="py-2.5 text-right font-semibold">40%</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2.5 pr-3">Rp10 juta</td><td class="py-2.5 pr-3 text-right">Rp2 juta</td><td class="py-2.5 text-right font-semibold">20%</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2.5 pr-3">Rp10 juta</td><td class="py-2.5 pr-3 text-right">Rp3 juta</td><td class="py-2.5 text-right font-semibold">30%</td></tr>
+            <tr><td class="py-2.5 pr-3">Rp10 juta</td><td class="py-2.5 pr-3 text-right">Rp4 juta</td><td class="py-2.5 text-right font-semibold">40%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-4">
+        DBR yang lebih tinggi berarti semakin banyak penghasilan yang dialokasikan untuk cicilan.
+      </p>
+      <p class="mt-3">
+        Namun, DBR saja belum cukup untuk menggambarkan kondisi keuangan seseorang.
+      </p>
+      <p class="mt-3">
+        Dua orang bisa sama-sama memiliki DBR 30%, tetapi kondisi keuangannya bisa sangat berbeda karena pengeluaran, tanggungan, tempat tinggal, tabungan, dan kebutuhan lainnya berbeda.
+      </p>
+      <p class="mt-4 rounded-xl bg-muted/50 p-4 text-sm">
+        Karena itu, DBR sebaiknya digunakan sebagai indikator, bukan satu-satunya ukuran kemampuan seseorang untuk mengambil cicilan.
+      </p>
+    </section>
+
+    <!-- 4. BERAPA DBR YANG IDEAL? -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Berapa DBR yang Ideal?</h2>
+      <p class="mt-3">
+        Tidak ada satu angka yang otomatis berlaku untuk semua orang dan semua jenis cicilan.
+      </p>
+      <p class="mt-3">
+        Namun, Otoritas Jasa Keuangan (OJK) dalam <em>“Buku Saku Cerdas Mengelola Keuangan”</em> menggunakan maksimal 30% dari penghasilan sebagai acuan untuk membayar cicilan utang.
+      </p>
+      <p class="mt-3">
+        Angka 30% dapat digunakan sebagai acuan untuk membantu melihat beban cicilan, bukan sebagai jaminan bahwa seseorang pasti mampu membayar cicilan.
+      </p>
+      <p class="mt-3">
+        Kebijakan atau penilaian kemampuan membayar juga dapat berbeda berdasarkan jenis produk, lembaga pemberi pinjaman atau pembiayaan, serta kondisi masing-masing peminjam.
+      </p>
+
+      <div class="mt-5 flex items-start gap-2.5 rounded-xl bg-muted/50 p-4 text-sm text-muted-foreground">
+        <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+        <p>
+          Sumber: Otoritas Jasa Keuangan (OJK) — <em>Buku Saku Cerdas Mengelola Keuangan</em>.
+          <a
+            href={ojkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-1 inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+          >
+            Baca dokumen resmi OJK
+            <ExternalLink class="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. KONTEKS PINJOL -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Bagaimana dengan Aturan 30% untuk Pinjol?</h2>
+      <p class="mt-3">
+        Angka 30% juga sering muncul dalam pembahasan pinjaman online.
+      </p>
+      <p class="mt-3">
+        CNN Indonesia, misalnya, membahas kebijakan OJK mengenai batas 30% dari penghasilan dalam konteks utang pinjaman online.
+        <a
+          href={cnnUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="ml-1 inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+        >
+          Baca artikel CNN Indonesia tentang batas 30% utang pinjol
+          <ExternalLink class="h-3.5 w-3.5" aria-hidden="true" />
+        </a>
+      </p>
+      <p class="mt-3">
+        Namun, penting untuk membedakan konteks tersebut dengan penggunaan DBR sebagai indikator umum kemampuan cicilan.
+      </p>
+      <p class="mt-3">
+        Angka 30% tidak sebaiknya dipahami sebagai batas universal untuk semua jenis cicilan.
+      </p>
+    </section>
+
+    <!-- 6. DBR BUKAN SATU-SATUNYA -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-2 lg:items-center lg:gap-10">
+        <div>
+          <h2 class="text-balance text-2xl font-bold tracking-tight sm:text-3xl">DBR Bukan Satu-satunya yang Perlu Dilihat</h2>
+          <p class="mt-3">
+            Bayangkan kamu memiliki:
+          </p>
+          <div class="mt-2 space-y-1 text-sm">
+            <p><span class="text-muted-foreground">Penghasilan:</span> <strong class="text-foreground">Rp10 juta</strong></p>
+            <p><span class="text-muted-foreground">Cicilan:</span> <strong class="text-foreground">Rp3 juta</strong></p>
+          </div>
+          <p class="mt-3">
+            DBR kamu adalah <strong class="text-foreground">30%</strong>.
+          </p>
+        </div>
+
+        <div class="mt-6 flex justify-center lg:mt-0">
+          <img
+            src="/images/cekdulu_dbr_assets/07_icon_set_dbr.png"
+            alt="Ilustrasi dua kondisi dengan DBR sama tetapi sisa uang berbeda"
+            width="550"
+            height="225"
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full max-w-[440px]"
+          />
+        </div>
+      </div>
+
+      <p class="mt-6">
+        Tetapi kamu juga memiliki pengeluaran bulanan sebesar <strong class="text-foreground">Rp4 juta</strong>.
+      </p>
+
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <tbody class="text-foreground">
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Penghasilan</td><td class="py-2 text-right">Rp10 juta</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Cicilan</td><td class="py-2 text-right">Rp3 juta</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Pengeluaran</td><td class="py-2 text-right">Rp4 juta</td></tr>
+            <tr class="bg-muted/50"><td class="py-2 pr-3 font-semibold text-foreground">Sisa uang</td><td class="py-2 text-right font-bold text-primary">Rp3 juta</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-4">Sekarang bandingkan dengan kondisi lain.</p>
+      <p class="mt-3">
+        Penghasilan dan cicilan tetap sama, tetapi pengeluaran bulanan menjadi <strong class="text-foreground">Rp6 juta</strong>.
+      </p>
+
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <tbody class="text-foreground">
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Penghasilan</td><td class="py-2 text-right">Rp10 juta</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Cicilan</td><td class="py-2 text-right">Rp3 juta</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Pengeluaran</td><td class="py-2 text-right">Rp6 juta</td></tr>
+            <tr class="bg-muted/50"><td class="py-2 pr-3 font-semibold text-foreground">Sisa uang</td><td class="py-2 text-right font-bold text-primary">Rp1 juta</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-5 rounded-xl border border-primary/20 bg-primary/5 p-4">
+        <p class="text-sm">
+          Keduanya memiliki DBR <strong class="text-foreground">30%</strong>.
+        </p>
+        <p class="mt-2 text-sm">
+          Tetapi ruang keuangan yang tersisa berbeda jauh.
+        </p>
+        <p class="mt-2 text-sm font-semibold text-foreground">
+          Itulah sebabnya melihat DBR saja belum cukup.
+        </p>
+      </div>
+    </section>
+
+    <!-- 7. SEBELUM MENGAMBIL CICILAN BARU -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-balance text-2xl font-bold tracking-tight sm:text-3xl">Sebelum Mengambil Cicilan Baru, Cek Sisa Uangmu</h2>
+      <p class="mt-3">Sebelum mengambil cicilan baru, coba lihat:</p>
+
+      <div class="mt-4 lg:grid lg:grid-cols-2 lg:items-center lg:gap-10">
+        <div class="flex justify-center">
+          <img
+            src="/images/cekdulu_dbr_assets/05_checklist_dbr.png"
+            alt="Ilustrasi hal yang perlu dicek sebelum mengambil cicilan baru"
+            width="295"
+            height="200"
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full max-w-[300px]"
+          />
+        </div>
+
+        <ul class="mt-5 space-y-2.5 lg:mt-0">
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa penghasilan bulanan kamu</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa cicilan yang sudah berjalan</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa pengeluaran bulanan</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa cicilan baru yang ingin diambil</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa uang yang tersisa setelah semuanya dibayar</li>
+        </ul>
+      </div>
+
+      <p class="mt-4">
+        Dengan begitu, kamu tidak hanya melihat berapa persen penghasilan yang digunakan untuk cicilan, tetapi juga melihat berapa uang yang masih tersisa setiap bulan.
+      </p>
+    </section>
+
+    <!-- 8. CTA -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <Card className="rounded-2xl border border-border bg-muted/40 py-0 shadow-sm ring-0">
+        <CardContent className="p-6 text-center sm:p-8">
+          <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Cek Kemampuan Cicilan Kamu</h2>
+          <p class="mx-auto mt-3 max-w-xl text-muted-foreground">
+            Ingin tahu bagaimana kondisi keuanganmu jika mengambil cicilan baru?
+          </p>
+          <p class="mx-auto mt-2 max-w-xl text-muted-foreground">
+            CekDulu membantu menghitung total cicilan, total beban bulanan, perkiraan sisa uang, rasio cicilan atau DBR, dan perubahan kondisi setelah menambahkan cicilan baru.
+          </p>
+          <a
+            href={calcUrl}
+            class={cn(buttonVariants({ variant: 'default' }), 'mt-6 h-auto w-full gap-2 rounded-full px-8 py-3.5 text-base font-semibold sm:w-auto')}
+          >
+            Cek Kemampuan Cicilan
+            <ArrowRight class="h-4 w-4" aria-hidden="true" />
+          </a>
+          <p class="mx-auto mt-4 max-w-md text-xs leading-relaxed text-muted-foreground">
+            CekDulu adalah alat informasi dan simulasi. Hasil perhitungan berdasarkan data yang kamu masukkan dan bukan merupakan persetujuan, rekomendasi pinjaman, atau jaminan kemampuan membayar.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+
+    <!-- 9. FAQ -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Pertanyaan tentang DBR</h2>
+      <div class="mt-5 space-y-3">
+        {faq.map((item) => (
+          <details class="group rounded-2xl border border-border bg-card p-5">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-medium text-foreground [&::-webkit-details-marker]:hidden">
+              {item.q}
+              <span class="shrink-0 text-muted-foreground transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-muted-foreground">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <Separator className="mx-auto mt-12 max-w-3xl" />
+
+    <!-- 10. SUMBER -->
+    <section class="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Sumber dan Referensi</h2>
+      <div class="mt-5 space-y-4">
+        <div class="rounded-2xl border border-border bg-card p-5">
+          <p class="text-sm font-semibold text-foreground">Otoritas Jasa Keuangan (OJK)</p>
+          <p class="mt-1 text-sm text-muted-foreground">Buku Saku Cerdas Mengelola Keuangan</p>
+          <a
+            href={ojkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+          >
+            OJK — Buku Saku Cerdas Mengelola Keuangan
+            <ExternalLink class="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        </div>
+        <div class="rounded-2xl border border-border bg-card p-5">
+          <p class="text-sm font-semibold text-foreground">CNN Indonesia</p>
+          <p class="mt-1 text-sm text-muted-foreground">OJK Batasi Utang Pinjol Maksimal 30 Persen dari Penghasilan</p>
+          <a
+            href={cnnUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+          >
+            CNN Indonesia — OJK Batasi Utang Pinjol Maksimal 30 Persen dari Penghasilan
+            <ExternalLink class="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+      <p class="mt-4 text-xs text-muted-foreground">
+        Sumber utama: dokumen resmi OJK. CNN Indonesia digunakan sebagai konteks pendukung untuk pembahasan pinjaman online.
+      </p>
+    </section>
+  </main>
+</Layout>
