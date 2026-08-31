@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Info, ArrowLeft, ArrowRight, Share2, RefreshCw } from 'lucide-astro';
-import BalanceScale from '../components/balance-scale.astro';
 import AdSlotBetween from '../components/ad-slot-between.astro';
 import AdSlotAfterResult from '../components/ad-slot-after-result.astro';
 
@@ -198,8 +197,16 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
         <CardContent className="p-5 sm:p-6" aria-live="polite">
           <h2 class="text-center text-lg font-semibold text-foreground sm:text-xl">Hasil Cek</h2>
 
-          <div class="mt-3 flex justify-center">
-            <BalanceScale id="result-balance" class="mx-auto block w-full max-w-[200px] sm:max-w-[240px]" showLabels />
+          <div class="mt-4 flex justify-center">
+            <img
+              src="/images/wizard/result.webp"
+              alt="Ilustrasi timbangan keuangan"
+              width="730"
+              height="512"
+              loading="lazy"
+              decoding="async"
+              class="h-auto w-full max-w-[170px] sm:max-w-[190px]"
+            />
           </div>
 
           <div class="mt-4 rounded-2xl border border-border bg-muted/40 p-4 text-center">
@@ -292,10 +299,6 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
             <Button id="ubahDataBtn" type="button" variant="secondary" className="h-auto w-full rounded-full px-6 py-3 text-base">
               Ubah Data
             </Button>
-            <button type="button" data-back class="mx-auto mt-1 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground underline-offset-4 hover:underline">
-              <ArrowLeft class="h-4 w-4" aria-hidden="true" />
-              Kembali ke Data
-            </button>
           </div>
         </CardContent>
       </Card>
@@ -587,7 +590,6 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       breakdownSisaEl.textContent = formatRupiah(result.remainingAfterDebtAndExpenses);
 
       shareBtn.disabled = false;
-      updateBalance(result);
       initScenario(newInst, existing, expenses);
     }
 
@@ -602,21 +604,6 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
         return 'Masih ada sisa uang, tapi porsi cicilan sudah cukup besar. Pertimbangkan lagi sebelum menambah kewajiban.';
       }
       return 'Setelah semua cicilan dan pengeluaran, kamu masih punya sisa uang yang cukup.';
-    }
-
-    function dbrToAngle(dbr: unknown): number {
-      const d = Number(dbr);
-      if (!Number.isFinite(d) || d < 0) return 0;
-      // Continuous: the heavier the cicilan side, the more the beam tilts toward it.
-      const angle = (d - 20) * 0.5;
-      const clamped = Math.max(-5, Math.min(25, angle));
-      return Math.round(clamped * 100) / 100;
-    }
-
-    function updateBalance(result: { debtRatio: number }) {
-      const svg = document.getElementById('result-balance') as SVGElement | null;
-      if (!svg) return;
-      svg.style.setProperty('--scale-angle', `${dbrToAngle(result.debtRatio)}deg`);
     }
 
     function initScenario(baseNew: number, existing: number, expenses: number) {

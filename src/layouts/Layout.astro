@@ -54,43 +54,52 @@ const {
     <slot name="head" />
   </head>
   <body class="font-sans antialiased min-h-screen bg-background text-foreground">
-    <header class="border-b border-border/60">
+    <header class="relative border-b border-border/60">
       <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <SiteLogo />
-        <div class="relative md:hidden">
-          <button
-            id="menuBtn"
-            type="button"
-            aria-haspopup="true"
-            aria-expanded="false"
-            aria-label="Menu"
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted"
-          >
-            <Menu class="h-5 w-5" aria-hidden="true" />
-          </button>
-          <div id="menuPopover" class="absolute right-0 top-full z-10 mt-2 hidden w-44 rounded-xl border border-border bg-card p-1 shadow-sm">
-            <a href="/" class="block rounded-lg px-3 py-2 text-sm text-foreground transition-colors hover:bg-muted">Beranda</a>
-            <a href="/kalkulator-kemampuan-cicilan" class="block rounded-lg px-3 py-2 text-sm text-foreground transition-colors hover:bg-muted">Kalkulator Cicilan</a>
-          </div>
-        </div>
+        <button
+          id="menuBtn"
+          type="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-label="Menu"
+          class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted"
+        >
+          <Menu class="h-5 w-5" aria-hidden="true" />
+        </button>
       </div>
+      <nav id="mobileMenu" aria-label="Menu utama" class="absolute left-0 right-0 top-full z-40 hidden w-full border-t border-b border-border/60 bg-background shadow-sm md:hidden">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <a href="/" class="block py-4 text-base font-medium text-foreground">Beranda</a>
+          <a href="/kalkulator-kemampuan-cicilan" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Kalkulator Cicilan</a>
+          <a href="/apa-itu-dbr" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">DBR</a>
+        </div>
+      </nav>
     </header>
 
     <slot />
 
     <script>
       const menuBtn = document.getElementById('menuBtn');
-      const menuPopover = document.getElementById('menuPopover');
+      const mobileMenu = document.getElementById('mobileMenu');
+
+      function setMenu(open: boolean) {
+        mobileMenu?.classList.toggle('hidden', !open);
+        menuBtn?.setAttribute('aria-expanded', String(open));
+      }
 
       menuBtn?.addEventListener('click', () => {
-        const willOpen = menuPopover?.classList.toggle('hidden') ?? true;
-        menuBtn.setAttribute('aria-expanded', String(!willOpen));
+        const isOpen = mobileMenu ? !mobileMenu.classList.contains('hidden') : false;
+        setMenu(!isOpen);
+      });
+
+      mobileMenu?.querySelectorAll('a').forEach((a) => {
+        a.addEventListener('click', () => setMenu(false));
       });
 
       document.addEventListener('click', (e) => {
-        if (!e.target || !(e.target as Element).closest('#menuBtn, #menuPopover')) {
-          menuPopover?.classList.add('hidden');
-          menuBtn?.setAttribute('aria-expanded', 'false');
+        if (!e.target || !(e.target as Element).closest('#menuBtn, #mobileMenu')) {
+          setMenu(false);
         }
       });
     </script>
