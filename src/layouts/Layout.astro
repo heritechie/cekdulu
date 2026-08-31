@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { Menu } from 'lucide-astro';
 
 interface Props {
   title?: string;
@@ -10,21 +11,25 @@ interface Props {
   ogType?: string;
   ogUrl?: string;
   ogLocale?: string;
+  ogSiteName?: string;
   twitterCard?: string;
   twitterTitle?: string;
+  twitterDescription?: string;
 }
 
 const {
   title = 'CekDulu - Kalkulator Kemampuan Cicilan',
   description = 'Cek kemampuan finansial sebelum mengambil cicilan.',
-  canonical = 'https://cekdulu.id/',
+  canonical = 'https://cekdulu.co.id/',
   ogTitle = title,
   ogDescription = description,
   ogType = 'website',
   ogUrl = canonical,
   ogLocale = 'id_ID',
+  ogSiteName = 'CekDulu.co.id',
   twitterCard = 'summary',
   twitterTitle = 'CekDulu',
+  twitterDescription = description,
 } = Astro.props;
 ---
 
@@ -41,11 +46,61 @@ const {
     <meta property="og:type" content={ogType} />
     <meta property="og:url" content={ogUrl} />
     <meta property="og:locale" content={ogLocale} />
+    <meta property="og:site_name" content={ogSiteName} />
     <meta name="twitter:card" content={twitterCard} />
     <meta name="twitter:title" content={twitterTitle} />
+    <meta name="twitter:description" content={twitterDescription} />
     <slot name="head" />
   </head>
   <body class="font-sans antialiased min-h-screen bg-background text-foreground">
+    <header class="border-b border-border/60">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <a href="/" class="inline-flex items-center">
+          <img
+            src="/images/logo-cekdulu.png"
+            alt="CekDulu.co.id"
+            width="480"
+            height="160"
+            decoding="async"
+            class="h-auto w-[135px] object-contain md:w-[160px]"
+          />
+        </a>
+        <div class="relative md:hidden">
+          <button
+            id="menuBtn"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Menu"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted"
+          >
+            <Menu class="h-5 w-5" aria-hidden="true" />
+          </button>
+          <div id="menuPopover" class="absolute right-0 top-full z-10 mt-2 hidden w-44 rounded-xl border border-border bg-card p-1 shadow-sm">
+            <a href="/" class="block rounded-lg px-3 py-2 text-sm text-foreground transition-colors hover:bg-muted">Beranda</a>
+            <a href="/kalkulator-kemampuan-cicilan" class="block rounded-lg px-3 py-2 text-sm text-foreground transition-colors hover:bg-muted">Kalkulator Cicilan</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
     <slot />
+
+    <script>
+      const menuBtn = document.getElementById('menuBtn');
+      const menuPopover = document.getElementById('menuPopover');
+
+      menuBtn?.addEventListener('click', () => {
+        const willOpen = menuPopover?.classList.toggle('hidden') ?? true;
+        menuBtn.setAttribute('aria-expanded', String(!willOpen));
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target || !(e.target as Element).closest('#menuBtn, #menuPopover')) {
+          menuPopover?.classList.add('hidden');
+          menuBtn?.setAttribute('aria-expanded', 'false');
+        }
+      });
+    </script>
   </body>
 </html>

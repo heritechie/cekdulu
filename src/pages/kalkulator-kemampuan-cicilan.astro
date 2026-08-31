@@ -1,0 +1,589 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NumberField from '../components/number-field.astro';
+import MoneyRow from '../components/money-row.astro';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Info, ArrowLeft, ArrowRight } from 'lucide-astro';
+import AdSlotBetween from '../components/ad-slot-between.astro';
+import AdSlotAfterResult from '../components/ad-slot-after-result.astro';
+
+const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
+---
+<Layout
+  title="Kalkulator Kemampuan Cicilan — Cek Sebelum Nyicil | CekDulu"
+  description="Cek kemampuan cicilan berdasarkan penghasilan, cicilan yang sudah ada, cicilan baru, dan pengeluaran bulanan. Hitung sisa uang dan rasio cicilan sebelum mengambil utang."
+  canonical={canonical}
+  ogTitle="Kalkulator Kemampuan Cicilan — Cek Sebelum Nyicil | CekDulu"
+  ogDescription="Cek kemampuan cicilan berdasarkan penghasilan, cicilan yang sudah ada, cicilan baru, dan pengeluaran bulanan."
+  ogUrl={canonical}
+>
+  <div class="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+
+    <button
+      id="wizard-back"
+      type="button"
+      data-back
+      class="-ml-2 inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+    >
+      <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+      Kembali
+    </button>
+
+    <div class="mt-2 w-full text-center">
+      <h1 class="text-balance text-2xl font-bold tracking-tight sm:text-3xl">Cek Kemampuan Cicilan</h1>
+      <p id="wizard-type" class="mt-1 text-sm text-muted-foreground">Kredit yang dicek: Lainnya</p>
+
+      <p id="step-label" class="mt-5 text-sm font-medium text-muted-foreground" aria-live="polite">1 dari 5</p>
+      <div
+        id="wizard-progress"
+        role="progressbar"
+        aria-valuemin="1"
+        aria-valuemax="5"
+        aria-valuenow="1"
+        aria-label="Progres kalkulator"
+        class="mx-auto mt-2 flex w-full max-w-[240px] items-center gap-1.5"
+      >
+        <span data-seg="1" class="h-1.5 flex-1 rounded-full bg-primary"></span>
+        <span data-seg="2" class="h-1.5 flex-1 rounded-full bg-border"></span>
+        <span data-seg="3" class="h-1.5 flex-1 rounded-full bg-border"></span>
+        <span data-seg="4" class="h-1.5 flex-1 rounded-full bg-border"></span>
+        <span data-seg="5" class="h-1.5 flex-1 rounded-full bg-border"></span>
+      </div>
+
+      <div class="mt-4 flex items-center justify-center">
+        <img
+          id="wizard-illustration"
+          src="/images/wizard/income.webp"
+          alt="Ilustrasi penghasilan bersih"
+          width="130"
+          height="110"
+          decoding="async"
+          class="h-[110px] w-[130px] object-contain sm:h-[120px] sm:w-[150px]"
+        />
+      </div>
+    </div>
+
+    <form id="wizardForm" class="mt-5" novalidate>
+      <Card
+        id="step-1"
+        tabIndex={-1}
+        className="animate-in fade-in duration-150 rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
+      >
+        <CardContent className="p-5 sm:p-6">
+          <h2 class="text-lg font-semibold text-foreground sm:text-xl">Penghasilan Bersih</h2>
+          <p class="mt-1 text-sm text-muted-foreground">Masukkan total penghasilan bersih yang kamu terima setiap bulan.</p>
+          <div class="mt-4">
+            <NumberField id="monthlyIncome" label="Penghasilan per bulan" required />
+            <p id="error-monthlyIncome" class="mt-2 hidden text-sm font-medium text-[#ef4444]" aria-live="polite"></p>
+            <div class="mt-3 flex items-start gap-2.5 rounded-xl bg-muted/50 p-3 text-sm text-muted-foreground">
+              <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+              <span>Masukkan jumlah setelah dipotong pajak dan potongan lainnya.</span>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-end">
+            <Button type="submit" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold sm:w-auto sm:px-8">
+              Lanjutkan
+              <ArrowRight class="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card
+        id="step-2"
+        tabIndex={-1}
+        className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
+      >
+        <CardContent className="p-5 sm:p-6">
+          <h2 class="text-lg font-semibold text-foreground sm:text-xl">Cicilan yang Sudah Ada</h2>
+          <p class="mt-1 text-sm text-muted-foreground">Masukkan semua cicilan atau kewajiban bulanan yang sudah kamu miliki.</p>
+          <div class="mt-4 space-y-3">
+            <MoneyRow id="kpr" label="KPR / Rumah" icon="home" />
+            <MoneyRow id="mobil" label="Mobil" icon="car" />
+            <MoneyRow id="motor" label="Motor" icon="bike" />
+            <MoneyRow id="kartuKredit" label="Kartu Kredit" icon="card" />
+            <MoneyRow id="pinjamanLain" label="Pinjaman Lain" icon="briefcase" />
+          </div>
+          <div class="mt-4 rounded-xl bg-muted/50 p-3 text-center">
+            <p class="text-sm text-muted-foreground">Total cicilan saat ini</p>
+            <p id="step2-total" class="mt-0.5 text-lg font-bold text-foreground">Rp 0</p>
+            <p class="text-xs text-muted-foreground">per bulan</p>
+          </div>
+          <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
+            <Button type="button" data-back variant="outline" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base sm:w-auto">
+              <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+              Kembali
+            </Button>
+            <Button type="submit" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold sm:w-auto sm:px-8">
+              Lanjutkan
+              <ArrowRight class="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card
+        id="step-3"
+        tabIndex={-1}
+        className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
+      >
+        <CardContent className="p-5 sm:p-6">
+          <h2 class="text-lg font-semibold text-foreground sm:text-xl">Rencana Cicilan Baru</h2>
+          <p class="mt-1 text-sm text-muted-foreground">Masukkan estimasi cicilan bulanan dari pinjaman yang ingin kamu ambil.</p>
+          <div class="mt-4">
+            <NumberField id="newInstallment" label="Cicilan baru per bulan" />
+            <div class="mt-3 flex items-start gap-2.5 rounded-xl bg-muted/50 p-3 text-sm text-muted-foreground">
+              <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+              <span>Gunakan angka perkiraan cicilan per bulan dari pihak bank atau leasing.</span>
+            </div>
+          </div>
+          <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
+            <Button type="button" data-back variant="outline" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base sm:w-auto">
+              <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+              Kembali
+            </Button>
+            <Button type="submit" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold sm:w-auto sm:px-8">
+              Lanjutkan
+              <ArrowRight class="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card
+        id="step-4"
+        tabIndex={-1}
+        className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
+      >
+        <CardContent className="p-5 sm:p-6">
+          <h2 class="text-lg font-semibold text-foreground sm:text-xl">Pengeluaran Bulanan</h2>
+          <p class="mt-1 text-sm text-muted-foreground">Breakdown pengeluaran rutin kamu setiap bulan.</p>
+          <div class="mt-4 space-y-3">
+            <MoneyRow id="foodHousing" label="Makan &amp; kebutuhan rumah" icon="utensils" />
+            <MoneyRow id="rent" label="Sewa / tempat tinggal" icon="building" />
+            <MoneyRow id="electricity" label="Listrik &amp; internet" icon="zap" />
+            <MoneyRow id="transport" label="Transportasi" icon="bus" />
+            <MoneyRow id="education" label="Pendidikan" icon="graduation" />
+            <MoneyRow id="health" label="Kesehatan" icon="heart" />
+            <MoneyRow id="entertainment" label="Hiburan &amp; gaya hidup" icon="clapperboard" />
+            <MoneyRow id="otherExpenses" label="Lainnya" icon="ellipsis" />
+          </div>
+          <div class="mt-4 rounded-xl bg-muted/50 p-3 text-center">
+            <p class="text-sm text-muted-foreground">Total pengeluaran</p>
+            <p id="step4-total" class="mt-0.5 text-lg font-bold text-foreground">Rp 0</p>
+            <p class="text-xs text-muted-foreground">per bulan</p>
+          </div>
+          <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
+            <Button type="button" data-back variant="outline" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base sm:w-auto">
+              <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+              Kembali
+            </Button>
+            <Button type="submit" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold sm:w-auto sm:px-8">
+              Lihat Hasil
+              <ArrowRight class="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card
+        id="step-5"
+        tabIndex={-1}
+        className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
+      >
+        <CardContent className="p-5 sm:p-6">
+          <h2 class="text-center text-lg font-semibold text-foreground sm:text-xl">Hasil Perhitungan Kamu</h2>
+
+          <div class="mt-5 rounded-2xl border border-border bg-muted/40 p-4 text-center">
+            <p class="text-sm text-muted-foreground">Sisa Uang Setelah Semua</p>
+            <p id="result-sisa" class="mt-1 text-3xl font-bold text-foreground">Rp 0</p>
+            <p class="text-xs text-muted-foreground">per bulan</p>
+            <span id="result-badge" class="mt-3 inline-block rounded-full px-3 py-1 text-sm font-medium"></span>
+            <p id="result-note" class="mt-3 text-sm text-muted-foreground"></p>
+          </div>
+
+          <Separator className="my-5" />
+
+          <dl class="mx-auto max-w-xs space-y-1.5 text-sm">
+            <div class="flex justify-between">
+              <dt class="text-muted-foreground">Rasio Cicilan (DBR)</dt>
+              <dd id="result-dbr" class="font-medium"></dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-muted-foreground">Total Cicilan</dt>
+              <dd id="result-debt" class="font-medium"></dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-muted-foreground">Total Pengeluaran</dt>
+              <dd id="result-expenses-total" class="font-medium"></dd>
+            </div>
+          </dl>
+
+          <Separator className="my-5" />
+
+          <div class="mx-auto max-w-xs text-sm">
+            <p class="font-medium text-foreground">Rincian</p>
+            <div class="mt-2 space-y-1.5">
+              <div class="flex justify-between">
+                <span class="text-muted-foreground">Penghasilan bersih</span>
+                <span id="result-income" class="font-medium"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted-foreground">Total cicilan</span>
+                <span id="result-breakdown-debt" class="font-medium"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted-foreground">Total pengeluaran</span>
+                <span id="result-breakdown-exp" class="font-medium"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-muted-foreground">Sisa uang</span>
+                <span id="result-breakdown-sisa" class="font-medium"></span>
+              </div>
+            </div>
+          </div>
+
+          <Separator className="my-5" />
+
+          <div class="flex flex-col gap-2">
+            <Button id="ubahDataBtn" type="button" variant="outline" className="h-auto w-full rounded-full px-6 py-3 text-base">
+              Ubah Data
+            </Button>
+            <Button id="skenarioBtn" type="button" className="h-auto w-full gap-2 rounded-full px-6 py-3 text-base font-semibold">
+              Coba Skenario Lain
+              <ArrowRight class="h-4 w-4" aria-hidden="true" />
+            </Button>
+            <Button id="shareResultBtn" type="button" variant="secondary" className="h-auto w-full rounded-full px-6 py-3 text-base" disabled>
+              Bagikan Hasil
+            </Button>
+            <button type="button" data-back class="mx-auto mt-1 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground underline-offset-4 hover:underline">
+              <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+              Kembali
+            </button>
+          </div>
+        </CardContent>
+      </Card>
+    </form>
+
+    <!-- Ad slots: around the utility, outside the input flow -->
+    <AdSlotBetween />
+    <AdSlotAfterResult />
+  </div>
+
+  <script>
+    import { calculateFinancialBalance } from '../lib/calculator/engine';
+
+    function formatRupiah(amount: number) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(amount);
+    }
+
+    function formatPercentage(value: number) {
+      return `${value.toFixed(1)}%`;
+    }
+
+    function formatMoneyInput(input: HTMLInputElement) {
+      const caretDigits = input.value.slice(0, input.selectionStart ?? 0).replace(/\D/g, '').length;
+      const raw = input.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+      const formatted = raw ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+      input.dataset.value = raw;
+      input.value = formatted;
+      let digits = 0;
+      let pos = 0;
+      while (pos < formatted.length && digits < caretDigits) {
+        if (/\d/.test(formatted[pos])) digits += 1;
+        pos += 1;
+      }
+      input.setSelectionRange(pos, pos);
+    }
+
+    function readNumber(id: string): number {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (!el) return 0;
+      const raw = el.dataset.value ?? el.value.replace(/\D/g, '');
+      return raw ? parseFloat(raw) || 0 : 0;
+    }
+
+    // ---- wizard state ----
+    const totalSteps = 5;
+    let currentStep = 1;
+
+    const stepLabel = document.getElementById('step-label') as HTMLElement;
+    const progressRoot = document.getElementById('wizard-progress') as HTMLElement | null;
+    const wizardBack = document.getElementById('wizard-back') as HTMLElement | null;
+    const wizardIllustration = document.getElementById('wizard-illustration') as HTMLImageElement | null;
+    const stepEls: Record<number, HTMLElement> = {
+      1: document.getElementById('step-1') as HTMLElement,
+      2: document.getElementById('step-2') as HTMLElement,
+      3: document.getElementById('step-3') as HTMLElement,
+      4: document.getElementById('step-4') as HTMLElement,
+      5: document.getElementById('step-5') as HTMLElement,
+    };
+
+    const illustrations: Record<number, { src: string; alt: string }> = {
+      1: { src: '/images/wizard/income.webp', alt: 'Ilustrasi penghasilan bersih' },
+      2: { src: '/images/wizard/existing-installments.webp', alt: 'Ilustrasi cicilan yang sudah ada' },
+      3: { src: '/images/wizard/new-installment.webp', alt: 'Ilustrasi rencana cicilan baru' },
+      4: { src: '/images/wizard/monthly-expenses.webp', alt: 'Ilustrasi pengeluaran bulanan' },
+      5: { src: '/images/wizard/result.webp', alt: 'Ilustrasi hasil perhitungan' },
+    };
+
+    // financing type from homepage selection (?type=...)
+    const typeSlug = new URLSearchParams(window.location.search).get('type') ?? 'lainnya';
+    const typeLabels: Record<string, string> = {
+      rumah: 'Rumah / KPR',
+      kendaraan: 'Kendaraan',
+      elektronik: 'Elektronik',
+      lainnya: 'Lainnya',
+    };
+    const typeLabel = typeLabels[typeSlug] ?? 'Lainnya';
+    const typeEl = document.getElementById('wizard-type');
+    if (typeEl) typeEl.textContent = `Kredit yang dicek: ${typeLabel}`;
+
+    // ---- currency formatting on all wizard inputs ----
+    document.querySelectorAll<HTMLInputElement>('#wizardForm input').forEach((input) => {
+      input.addEventListener('input', () => formatMoneyInput(input));
+      input.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        if (e.key.length > 1 || /[0-9]/.test(e.key)) return;
+        e.preventDefault();
+      });
+    });
+
+    const incomeError = document.getElementById('error-monthlyIncome') as HTMLElement;
+    document.getElementById('monthlyIncome')?.addEventListener('input', () => {
+      incomeError.classList.add('hidden');
+      incomeError.textContent = '';
+    });
+
+    // ---- live totals for step 2 and step 4 ----
+    const step2Ids = ['kpr', 'mobil', 'motor', 'kartuKredit', 'pinjamanLain'];
+    const step4Ids = ['foodHousing', 'rent', 'electricity', 'transport', 'education', 'health', 'entertainment', 'otherExpenses'];
+
+    function updateTotal(ids: string[], elId: string) {
+      const total = ids.reduce((sum, id) => sum + readNumber(id), 0);
+      const el = document.getElementById(elId);
+      if (el) el.textContent = formatRupiah(total);
+    }
+
+    step2Ids.forEach((id) => {
+      document.getElementById(id)?.addEventListener('input', () => updateTotal(step2Ids, 'step2-total'));
+    });
+    step4Ids.forEach((id) => {
+      document.getElementById(id)?.addEventListener('input', () => updateTotal(step4Ids, 'step4-total'));
+    });
+
+    function showError(id: string, message: string) {
+      const el = document.getElementById(id) as HTMLElement | null;
+      if (!el) return;
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+
+    function clearError(id: string) {
+      const el = document.getElementById(id) as HTMLElement | null;
+      if (!el) return;
+      el.textContent = '';
+      el.classList.add('hidden');
+    }
+
+    function validateStep(step: number): boolean {
+      if (step === 1) {
+        const income = readNumber('monthlyIncome');
+        if (income <= 0) {
+          showError('error-monthlyIncome', 'Masukkan penghasilan bulananmu terlebih dahulu.');
+          document.getElementById('monthlyIncome')?.focus();
+          return false;
+        }
+      }
+      clearError('error-monthlyIncome');
+      return true;
+    }
+
+    function updateProgress() {
+      stepLabel.textContent = `${currentStep} dari ${totalSteps}`;
+      progressRoot?.setAttribute('aria-valuenow', String(currentStep));
+      progressRoot?.querySelectorAll<HTMLElement>('[data-seg]').forEach((seg) => {
+        const n = Number(seg.dataset.seg);
+        const active = n <= currentStep;
+        seg.classList.toggle('bg-primary', active);
+        seg.classList.toggle('bg-border', !active);
+      });
+    }
+
+    function updateIllustration() {
+      const ill = illustrations[currentStep];
+      if (wizardIllustration && ill) {
+        wizardIllustration.setAttribute('src', ill.src);
+        wizardIllustration.setAttribute('alt', ill.alt);
+      }
+    }
+
+    function render(focusStep: boolean) {
+      for (let s = 1; s <= totalSteps; s++) {
+        stepEls[s].classList.toggle('hidden', s !== currentStep);
+      }
+      updateProgress();
+      updateIllustration();
+      wizardBack?.classList.toggle('hidden', currentStep === 1);
+      if (focusStep) {
+        stepEls[currentStep].focus();
+      }
+    }
+
+    function goTo(step: number) {
+      currentStep = Math.min(totalSteps, Math.max(1, step));
+      render(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      history.pushState({ s: currentStep }, '');
+    }
+
+    function compute() {
+      const income = readNumber('monthlyIncome');
+      const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
+      const newInst = readNumber('newInstallment');
+      const totalExpenses = step4Ids.reduce((sum, id) => sum + readNumber(id), 0);
+      const result = calculateFinancialBalance(income, existing, newInst, totalExpenses);
+      return { result, income, totalExpenses };
+    }
+
+    // ---- form submit: validate current step, then advance or show result ----
+    document.getElementById('wizardForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateStep(currentStep)) return;
+      if (currentStep < 4) {
+        goTo(currentStep + 1);
+      } else {
+        fillResult();
+        goTo(5);
+      }
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-back]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (currentStep > 1) goTo(currentStep - 1);
+      });
+    });
+
+    function fillResult() {
+      const { result, income } = compute();
+
+      const statusText =
+        result.financialStatusClass === 'healthy'
+          ? 'Masih Aman'
+          : result.financialStatusClass === 'warning'
+            ? 'Perlu Diperhatikan'
+            : 'Beban Terlalu Besar';
+
+      const badgeClass =
+        result.remainingAfterDebtAndExpenses < 0
+          ? 'bg-[#ef4444]/10 text-[#ef4444]'
+          : result.financialStatusClass === 'healthy'
+            ? 'bg-[#10b981]/10 text-[#10b981]'
+            : result.financialStatusClass === 'warning'
+              ? 'bg-[#f59e0b]/10 text-[#f59e0b]'
+              : 'bg-[#ef4444]/10 text-[#ef4444]';
+
+      const sisaClass =
+        result.remainingAfterDebtAndExpenses < 0
+          ? 'text-[#ef4444]'
+          : result.financialStatusClass === 'healthy'
+            ? 'text-[#10b981]'
+            : 'text-[#f59e0b]';
+
+      const sisaEl = document.getElementById('result-sisa');
+      const badgeEl = document.getElementById('result-badge');
+      const noteEl = document.getElementById('result-note');
+      const dbrEl = document.getElementById('result-dbr');
+      const debtEl = document.getElementById('result-debt');
+      const expTotalEl = document.getElementById('result-expenses-total');
+      const incomeEl = document.getElementById('result-income');
+      const breakdownDebtEl = document.getElementById('result-breakdown-debt');
+      const breakdownExpEl = document.getElementById('result-breakdown-exp');
+      const breakdownSisaEl = document.getElementById('result-breakdown-sisa');
+      const shareBtn = document.getElementById('shareResultBtn') as HTMLButtonElement | null;
+      if (
+        !sisaEl || !badgeEl || !noteEl || !dbrEl || !debtEl || !expTotalEl ||
+        !incomeEl || !breakdownDebtEl || !breakdownExpEl || !breakdownSisaEl || !shareBtn
+      ) {
+        return;
+      }
+
+      sisaEl.textContent = formatRupiah(result.remainingAfterDebtAndExpenses);
+      sisaEl.className = `mt-1 text-3xl font-bold ${sisaClass}`;
+      badgeEl.textContent = statusText;
+      badgeEl.className = `mt-3 inline-block rounded-full px-3 py-1 text-sm font-medium ${badgeClass}`;
+      noteEl.textContent =
+        result.remainingAfterDebtAndExpenses >= 0
+          ? 'Setelah cicilan dan semua pengeluaran, kamu masih memiliki sisa uang.'
+          : 'Setelah cicilan dan semua pengeluaran, sisa uangmu minus bulan ini.';
+      dbrEl.textContent = formatPercentage(result.debtRatio);
+      debtEl.textContent = `${formatRupiah(result.totalMonthlyDebt)} / bulan`;
+      expTotalEl.textContent = `${formatRupiah(result.totalMonthlyExpenses)} / bulan`;
+      incomeEl.textContent = formatRupiah(income);
+      breakdownDebtEl.textContent = formatRupiah(result.totalMonthlyDebt);
+      breakdownExpEl.textContent = formatRupiah(result.totalMonthlyExpenses);
+      breakdownSisaEl.textContent = formatRupiah(result.remainingAfterDebtAndExpenses);
+
+      shareBtn.disabled = false;
+    }
+
+    document.getElementById('ubahDataBtn')?.addEventListener('click', () => goTo(1));
+    document.getElementById('skenarioBtn')?.addEventListener('click', () => goTo(3));
+
+    // ---- browser back restores the wizard step without losing values ----
+    window.addEventListener('popstate', (e) => {
+      const st = e.state as { s?: number } | null;
+      currentStep = st && typeof st.s === 'number' ? Math.min(totalSteps, Math.max(1, st.s)) : 1;
+      render(false);
+    });
+
+    // ---- share ----
+    document.getElementById('shareResultBtn')?.addEventListener('click', async () => {
+      const { result } = compute();
+      const income = readNumber('monthlyIncome');
+      const shareBtn = document.getElementById('shareResultBtn') as HTMLButtonElement | null;
+      if (!shareBtn) return;
+
+      const shareData = {
+        title: 'CekDulu - Hasil Kalkulator Kemampuan Cicilan',
+        text: `Penghasilan ${formatRupiah(income)}, total cicilan ${formatRupiah(result.totalMonthlyDebt)}, sisa ${formatRupiah(result.remainingAfterDebtAndExpenses)}, DBR ${formatPercentage(result.debtRatio)}%`,
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+        } catch {
+          fallbackShare(shareBtn);
+        }
+      } else {
+        fallbackShare(shareBtn);
+      }
+
+      function fallbackShare(btn: HTMLButtonElement) {
+        const tempInput = document.createElement('input');
+        tempInput.value = `${formatRupiah(income)} | ${formatRupiah(result.totalMonthlyDebt)} | ${formatPercentage(result.debtRatio)}`;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+
+        btn.textContent = 'Disalin!';
+        btn.classList.add('bg-[#10b981]', 'text-white');
+        setTimeout(() => {
+          btn.textContent = 'Bagikan Hasil';
+          btn.classList.remove('bg-[#10b981]', 'text-white');
+        }, 2000);
+      }
+    });
+
+    // ---- initial render ----
+    render(false);
+  </script>
+</Layout>
