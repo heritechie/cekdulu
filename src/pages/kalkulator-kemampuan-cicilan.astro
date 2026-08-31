@@ -25,6 +25,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       id="wizard-back"
       type="button"
       data-back
+      hidden
       class="-ml-2 inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <ArrowLeft class="h-4 w-4" aria-hidden="true" />
@@ -161,13 +162,13 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
           <h2 class="text-lg font-semibold text-foreground sm:text-xl">Pengeluaran Bulanan</h2>
           <p class="mt-1 text-sm text-muted-foreground">Breakdown pengeluaran rutin kamu setiap bulan.</p>
           <div class="mt-4 space-y-3">
-            <MoneyRow id="foodHousing" label="Makan &amp; kebutuhan rumah" icon="utensils" />
+            <MoneyRow id="foodHousing" label="Makan & kebutuhan rumah" icon="utensils" />
             <MoneyRow id="rent" label="Sewa / tempat tinggal" icon="building" />
-            <MoneyRow id="electricity" label="Listrik &amp; internet" icon="zap" />
+            <MoneyRow id="electricity" label="Listrik & internet" icon="zap" />
             <MoneyRow id="transport" label="Transportasi" icon="bus" />
             <MoneyRow id="education" label="Pendidikan" icon="graduation" />
             <MoneyRow id="health" label="Kesehatan" icon="heart" />
-            <MoneyRow id="entertainment" label="Hiburan &amp; gaya hidup" icon="clapperboard" />
+            <MoneyRow id="entertainment" label="Hiburan & gaya hidup" icon="clapperboard" />
             <MoneyRow id="otherExpenses" label="Lainnya" icon="ellipsis" />
           </div>
           <div class="mt-4 rounded-xl bg-muted/50 p-3 text-center">
@@ -431,7 +432,9 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       }
       updateProgress();
       updateIllustration();
-      wizardBack?.classList.toggle('hidden', currentStep === 1);
+      if (wizardBack) {
+        wizardBack.hidden = currentStep === 1;
+      }
       if (focusStep) {
         stepEls[currentStep].focus();
       }
