@@ -1,0 +1,275 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Info, ArrowRight, ExternalLink } from 'lucide-astro';
+import AdSlotContent from '../components/ad-slot-content.astro';
+
+const canonical = new URL('berapa-persen-gaji-ideal-untuk-cicilan', Astro.site).href;
+const dbrUrl = '/apa-itu-dbr';
+const calcUrl = '/kalkulator-kemampuan-cicilan';
+const ojkUrl = 'https://www.ojk.go.id/id/berita-dan-kegiatan/info-terkini/Documents/Pages/Buku-Saku-Cerdas-Mengelola-Keuangan/Buku_Saku_OJK_-_Bagi_Calon_Pengantin.pdf';
+---
+
+<Layout
+  title="Berapa Persen Gaji yang Ideal untuk Cicilan? Cara Menilai Kemampuan Bayar | CekDulu"
+  description="Cara menilai kemampuan membayar cicilan tanpa hanya mengandalkan persentase. Bandingkan sisa uang setelah cicilan dan pengeluaran sebelum mengambil cicilan baru."
+  canonical={canonical}
+  ogTitle="Berapa Persen Gaji yang Ideal untuk Cicilan? Cara Menilai Kemampuan Bayar | CekDulu"
+  ogDescription="Cara menilai kemampuan membayar cicilan tanpa hanya mengandalkan persentase. Bandingkan sisa uang setelah cicilan dan pengeluaran sebelum mengambil cicilan baru."
+  ogType="article"
+  ogUrl={canonical}
+>
+  <main>
+    <!-- 1. HERO -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+      <div class="grid gap-6 lg:grid-cols-2 lg:items-center lg:gap-10">
+        <div class="text-center lg:text-left">
+          <p class="text-sm font-medium text-muted-foreground">Artikel Edukasi · Kemampuan Cicilan</p>
+          <h1 class="mt-2 text-balance text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+            Berapa Persen Gaji yang Ideal untuk Cicilan?<span class="text-primary"> Cara Menilai Kemampuan Bayar</span>
+          </h1>
+          <p class="mx-auto mt-4 max-w-md text-base text-muted-foreground sm:text-lg lg:mx-0">
+            Banyak yang bertanya berapa persen gaji yang aman untuk cicilan. Pertanyaan itu penting, tetapi jawabannya tidak cukup hanya dengan satu angka.
+          </p>
+          <p class="mt-4">Kunci utamanya:</p>
+          <blockquote class="mx-auto mt-2 max-w-md border-l-2 border-primary pl-4 text-left lg:mx-0">
+            “Setelah membayar cicilan dan pengeluaran, berapa uang yang masih tersisa?”
+          </blockquote>
+        </div>
+
+        <div class="flex justify-center lg:justify-end">
+          <img
+            src="/images/cekdulu_dbr_assets/07_icon_set_dbr.png"
+            alt="Ilustrasi dua kondisi dengan DBR sama tetapi sisa uang berbeda"
+            width="550"
+            height="225"
+            fetchpriority="high"
+            decoding="async"
+            class="h-auto w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[440px]"
+          />
+        </div>
+      </div>
+    </section>
+
+    <AdSlotContent />
+
+    <!-- 2. PERSENTASE BUKAN SEGALANYA -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Persentase Saja Belum Cukup</h2>
+      <p class="mt-3">
+        Salah satu indikator yang sering dipakai adalah <strong class="text-foreground">rasio cicilan terhadap penghasilan</strong>, atau yang dikenal sebagai DBR (Debt Burden Ratio). Jika belum familier, kamu bisa membaca dulu
+        <a href={dbrUrl} class="mx-1 font-medium text-primary hover:text-primary/80 hover:underline">
+          apa itu DBR dan cara menghitungnya
+          <ExternalLink class="ml-0.5 inline-block h-3.5 w-3.5 shrink-0 align-text-bottom" aria-hidden="true" />
+        </a>
+        di artikel terpisah.
+      </p>
+      <p class="mt-3">
+        Namun, persentase hanya menggambarkan sebagian dari kisah keuangan seseorang. Dua orang bisa memiliki persentase yang sama persis, tetapi kemampuan membayar dan kondisi keuangannya bisa berbeda jauh.
+      </p>
+      <div class="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm">
+        <p>
+          Itulah kenapa untuk menilai kemampuan membayar, kamu butuh melihat lebih dari sekadar persentase.
+        </p>
+        <p class="mt-2 font-semibold text-foreground">
+          Uang yang tersisa setelah cicilan dan pengeluaran justru sering menjadi gambaran yang lebih nyata.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. KENAPA PERSENTASE SAMA, KONDISI BERBEDA -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-2 lg:items-center lg:gap-10">
+        <div>
+          <h2 class="text-balance text-2xl font-bold tracking-tight sm:text-3xl">Persentase Sama, tetapi Kondisi Berbeda</h2>
+          <p class="mt-3">
+            Bayangkan kamu memiliki:
+          </p>
+          <div class="mt-2 space-y-1 text-sm">
+            <p><span class="text-muted-foreground">Penghasilan:</span> <strong class="text-foreground">Rp10 juta</strong></p>
+            <p><span class="text-muted-foreground">Cicilan:</span> <strong class="text-foreground">Rp3 juta</strong></p>
+          </div>
+          <p class="mt-3">
+            Rasio cicilan terhadap penghasilanmu adalah <strong class="text-foreground">30%</strong>.
+          </p>
+        </div>
+
+        <div class="mt-6 flex justify-center lg:mt-0">
+          <img
+            src="/images/cekdulu_dbr_assets/07_icon_set_dbr.png"
+            alt="Ilustrasi dua kondisi dengan DBR sama tetapi sisa uang berbeda"
+            width="550"
+            height="225"
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full max-w-[440px]"
+          />
+        </div>
+      </div>
+
+      <p class="mt-6">
+        Tetapi kamu juga memiliki pengeluaran bulanan sebesar <strong class="text-foreground">Rp4 juta</strong>.
+      </p>
+
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <tbody class="text-foreground">
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Penghasilan</td><td class="py-2 text-right">Rp10 juta</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Cicilan</td><td class="py-2 text-right">Rp3 juta</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Pengeluaran</td><td class="py-2 text-right">Rp4 juta</td></tr>
+            <tr class="bg-muted/50"><td class="py-2 pr-3 font-semibold text-foreground">Sisa uang</td><td class="py-2 text-right font-bold text-primary">Rp3 juta</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-4">Sekarang bandingkan dengan kondisi lain.</p>
+      <p class="mt-3">
+        Penghasilan dan cicilan tetap sama, tetapi pengeluaran bulanan menjadi <strong class="text-foreground">Rp6 juta</strong>.
+      </p>
+
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full border-collapse text-sm">
+          <tbody class="text-foreground">
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Penghasilan</td><td class="py-2 text-right">Rp10 juta</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Cicilan</td><td class="py-2 text-right">Rp3 juta</td></tr>
+            <tr class="border-b border-border/60"><td class="py-2 pr-3 text-muted-foreground">Pengeluaran</td><td class="py-2 text-right">Rp6 juta</td></tr>
+            <tr class="bg-muted/50"><td class="py-2 pr-3 font-semibold text-foreground">Sisa uang</td><td class="py-2 text-right font-bold text-primary">Rp1 juta</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-5 rounded-xl border border-primary/20 bg-primary/5 p-4">
+        <p class="text-sm">
+          Keduanya memiliki rasio cicilan terhadap penghasilan <strong class="text-foreground">30%</strong>.
+        </p>
+        <p class="mt-2 text-sm">
+          Tetapi ruang keuangan yang tersisa berbeda jauh.
+        </p>
+        <p class="mt-2 text-sm font-semibold text-foreground">
+          Itulah sebabnya melihat persentase saja belum cukup untuk menilai kemampuan bayar.
+        </p>
+      </div>
+    </section>
+
+    <AdSlotContent />
+
+    <!-- 4. SEBELUM MENGAMBIL CICILAN BARU -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-balance text-2xl font-bold tracking-tight sm:text-3xl">Sebelum Mengambil Cicilan Baru, Cek Sisa Uangmu</h2>
+      <p class="mt-3">Sebelum mengambil cicilan baru, coba lihat:</p>
+
+      <div class="mt-4 lg:grid lg:grid-cols-2 lg:items-center lg:gap-10">
+        <div class="flex justify-center">
+          <img
+            src="/images/cekdulu_dbr_assets/05_checklist_dbr.png"
+            alt="Ilustrasi hal yang perlu dicek sebelum mengambil cicilan baru"
+            width="295"
+            height="200"
+            loading="lazy"
+            decoding="async"
+            class="h-auto w-full max-w-[300px]"
+          />
+        </div>
+
+        <ul class="mt-5 space-y-2.5 lg:mt-0">
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa penghasilan bulanan kamu</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa cicilan yang sudah berjalan</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa pengeluaran bulanan</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa cicilan baru yang ingin diambil</li>
+          <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>berapa uang yang tersisa setelah semuanya dibayar</li>
+        </ul>
+      </div>
+
+      <p class="mt-4">
+        Dengan begitu, kamu tidak hanya melihat berapa persen penghasilan yang digunakan untuk cicilan, tetapi juga melihat berapa uang yang masih tersisa setiap bulan.
+      </p>
+    </section>
+
+    <!-- 5. MERANGKUM -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Jadi, Bagaimana Menilai Kemampuan Bayar?</h2>
+      <p class="mt-3">
+        Tidak ada satu persentase yang otomatis cocok untuk semua orang dan semua jenis cicilan. Batas bank atau lembaga pembiayaan bisa berbeda-beda, dan kebutuhan setiap orang juga tidak sama.
+      </p>
+      <p class="mt-3">
+        Daripada hanya terpaku pada satu angka, lihat kondisi keuangan secara menyeluruh:
+      </p>
+      <ul class="mt-4 space-y-2.5">
+        <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>penghasilan bulanan yang stabil</li>
+        <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>total cicilan yang sudah berjalan</li>
+        <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>pengeluaran rutin dan kebutuhan sehari-hari</li>
+        <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>sisa uang setelah semua beban terbayar</li>
+        <li class="flex items-start gap-2.5"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>tabungan dan dana darurat untuk berjaga-jaga</li>
+      </ul>
+      <p class="mt-4">
+        Rasio cicilan terhadap penghasilan tetap berguna sebagai salah satu indikator. Jika ingin memahami lebih dalam, baca
+        <a href={dbrUrl} class="mx-1 font-medium text-primary hover:text-primary/80 hover:underline">
+          penjelasan lengkap tentang DBR
+        </a>
+        untuk tahu cara menghitung dan mengartikan angkanya.
+      </p>
+    </section>
+
+    <!-- 6. CTA -->
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 lg:px-8">
+      <Card className="rounded-2xl border border-border bg-muted/40 py-0 shadow-sm ring-0">
+        <CardContent className="p-6 text-center sm:p-8">
+          <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Cek Sisa Uangmu dengan Kalkulator</h2>
+          <p class="mx-auto mt-3 max-w-xl text-muted-foreground">
+            Masukkan penghasilan, cicilan yang sudah berjalan, calon cicilan baru, dan pengeluaran bulanan untuk melihat berapa kira-kira uang yang tersisa.
+          </p>
+          <a
+            href={calcUrl}
+            class={cn(buttonVariants({ variant: 'default' }), 'mt-6 h-auto w-full gap-2 rounded-full px-8 py-3.5 text-base font-semibold sm:w-auto')}
+          >
+            Cek Kemampuan Cicilan
+            <ArrowRight class="h-4 w-4" aria-hidden="true" />
+          </a>
+          <p class="mx-auto mt-4 max-w-md text-xs leading-relaxed text-muted-foreground">
+            CekDulu adalah alat informasi dan simulasi. Hasil perhitungan berdasarkan data yang kamu masukkan dan bukan merupakan persetujuan, rekomendasi pinjaman, atau jaminan kemampuan membayar.
+          </p>
+        </CardContent>
+      </Card>
+    </section>
+
+    <Separator className="mx-auto mt-12 max-w-3xl" />
+
+    <!-- 7. SUMBER -->
+    <section class="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Sumber dan Referensi</h2>
+      <div class="mt-6 divide-y divide-border/60">
+        <div class="py-5">
+          <p class="text-sm font-semibold text-foreground">CekDulu · Apa Itu DBR?</p>
+          <p class="mt-1 text-sm text-muted-foreground">Rumus, cara menghitung, dan cara mengartikan rasio cicilan terhadap penghasilan.</p>
+          <a
+            href={dbrUrl}
+            class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 hover:underline"
+          >
+            Baca artikel Apa Itu DBR?
+            <ExternalLink class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          </a>
+        </div>
+        <div class="py-5">
+          <p class="text-sm font-semibold text-foreground">Otoritas Jasa Keuangan (OJK)</p>
+          <p class="mt-1 text-sm text-muted-foreground">Buku Saku Cerdas Mengelola Keuangan — acuan 30% penghasilan untuk pembayaran utang.</p>
+          <a
+            href={ojkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 hover:underline"
+          >
+            Buka sumber resmi OJK
+            <ExternalLink class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+      <div class="mt-4 flex items-start gap-2.5 rounded-xl bg-muted/50 p-4 text-xs leading-relaxed text-muted-foreground">
+        <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+        <p>Angka 30% yang disebutkan OJK adalah acuan dalam materi edukasi, bukan batas universal yang berlaku untuk semua jenis kredit atau pembiayaan.</p>
+      </div>
+    </section>
+  </main>
+</Layout>
