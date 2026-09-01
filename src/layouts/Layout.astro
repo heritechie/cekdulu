@@ -13,6 +13,7 @@ interface Props {
   ogUrl?: string;
   ogLocale?: string;
   ogSiteName?: string;
+  ogImage?: string;
   twitterCard?: string;
   twitterTitle?: string;
   twitterDescription?: string;
@@ -21,14 +22,15 @@ interface Props {
 const {
   title = 'CekDulu - Kalkulator Kemampuan Cicilan',
   description = 'Cek kemampuan finansial sebelum mengambil cicilan.',
-  canonical = 'https://cekdulu.co.id/',
+  canonical = 'https://cekdulu.my.id/',
   ogTitle = title,
   ogDescription = description,
   ogType = 'website',
   ogUrl = canonical,
   ogLocale = 'id_ID',
-  ogSiteName = 'CekDulu.co.id',
-  twitterCard = 'summary',
+  ogSiteName = 'CekDulu.my.id',
+  ogImage = 'https://cekdulu.my.id/images/illustrations/hero-balance-v1.png',
+  twitterCard = 'summary_large_image',
   twitterTitle = 'CekDulu',
   twitterDescription = description,
 } = Astro.props;
@@ -48,7 +50,12 @@ const {
     <meta property="og:url" content={ogUrl} />
     <meta property="og:locale" content={ogLocale} />
     <meta property="og:site_name" content={ogSiteName} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="Ilustrasi timbangan keuangan CekDulu" />
+    <meta property="og:image:width" content="1536" />
+    <meta property="og:image:height" content="1024" />
     <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:title" content={twitterTitle} />
     <meta name="twitter:description" content={twitterDescription} />
     <slot name="head" />

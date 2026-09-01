@@ -3,4 +3,4 @@ Allow: /
 Disallow: /dist/
 Disallow: /.astro/
 
-Sitemap: https://cekdulu.co.id/sitemap.xml
+Sitemap: https://cekdulu.my.id/sitemap-index.xml

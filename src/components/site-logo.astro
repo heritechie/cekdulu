@@ -9,7 +9,7 @@ const { class: className = '' } = Astro.props;
 <a
   href="/"
   class={`inline-flex items-center ${className}`}
-  aria-label="CekDulu.co.id"
+  aria-label="CekDulu.my.id"
   data-cekdulu-logo
 >
   <img
@@ -33,7 +33,7 @@ const { class: className = '' } = Astro.props;
       host === '::1' ||
       host === '[::1]' ||
       host.endsWith('.workers.dev');
-    var suffix = isDev ? '.local' : '.co.id';
+    var suffix = isDev ? '.local' : '.my.id';
     var el = document.querySelector('[data-cekdulu-suffix]');
     if (el) {
       el.textContent = suffix;
