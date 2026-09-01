@@ -355,19 +355,6 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       el.dataset.value = String(Math.round(value));
     }
 
-    function buildShareUrl(): string {
-      const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
-      const expenses = step4Ids.reduce((sum, id) => sum + readNumber(id), 0);
-      const params = new URLSearchParams({
-        type: typeSlug,
-        i: String(Math.round(readNumber('monthlyIncome'))),
-        x: String(Math.round(existing)),
-        n: String(Math.round(readNumber('newInstallment'))),
-        e: String(Math.round(expenses)),
-      });
-      return `${location.origin}${location.pathname}?${params.toString()}`;
-    }
-
     // ---- wizard state ----
     const totalSteps = 5;
     let currentStep = 1;
@@ -537,18 +524,21 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       });
     });
 
+    function statusTextFor(result: { financialStatusClass: string }): string {
+      return result.financialStatusClass === 'healthy'
+        ? 'Masih cukup'
+        : result.financialStatusClass === 'warning'
+          ? 'Cukup, tapi mulai terbatas'
+          : 'Beban terlalu besar';
+    }
+
     function fillResult() {
       const { result, income } = compute();
       const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
       const newInst = readNumber('newInstallment');
       const expenses = step4Ids.reduce((sum, id) => sum + readNumber(id), 0);
 
-      const statusText =
-        result.financialStatusClass === 'healthy'
-          ? 'Masih cukup'
-          : result.financialStatusClass === 'warning'
-            ? 'Cukup, tapi mulai terbatas'
-            : 'Beban terlalu besar';
+      const statusText = statusTextFor(result);
 
       const badgeClass =
         result.remainingAfterDebtAndExpenses < 0
@@ -655,32 +645,36 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     });
 
     // ---- share ----
+    const shareUrl = 'https://cekdulu.my.id';
+
     async function shareResult() {
       const { result } = compute();
       const income = readNumber('monthlyIncome');
       const shareBtn = document.getElementById('shareResultBtn') as HTMLButtonElement | null;
       if (!shareBtn) return;
 
-      const url = buildShareUrl();
       const text =
-        `Sisa uang bulananku ${formatRupiah(result.remainingAfterDebtAndExpenses)} ` +
-        `dari penghasilan ${formatRupiah(income)}. Cek sebelum nyicil di CekDulu:`;
+        `💰 Hasil CekDulu: ${statusTextFor(result)}\n\n` +
+        `Penghasilan: ${formatRupiah(income)}/bulan\n` +
+        `Sisa setelah cicilan & pengeluaran: ${formatRupiah(result.remainingAfterDebtAndExpenses)}/bulan\n\n` +
+        `Mau cek kondisi keuanganmu juga?\n${shareUrl}\n\n` +
+        'Sebelum nyicil, cek dulu.';
 
-      if (navigator.share && navigator.canShare?.({ url })) {
+      if (navigator.share && navigator.canShare?.({ text })) {
         try {
-          await navigator.share({ title: 'CekDulu - Cek Kemampuan Cicilan', text, url });
+          await navigator.share({ title: 'CekDulu - Cek Kemampuan Cicilan', text });
           return;
         } catch {
           // user cancelled or sharing failed -> fall through to copy
         }
       }
-      copyLink(shareBtn, url);
+      copyText(shareBtn, text);
     }
 
-    function copyLink(btn: HTMLButtonElement, url: string) {
+    function copyText(btn: HTMLButtonElement, text: string) {
       const done = () => {
         const original = btn.innerHTML;
-        btn.innerHTML = 'Link disalin!';
+        btn.innerHTML = 'Tersalin!';
         btn.classList.add('bg-[#10b981]', 'text-white');
         setTimeout(() => {
           btn.innerHTML = original;
@@ -688,9 +682,9 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
         }, 2000);
       };
       if (navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(url).then(done).catch(() => legacyCopy(url, done));
+        navigator.clipboard.writeText(text).then(done).catch(() => legacyCopy(text, done));
       } else {
-        legacyCopy(url, done);
+        legacyCopy(text, done);
       }
     }
 
