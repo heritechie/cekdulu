@@ -311,6 +311,15 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
 
   <script>
     import { calculateFinancialBalance } from '../lib/calculator/engine';
+    import {
+      trackEvent,
+      incomeRange,
+      installmentRange,
+      expenseRange,
+      debtRatioRange,
+      remainingIncomeRange,
+      resultCategory,
+    } from '../lib/analytics';
 
     function formatRupiah(amount: number) {
       return new Intl.NumberFormat('id-ID', {
@@ -358,6 +367,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     // ---- wizard state ----
     const totalSteps = 5;
     let currentStep = 1;
+    let started = false;
 
     const stepLabel = document.getElementById('step-label') as HTMLElement;
     const progressRoot = document.getElementById('wizard-progress') as HTMLElement | null;
@@ -510,13 +520,42 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     document.getElementById('wizardForm')?.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!validateStep(currentStep)) return;
+      const stepName = ['income', 'existing_debt', 'new_installment', 'expenses'][currentStep - 1];
+      if (currentStep === 1 && !started) {
+        trackEvent('calculator_start', { calculator_type: 'affordability' });
+        started = true;
+      }
+      trackEvent('calculator_step_complete', { calculator_type: 'affordability', step: stepName });
       if (currentStep < 4) {
         goTo(currentStep + 1);
       } else {
         fillResult();
         goTo(5);
+        trackCompleteAndView();
       }
     });
+
+    function trackCompleteAndView() {
+      const { result } = compute();
+      const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
+      const newInst = readNumber('newInstallment');
+      const expenses = step4Ids.reduce((sum, id) => sum + readNumber(id), 0);
+      const completeParams = {
+        calculator_type: 'affordability',
+        income_range: incomeRange(readNumber('monthlyIncome')),
+        existing_debt_range: installmentRange(existing),
+        new_installment_range: installmentRange(newInst),
+        monthly_expense_range: expenseRange(expenses),
+        debt_ratio_range: debtRatioRange(result.debtRatio),
+        remaining_income_range: remainingIncomeRange(result.remainingAfterDebtAndExpenses),
+        result_category: resultCategory(result),
+      };
+      trackEvent('calculator_complete', completeParams);
+      trackEvent('result_view', {
+        calculator_type: 'affordability',
+        result_category: resultCategory(result),
+      });
+    }
 
     document.querySelectorAll<HTMLButtonElement>('[data-back]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -663,6 +702,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       if (navigator.share && navigator.canShare?.({ text })) {
         try {
           await navigator.share({ title: 'CekDulu - Cek Kemampuan Cicilan', text });
+          trackEvent('result_share', { calculator_type: 'affordability', share_method: 'native_share' });
           return;
         } catch {
           // user cancelled or sharing failed -> fall through to copy
@@ -673,6 +713,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
 
     function copyText(btn: HTMLButtonElement, text: string) {
       const done = () => {
+        trackEvent('result_share', { calculator_type: 'affordability', share_method: 'copy' });
         const original = btn.innerHTML;
         btn.innerHTML = 'Tersalin!';
         btn.classList.add('bg-[#10b981]', 'text-white');

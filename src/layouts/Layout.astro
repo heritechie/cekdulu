@@ -59,6 +59,27 @@ const {
     <meta name="twitter:title" content={twitterTitle} />
     <meta name="twitter:description" content={twitterDescription} />
     <slot name="head" />
+    <script>
+      const measurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
+
+      if (measurementId) {
+        const win = window as unknown as {
+          dataLayer?: unknown[];
+          gtag?: (...args: unknown[]) => void;
+        };
+        const dataLayer = win.dataLayer || (win.dataLayer = []);
+        win.gtag = function (...args: unknown[]) {
+          dataLayer.push(args);
+        };
+        win.gtag('js', new Date());
+        win.gtag('config', measurementId);
+
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+        document.head.appendChild(script);
+      }
+    </script>
   </head>
   <body class="font-sans antialiased min-h-screen bg-background text-foreground">
     <header class="relative border-b border-border/60">
