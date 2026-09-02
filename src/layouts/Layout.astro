@@ -102,6 +102,17 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
 
     <slot />
 
+    <footer class="mt-16 border-t border-border/60">
+      <div class="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <p>
+          CekDulu &mdash; Sebelum nyicil, cek dulu.
+        </p>
+        <nav aria-label="Tautan situs" class="flex items-center gap-5">
+          <a href="/privacy-policy" class="transition-colors hover:text-foreground">Kebijakan Privasi</a>
+        </nav>
+      </div>
+    </footer>
+
     <script>
       const menuBtn = document.getElementById('menuBtn');
       const mobileMenu = document.getElementById('mobileMenu');

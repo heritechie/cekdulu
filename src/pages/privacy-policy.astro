@@ -1,0 +1,156 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Separator } from '@/components/ui/separator';
+
+const canonical = new URL('privacy-policy', Astro.site).href;
+const calcUrl = '/kalkulator-kemampuan-cicilan';
+---
+
+<Layout
+  title="Kebijakan Privasi - CekDulu"
+  description="Kebijakan Privasi CekDulu menjelaskan bagaimana situs mengelola data yang dimasukkan ke kalkulator, penggunaan Google Analytics, cookie, keamanan data, serta hak pengguna."
+  canonical={canonical}
+  ogTitle="Kebijakan Privasi - CekDulu"
+  ogDescription="Kebijakan Privasi CekDulu menjelaskan bagaimana situs mengelola data yang dimasukkan ke kalkulator, penggunaan Google Analytics, cookie, keamanan data, serta hak pengguna."
+  ogType="website"
+  ogUrl={canonical}
+>
+  <main>
+    <section class="mx-auto w-full max-w-3xl px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+      <p class="text-sm font-medium text-muted-foreground">Informasi &middot; CekDulu</p>
+      <h1 class="mt-2 text-balance text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+        Kebijakan Privasi
+      </h1>
+      <p class="mt-3 text-sm text-muted-foreground">
+        Terakhir diperbarui: 2 September 2026
+      </p>
+    </section>
+
+    <Separator className="mx-auto mt-8 max-w-3xl" />
+
+    <div class="mx-auto w-full max-w-3xl space-y-8 px-4 py-10 sm:px-6 lg:px-8">
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Pengantar</h2>
+        <p class="mt-3">
+          CekDulu adalah utilitas keuangan publik (public consumer web utility) yang membantu kamu memperkirakan kondisi finansial sebelum mengambil cicilan atau utang jangka panjang, seperti KPR, mobil, motor, atau pinjaman pribadi.
+        </p>
+        <p class="mt-3">
+          CekDulu <strong>bukan</strong> bank, lembaga pemberi pinjaman (lender), broker pinjaman, atau penasihat keuangan. CekDulu tidak memberikan pinjaman dan tidak menyalurkan kredit.
+        </p>
+        <p class="mt-3">
+          Kebijakan privasi ini menjelaskan bagaimana kami menangani data yang mungkin dikumpulkan dari kunjungan dan penggunaan situs ini.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Data yang Dikumpulkan</h2>
+        <p class="mt-3">
+          Karena kalkulator di CekDulu dirancang untuk bekerja di peramban (browser) kamu, data yang kamu masukkan ke kalkulator umumnya tidak dikirimkan dan tidak disimpan oleh kami.
+        </p>
+        <p class="mt-3">
+          Kami dapat mengumpulkan data terbatas terkait kunjungan kamu melalui layanan analitik pihak ketiga, seperti halaman yang dikunjungi, durasi kunjungan, perangkat, dan perkiraan lokasi. Informasi ini bersifat agregat dan tidak digunakan untuk mengidentifikasi kamu secara pribadi.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Data yang Dimasukkan ke Kalkulator</h2>
+        <p class="mt-3">
+          Kalkulator CekDulu dirancang untuk melakukan perhitungan di peramban kamu, bukan di server kami.
+        </p>
+        <p class="mt-3">
+          CekDulu tidak mengharuskan kamu membuat akun atau login untuk menggunakan kalkulator. Kamu dapat langsung menghitung tanpa registrasi.
+        </p>
+        <div class="mt-4 rounded-xl bg-muted/50 p-4 text-sm text-muted-foreground">
+          <p>
+            Sebaiknya kamu <strong class="text-foreground">tidak memasukkan informasi pribadi atau informasi sensitif</strong> yang sebenarnya tidak diperlukan di kolom kalkulator. Cukup gunakan angka perkiraan penghasilan, cicilan, dan pengeluaran yang wajar untuk keperluan simulasi.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Penggunaan Google Analytics</h2>
+        <p class="mt-3">
+          Kami menggunakan Google Analytics untuk memahami cara pengunjung menggunakan situs ini, termasuk pola lalu lintas, halaman yang paling sering dikunjungi, dan tingkat keterlibatan pengguna.
+        </p>
+        <p class="mt-3">
+          Untuk kalkulasi, implementasi analitik kami mengirimkan parameter keuangan dalam bentuk <strong>kisaran/rentang (bucketed atau range-based)</strong> dan bukan jumlah uang rupiah yang sebenarnya. Hal ini dilakukan untuk mengurangi risiko mengekspos angka finansial yang kamu masukkan.
+        </p>
+        <p class="mt-3">
+          Google dapat memproses informasi pengunjung sesuai dengan kebijakan privasinya sendiri. Kami tidak mengendalikan cara Google memproses atau menggunakan data yang dikumpulkannya.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Cookie dan Teknologi Serupa</h2>
+        <p class="mt-3">
+          Situs ini dapat menggunakan cookie dan teknologi serupa, termasuk yang disediakan oleh Google Analytics, untuk mengenali pengunjung yang kembali dan mengumpulkan informasi penggunaan situs secara agregat.
+        </p>
+        <p class="mt-3">
+          Cookie ini digunakan untuk keperluan analitik dan bukan untuk memproses data finansial yang kamu masukkan ke kalkulator.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Penggunaan Data</h2>
+        <p class="mt-3">
+          Data yang kami kumpulkan digunakan untuk:
+        </p>
+        <ul class="mt-3 list-disc space-y-2 pl-5 text-muted-foreground sm:pl-6">
+          <li>memahami dan memperbaiki kegunaan situs serta kualitas kalkulator;</li>
+          <li>mengukur lalu lintas, sumber kunjungan, dan keterlibatan pengunjung;</li>
+          <li>mengembangkan konten dan alat edukasi yang bermanfaat bagi masyarakat.</li>
+        </ul>
+        <p class="mt-3">
+          Kami tidak menjual data pribadi pengunjung.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Pihak Ketiga</h2>
+        <p class="mt-3">
+          Kami dapat menggunakan layanan pihak ketiga, terutama Google Analytics dan layanan iklan, untuk membantu menjalankan dan mengukur situs ini.
+        </p>
+        <p class="mt-3">
+          Pihak ketiga ini dapat mengumpulkan informasi sesuai dengan kebijakan privasi mereka masing-masing. Kami menyarankan kamu membaca kebijakan privasi dari layanan pihak ketiga yang digunakan.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Keamanan Data</h2>
+        <p class="mt-3">
+          Karena kalkulator bekerja di peramban kamu, jumlah data yang dikirim dan disimpan oleh kami sangat terbatas.
+        </p>
+        <p class="mt-3">
+          Meskipun demikian, tidak ada metode transmisi atau penyimpanan data yang dijamin 100% aman. Kami berupaya menggunakan praktik yang wajar untuk melindungi situs dan mengurangi risiko akses yang tidak sah.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Hak Pengguna</h2>
+        <p class="mt-3">
+          Karena kalkulator tidak mengharuskan kamu membuat akun atau login, dan jumlah data yang kami simpan sangat terbatas, kamu dapat menggunakan situs ini tanpa perlu mengelola akun pribadi.
+        </p>
+        <p class="mt-3">
+          Jika kamu memiliki pertanyaan tentang data yang mungkin dikumpulkan, kamu dapat menghubungi kami melalui informasi kontak di bawah.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Perubahan Kebijakan Privasi</h2>
+        <p class="mt-3">
+          Kami dapat memperbarui kebijakan privasi ini dari waktu ke waktu untuk mencerminkan perubahan pada situs, penggunaan analitik, atau penyesuaian lainnya.
+        </p>
+        <p class="mt-3">
+          Setiap perubahan akan tercermin pada halaman ini beserta tanggal pembaruannya.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Kontak</h2>
+        <p class="mt-3">
+          Jika kamu memiliki pertanyaan atau masukan terkait kebijakan privasi ini, silakan hubungi kami melalui halaman kontak atau kanal resmi CekDulu.
+        </p>
+      </section>
+    </div>
+  </main>
+</Layout>
