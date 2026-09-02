@@ -368,6 +368,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     const totalSteps = 5;
     let currentStep = 1;
     let started = false;
+    let completed = false;
 
     const stepLabel = document.getElementById('step-label') as HTMLElement;
     const progressRoot = document.getElementById('wizard-progress') as HTMLElement | null;
@@ -536,6 +537,8 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     });
 
     function trackCompleteAndView() {
+      if (completed) return;
+      completed = true;
       const { result } = compute();
       const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
       const newInst = readNumber('newInstallment');
@@ -665,7 +668,10 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       sisaEl.className = `mt-0.5 text-xl font-bold ${r.remainingAfterDebtAndExpenses < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`;
     }
 
-    document.getElementById('ubahDataBtn')?.addEventListener('click', () => goTo(1));
+    document.getElementById('ubahDataBtn')?.addEventListener('click', () => {
+      completed = false;
+      goTo(1);
+    });
     document.getElementById('skenarioBtn')?.addEventListener('click', () => {
       const panel = document.getElementById('scenario-panel');
       if (!panel) return;
@@ -703,16 +709,17 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
         try {
           await navigator.share({ title: 'CekDulu - Cek Kemampuan Cicilan', text });
           trackEvent('result_share', { calculator_type: 'affordability', share_method: 'native_share' });
-          return;
         } catch {
-          // user cancelled or sharing failed -> fall through to copy
+          // user cancelled or sharing failed: do NOT fire result_share,
+          // do NOT auto-record it as copy
         }
+        return;
       }
       copyText(shareBtn, text);
     }
 
     function copyText(btn: HTMLButtonElement, text: string) {
-      const done = () => {
+      const onSuccess = () => {
         trackEvent('result_share', { calculator_type: 'affordability', share_method: 'copy' });
         const original = btn.innerHTML;
         btn.innerHTML = 'Tersalin!';
@@ -722,25 +729,30 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
           btn.classList.remove('bg-[#10b981]', 'text-white');
         }, 2000);
       };
+      const onFail = () => {
+        // copy failed: do NOT fire result_share, do NOT show success state
+      };
       if (navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(text).then(done).catch(() => legacyCopy(text, done));
+        navigator.clipboard.writeText(text).then(onSuccess).catch(onFail);
       } else {
-        legacyCopy(text, done);
+        if (legacyCopy(text)) onSuccess();
+        else onFail();
       }
     }
 
-    function legacyCopy(text: string, done: () => void) {
+    function legacyCopy(text: string): boolean {
       const tempInput = document.createElement('input');
       tempInput.value = text;
       document.body.appendChild(tempInput);
       tempInput.select();
+      let ok = false;
       try {
-        document.execCommand('copy');
+        ok = document.execCommand('copy');
       } catch {
-        // ignore
+        ok = false;
       }
       document.body.removeChild(tempInput);
-      done();
+      return ok;
     }
 
     document.getElementById('shareResultBtn')?.addEventListener('click', shareResult);
