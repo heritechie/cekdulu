@@ -209,12 +209,22 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
             />
           </div>
 
+          <p
+            id="result-headline"
+            role="status"
+            class="mt-4 text-balance px-2 text-center text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+          ></p>
+
           <div class="mt-4 rounded-2xl border border-border bg-muted/40 p-4 text-center">
             <p class="text-sm text-muted-foreground">Sisa uang setelah semua beban</p>
             <p id="result-sisa" class="mt-1 text-3xl font-bold text-foreground">Rp 0</p>
             <p class="text-xs text-muted-foreground">per bulan</p>
             <span id="result-badge" class="mt-3 inline-block rounded-full px-3 py-1 text-sm font-medium"></span>
-            <p id="result-note" class="mt-3 text-sm text-muted-foreground"></p>
+          </div>
+
+          <div class="mt-4 rounded-xl bg-muted/50 p-4 text-sm">
+            <p class="font-semibold text-foreground">Apa artinya?</p>
+            <p id="result-note" class="mt-1.5 leading-relaxed text-muted-foreground"></p>
           </div>
 
           <Separator className="my-5" />
@@ -566,12 +576,33 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       });
     });
 
-    function statusTextFor(result: { financialStatusClass: string }): string {
-      return result.financialStatusClass === 'healthy'
-        ? 'Masih cukup'
-        : result.financialStatusClass === 'warning'
-          ? 'Cukup, tapi mulai terbatas'
-          : 'Beban terlalu besar';
+    function resultHeadline(result: {
+      remainingAfterDebtAndExpenses: number;
+      financialStatusClass: string;
+    }, hasNewInst: boolean): string {
+      if (result.remainingAfterDebtAndExpenses < 0) {
+        return 'Bebanmu melebihi penghasilan bulanan';
+      }
+      if (result.financialStatusClass === 'healthy') {
+        return hasNewInst
+          ? 'Dengan cicilan ini, keuanganmu masih sehat'
+          : 'Kondisi keuanganmu masih sehat';
+      }
+      if (result.financialStatusClass === 'warning') {
+        return hasNewInst
+          ? 'Masih ada sisa, tapi akan mulai terbatas'
+          : 'Porsi cicilanmu sudah cukup besar';
+      }
+      return hasNewInst
+        ? 'Beban cicilanmu terlalu besar'
+        : 'Porsi cicilanmu terlalu besar';
+    }
+
+    function resultBadgeText(status: string, remaining: number): string {
+      if (remaining < 0) return 'Berisiko';
+      if (status === 'healthy') return 'Sehat';
+      if (status === 'warning') return 'Perlu Perhatian';
+      return 'Berisiko';
     }
 
     function fillResult() {
@@ -579,8 +610,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
       const newInst = readNumber('newInstallment');
       const expenses = step4Ids.reduce((sum, id) => sum + readNumber(id), 0);
-
-      const statusText = statusTextFor(result);
+      const hasNewInst = newInst > 0;
 
       const badgeClass =
         result.remainingAfterDebtAndExpenses < 0
@@ -590,6 +620,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
             : 'bg-[#f59e0b]/10 text-[#f59e0b]';
       const sisaClass = result.remainingAfterDebtAndExpenses < 0 ? 'text-[#ef4444]' : 'text-[#10b981]';
 
+      const headlineEl = document.getElementById('result-headline');
       const sisaEl = document.getElementById('result-sisa');
       const badgeEl = document.getElementById('result-badge');
       const noteEl = document.getElementById('result-note');
@@ -602,17 +633,18 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       const breakdownSisaEl = document.getElementById('result-breakdown-sisa');
       const shareBtn = document.getElementById('shareResultBtn') as HTMLButtonElement | null;
       if (
-        !sisaEl || !badgeEl || !noteEl || !dbrEl || !incomeEl ||
+        !headlineEl || !sisaEl || !badgeEl || !noteEl || !dbrEl || !incomeEl ||
         !existingEl || !newEl || !expenseEl || !totalBebanEl || !breakdownSisaEl || !shareBtn
       ) {
         return;
       }
 
+      headlineEl.textContent = resultHeadline(result, hasNewInst);
       sisaEl.textContent = formatRupiah(result.remainingAfterDebtAndExpenses);
       sisaEl.className = `mt-1 text-3xl font-bold ${sisaClass}`;
-      badgeEl.textContent = statusText;
+      badgeEl.textContent = resultBadgeText(result.financialStatusClass, result.remainingAfterDebtAndExpenses);
       badgeEl.className = `mt-3 inline-block rounded-full px-3 py-1 text-sm font-semibold ${badgeClass}`;
-      noteEl.textContent = resultNote(result);
+      noteEl.textContent = resultNote(result, hasNewInst);
       dbrEl.textContent = formatPercentage(result.debtRatio);
       incomeEl.textContent = formatRupiah(income);
       existingEl.textContent = formatRupiah(existing);
@@ -625,17 +657,26 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       initScenario(newInst, existing, expenses);
     }
 
-    function resultNote(result: { remainingAfterDebtAndExpenses: number; financialStatusClass: string }): string {
+    function resultNote(result: {
+      remainingAfterDebtAndExpenses: number;
+      financialStatusClass: string;
+    }, hasNewInst: boolean): string {
       if (result.remainingAfterDebtAndExpenses < 0) {
-        return 'Tagihan dan pengeluaran bulananmu lebih besar dari penghasilan. Kondisi ini berisiko, sebaiknya ditinjau kembali sebelum mengambil cicilan baru.';
+        return 'Total cicilan dan pengeluaran bulananmu lebih besar dari penghasilan. Ini berarti tagihanmu melebihi pemasukan — sebelum menambah beban baru, sebaiknya kondisi ini ditinjau kembali.';
       }
-      if (result.financialStatusClass === 'critical') {
-        return 'Meski masih bersisa, sebagian besar penghasilan sudah dipakai untuk cicilan. Ruang untuk kebutuhan lain sangat terbatas.';
+      if (result.financialStatusClass === 'healthy') {
+        return hasNewInst
+          ? 'Setelah dicicil, masih ada sisa uang yang cukup untuk kebutuhan lain atau menabung. Kondisi ini terbilang nyaman.'
+          : 'Setelah semua beban bulanan, kamu masih punya sisa uang yang cukup untuk kebutuhan lain atau menabung.';
       }
       if (result.financialStatusClass === 'warning') {
-        return 'Masih ada sisa uang, tapi porsi cicilan sudah cukup besar. Pertimbangkan lagi sebelum menambah kewajiban.';
+        return hasNewInst
+          ? 'Tambah cicilan ini membuat porsi cicilanmu cukup besar. Masih ada sisa uang, tapi ruang untuk kebutuhan lain semakin terbatas.'
+          : 'Cicilan yang kamu miliki sudah mengambil porsi cukup besar dari penghasilan. Sebelum menambah cicilan baru, pastikan masih ada sisa yang cukup untuk kebutuhan lain.';
       }
-      return 'Setelah semua cicilan dan pengeluaran, kamu masih punya sisa uang yang cukup.';
+      return hasNewInst
+        ? 'Dengan cicilan baru ini, bebanmu sudah terlalu besar dan menyisakan sedikit ruang untuk kebutuhan lain. Ini berisiko untuk keuangan bulananmu.'
+        : 'Porsi cicilanmu saat ini sudah sangat besar dan menyisakan sedikit ruang untuk kebutuhan lain. Sebaiknya kurangi beban sebelum memikirkan utang baru.';
     }
 
     function initScenario(baseNew: number, existing: number, expenses: number) {
@@ -699,7 +740,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       if (!shareBtn) return;
 
       const text =
-        `💰 Hasil CekDulu: ${statusTextFor(result)}\n\n` +
+        `💰 Hasil CekDulu: ${resultHeadline(result, readNumber('newInstallment') > 0)}\n\n` +
         `Penghasilan: ${formatRupiah(income)}/bulan\n` +
         `Sisa setelah cicilan & pengeluaran: ${formatRupiah(result.remainingAfterDebtAndExpenses)}/bulan\n\n` +
         `Mau cek kondisi keuanganmu juga?\n${shareUrl}\n\n` +
