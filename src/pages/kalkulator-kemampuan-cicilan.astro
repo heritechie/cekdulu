@@ -5,7 +5,7 @@ import MoneyRow from '../components/money-row.astro';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Info, ArrowLeft, ArrowRight, Share2, RefreshCw } from 'lucide-astro';
+import { Info, ArrowLeft, ArrowRight, Share2, RefreshCw, Download, Copy } from 'lucide-astro';
 import AdSlotBetween from '../components/ad-slot-between.astro';
 import AdSlotAfterResult from '../components/ad-slot-after-result.astro';
 
@@ -310,6 +310,43 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
               Ubah Data
             </Button>
           </div>
+
+          <div id="share-preview" class="hidden mt-5">
+            <div class="rounded-2xl border border-border bg-muted/40 p-4">
+              <div class="flex items-start justify-between gap-3">
+                <p class="font-medium text-foreground">Gambar hasil siap dibagikan</p>
+                <button
+                  id="sharePreviewClose"
+                  type="button"
+                  aria-label="Tutup pratinjau gambar"
+                  class="-mr-1 -mt-1 inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </div>
+              <div class="mt-3 overflow-hidden rounded-xl border border-border bg-white">
+                <img
+                  id="share-preview-img"
+                  src=""
+                  alt="Kartu hasil CekDulu: status dana setelah semua cicilan dan pengeluaran"
+                  width="360"
+                  height="450"
+                  class="h-auto w-full object-contain"
+                />
+              </div>
+              <div class="mt-3 flex flex-col gap-2 sm:flex-row">
+                <Button id="saveImageBtn" type="button" className="h-auto w-full gap-2 rounded-full px-6 py-3 text-base font-semibold sm:w-auto sm:flex-1">
+                  <Download class="h-4 w-4" aria-hidden="true" />
+                  Simpan Gambar
+                </Button>
+                <Button id="copyTextBtn" type="button" variant="secondary" className="h-auto w-full gap-2 rounded-full px-6 py-3 text-base sm:w-auto sm:flex-1">
+                  <Copy class="h-4 w-4" aria-hidden="true" />
+                  Salin Teks
+                </Button>
+              </div>
+              <p class="mt-3 text-center text-xs text-muted-foreground">Bagikan gambar ini agar orang lain tahu kamu sudah cek dulu.</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </form>
@@ -321,6 +358,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
 
   <script>
     import { calculateFinancialBalance } from '../lib/calculator/engine';
+    import { generateShareFile } from '../lib/share-image';
     import {
       trackEvent,
       incomeRange,
@@ -733,33 +771,36 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     // ---- share ----
     const shareUrl = 'https://cekdulu.my.id';
 
-    async function shareResult() {
-      const { result } = compute();
-      const income = readNumber('monthlyIncome');
-      const shareBtn = document.getElementById('shareResultBtn') as HTMLButtonElement | null;
-      if (!shareBtn) return;
-
-      const text =
-        `💰 Hasil CekDulu: ${resultHeadline(result, readNumber('newInstallment') > 0)}\n\n` +
-        `Penghasilan: ${formatRupiah(income)}/bulan\n` +
-        `Sisa setelah cicilan & pengeluaran: ${formatRupiah(result.remainingAfterDebtAndExpenses)}/bulan\n\n` +
-        `Mau cek kondisi keuanganmu juga?\n${shareUrl}\n\n` +
-        'Sebelum nyicil, cek dulu.';
-
-      if (navigator.share && navigator.canShare?.({ text })) {
-        try {
-          await navigator.share({ title: 'CekDulu - Cek Kemampuan Cicilan', text });
-          trackEvent('result_share', { calculator_type: 'affordability', share_method: 'native_share' });
-        } catch {
-          // user cancelled or sharing failed: do NOT fire result_share,
-          // do NOT auto-record it as copy
-        }
-        return;
-      }
-      copyText(shareBtn, text);
+    function shareStatusLabel(result: { remainingAfterDebtAndExpenses: number; financialStatusClass: string }): string {
+      if (result.remainingAfterDebtAndExpenses < 0) return 'Berisiko';
+      if (result.financialStatusClass === 'healthy') return 'Sehat';
+      if (result.financialStatusClass === 'warning') return 'Perlu Perhatian';
+      return 'Berisiko';
     }
 
-    function copyText(btn: HTMLButtonElement, text: string) {
+    function shareStatusKey(result: { remainingAfterDebtAndExpenses: number; financialStatusClass: string }): 'healthy' | 'warning' | 'critical' | 'negative' {
+      if (result.remainingAfterDebtAndExpenses < 0) return 'negative';
+      return result.financialStatusClass as 'healthy' | 'warning' | 'critical';
+    }
+
+    function buildShareText(
+      result: { remainingAfterDebtAndExpenses: number; financialStatusClass: string; totalMonthlyDebt: number },
+      income: number,
+      totalExpenses: number,
+      hasNewInst: boolean
+    ): string {
+      return (
+        `${resultHeadline(result, hasNewInst)}\n\n` +
+        `Penghasilan: ${formatRupiah(income)}\n` +
+        `Total cicilan: ${formatRupiah(result.totalMonthlyDebt)}\n` +
+        `Pengeluaran: ${formatRupiah(totalExpenses)}\n` +
+        `Sisa uang: ${formatRupiah(result.remainingAfterDebtAndExpenses)}\n\n` +
+        `Cek kondisi keuanganmu juga:\n${shareUrl}\n\n` +
+        'Sebelum nyicil, cek dulu.'
+      );
+    }
+
+    function shareText(btn: HTMLButtonElement, text: string) {
       const onSuccess = () => {
         trackEvent('result_share', { calculator_type: 'affordability', share_method: 'copy' });
         const original = btn.innerHTML;
@@ -781,6 +822,112 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       }
     }
 
+    let sharing = false;
+    let previewUrl: string | null = null;
+
+    function hideSharePreview() {
+      const panel = document.getElementById('share-preview');
+      if (panel) panel.classList.add('hidden');
+    }
+
+    function showSharePreview(url: string) {
+      const panel = document.getElementById('share-preview');
+      const img = document.getElementById('share-preview-img') as HTMLImageElement | null;
+      if (!panel || !img) return;
+      img.src = url;
+      panel.classList.remove('hidden');
+      panel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    async function shareResult() {
+      const shareBtn = document.getElementById('shareResultBtn') as HTMLButtonElement | null;
+      if (!shareBtn || sharing) return;
+      const btn: HTMLButtonElement = shareBtn;
+      sharing = true;
+
+      const { result, income, totalExpenses } = compute();
+      const hasNewInst = readNumber('newInstallment') > 0;
+      const text = buildShareText(result, income, totalExpenses, hasNewInst);
+
+      const originalBtn = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = 'Membuat gambar…';
+
+      // Drop any previous preview.
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
+      hideSharePreview();
+
+      const fileResult = await generateShareFile({
+        headline: resultHeadline(result, hasNewInst),
+        statusLabel: shareStatusLabel(result),
+        status: shareStatusKey(result),
+        remaining: result.remainingAfterDebtAndExpenses,
+        income,
+        totalDebt: result.totalMonthlyDebt,
+        totalExpenses,
+      });
+      previewUrl = fileResult.url;
+
+      function resetBtn() {
+        btn.innerHTML = originalBtn;
+        btn.disabled = false;
+        sharing = false;
+      }
+
+      // Image generation failed -> fall back to the existing text share/copy.
+      if (!fileResult.file || !previewUrl) {
+        resetBtn();
+        shareText(btn, text);
+        return;
+      }
+
+      try {
+        const shareData = {
+          title: 'Hasil CekDulu',
+          text,
+          files: [fileResult.file],
+        };
+        if (navigator.share && navigator.canShare?.(shareData)) {
+          await navigator.share(shareData);
+          resetBtn();
+          trackEvent('result_share', { calculator_type: 'affordability', share_method: 'image' });
+          return;
+        }
+      } catch {
+        // user cancelled or sharing failed: do NOT fire result_share.
+        resetBtn();
+        return;
+      }
+
+      // File sharing not available -> preview + save image + copy text.
+      showSharePreview(previewUrl);
+      resetBtn();
+    }
+
+    document.getElementById('shareResultBtn')?.addEventListener('click', shareResult);
+
+    document.getElementById('sharePreviewClose')?.addEventListener('click', hideSharePreview);
+
+    document.getElementById('saveImageBtn')?.addEventListener('click', () => {
+      if (!previewUrl) return;
+      const a = document.createElement('a');
+      a.href = previewUrl;
+      a.download = 'cekdulu-hasil.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    document.getElementById('copyTextBtn')?.addEventListener('click', () => {
+      const { result, income, totalExpenses } = compute();
+      const hasNewInst = readNumber('newInstallment') > 0;
+      const btn = document.getElementById('copyTextBtn') as HTMLButtonElement | null;
+      if (btn) shareText(btn, buildShareText(result, income, totalExpenses, hasNewInst));
+    });
+
     function legacyCopy(text: string): boolean {
       const tempInput = document.createElement('input');
       tempInput.value = text;
@@ -795,8 +942,6 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       document.body.removeChild(tempInput);
       return ok;
     }
-
-    document.getElementById('shareResultBtn')?.addEventListener('click', shareResult);
 
     // ---- restore calculation from shared URL (client-side only) ----
     const hadSharedParams = (function restoreFromUrl() {
