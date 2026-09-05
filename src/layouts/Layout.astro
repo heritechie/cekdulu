@@ -121,6 +121,7 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
         <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
           <a href="/" class="block py-4 text-base font-medium text-foreground">Beranda</a>
           <a href="/kalkulator-kemampuan-cicilan" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Kalkulator Cicilan</a>
+          <a href="/challenges" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Challenges</a>
           <a href="/apa-itu-dbr" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">DBR</a>
         </div>
       </nav>
@@ -129,11 +130,11 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
     <slot />
 
     <footer class="mt-16 border-t border-border/60">
-      <div class="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+      <div class="mx-auto w-full max-w-6xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">
         <p>
-          CekDulu &mdash; Sebelum nyicil, cek dulu.
+          Sebelum nyicil, coba <a href="/" class="transition-colors hover:text-foreground underline underline-offset-4 decoration-muted-foreground/30">cekdulu.my.id</a>
         </p>
-        <nav aria-label="Tautan situs" class="flex items-center gap-5">
+        <nav aria-label="Tautan situs" class="mt-4">
           <a href="/privacy-policy" class="transition-colors hover:text-foreground">Kebijakan Privasi</a>
         </nav>
       </div>
