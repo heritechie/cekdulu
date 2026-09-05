@@ -4,18 +4,34 @@ import type { FinancialCalculationResult } from './calculator/engine';
  * CekDulu analytics helpers (GA4).
  *
  * PRIVACY: Never send raw financial values to analytics. Only bucketed
- * ranges are allowed. `trackEvent` only every sends bucketed data.
+ * ranges are allowed. `trackEvent` only sends bucketed data.
  */
 
 type AnalyticsParams = Record<string, string | number | boolean | undefined>;
 
+const INTERNAL_ANALYTICS_KEY = 'cekdulu_internal_analytics';
+
+/**
+ * Returns true when this browser has been marked as an internal/testing
+ * browser. Internal traffic is intentionally never sent to GA4.
+ */
+export function isInternalAnalyticsUser(): boolean {
+  try {
+    return window.localStorage.getItem(INTERNAL_ANALYTICS_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Send a GA4 event.
  *
- * Safe no-op when gtag is not available (i.e. GA4 is not configured because
- * PUBLIC_GA_MEASUREMENT_ID is absent and the gtag loader never ran).
+ * Safe no-op when analytics is disabled for the current browser, gtag is not
+ * available, or GA4 is not configured.
  */
 export function trackEvent(name: string, params?: AnalyticsParams): void {
+  if (isInternalAnalyticsUser()) return;
+
   const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
   if (typeof gtag !== 'function') return;
   const payload: Record<string, string | number | boolean> = {};
