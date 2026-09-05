@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="heroBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#096BEE"/><stop offset=".52" stop-color="#1189F6"/><stop offset="1" stop-color="#53B8FF"/></linearGradient>
+    <linearGradient id="yellow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF15A"/><stop offset=".5" stop-color="#FFDD35"/><stop offset="1" stop-color="#FFC72D"/></linearGradient>
+    <linearGradient id="softBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EEF7FF"/><stop offset="1" stop-color="#D7EBFF"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0B4FAD" flood-opacity=".14"/></filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="9" stdDeviation="10" flood-color="#0B4FAD" flood-opacity=".12"/></filter>
+    <filter id="whiteLogo" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/></filter>
+  </defs>
+
+  <!-- Bright, celebratory progress scene -->
+  <rect width="1080" height="850" fill="url(#heroBlue)"/>
+  <circle cx="90" cy="115" r="300" fill="#FFF" opacity=".035"/>
+  <circle cx="940" cy="470" r="205" fill="#FFF" opacity=".08"/>
+  <path d="M0 710C170 620 275 765 455 690C650 610 760 740 1080 610V850H0Z" fill="#FFF" opacity=".10"/>
+
+  <!-- Official CekDulu logo; recolored white for the blue hero. -->
+  <image id="brandLogoHero" href="/images/logo-cekdulu.png" x="58" y="43" width="360" height="120" preserveAspectRatio="xMinYMid meet" filter="url(#whiteLogo)"/>
+  <text x="72" y="207" font-family="Arial,sans-serif" font-size="31" font-weight="700" fill="#FFF">30 Hari Tanpa PayLater</text>
+
+  <!-- Handwritten-style message, rendered as safe SVG text -->
+  <g transform="rotate(-7 870 145)" fill="#FFF">
+    <text x="760" y="96" font-family="cursive" font-size="31" font-weight="700">Kecil hari ini,</text>
+    <text x="782" y="135" font-family="cursive" font-size="31" font-weight="700">dampak besar</text>
+    <text x="834" y="174" font-family="cursive" font-size="31" font-weight="700">nanti!</text>
+    <path d="M820 188q72 16 151-12" fill="none" stroke="#FFE238" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Day and progress -->
+  <text x="72" y="318" font-family="Arial,sans-serif" font-size="92" font-weight="900" letter-spacing="-3" fill="#FFF">Hari ke-</text>
+  <text id="dayHero" x="68" y="550" font-family="Arial,sans-serif" font-size="255" font-weight="900" letter-spacing="-12" fill="url(#yellow)" stroke="#FFF49C" stroke-width="2" paint-order="stroke">{{DAY}}</text>
+  <text x="75" y="614" font-family="Arial,sans-serif" font-size="54" font-weight="800" fill="#FFF">dari 30</text>
+  <rect x="72" y="650" width="650" height="28" rx="14" fill="#D5ECFF" opacity=".78"/>
+  <rect id="progress" x="72" y="650" width="{{PROGRESS_WIDTH}}" height="28" rx="14" fill="url(#yellow)"/>
+
+  <!-- Decorative stars and cloud trail behind the dynamic rocket asset -->
+  <g fill="#FFE442" filter="url(#softShadow)"><path d="M620 268l10 23 23 10-23 10-10 23-10-23-23-10 23-10z"/><path d="M865 344l9 20 20 9-20 9-9 20-9-20-20-9 20-9z"/><path d="M757 522l7 16 16 7-16 7-7 16-7-16-16-7 16-7z"/></g>
+  <!-- Small background clouds: lifted above the rocket trail to avoid overlap. -->
+  <g transform="translate(110 -300) scale(.75)" fill="#EAF7FF" opacity=".72"><circle cx="458" cy="693" r="42"/><circle cx="508" cy="680" r="62"/><circle cx="577" cy="704" r="48"/><circle cx="766" cy="704" r="40"/><circle cx="812" cy="690" r="60"/><circle cx="882" cy="711" r="43"/></g>
+  <image id="heroIllustration" href="/challenges/30-days-no-paylater-assets/rocket-day-01.png" x="500" y="230" width="540" height="540" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- Main content -->
+  <rect y="800" width="1080" height="1120" fill="#F7FBFF"/>
+
+  <!-- Progress stats -->
+  <g filter="url(#shadow)"><rect x="42" y="770" width="996" height="252" rx="44" fill="#FFF"/></g>
+  <circle cx="151" cy="896" r="70" fill="url(#softBlue)"/>
+  <image id="transactionIllustration" href="/challenges/30-days-no-paylater-assets/share/avoided-transaction-bag.png" x="78" y="823" width="146" height="146" preserveAspectRatio="xMidYMid meet"/>
+  <text id="transactions" x="247" y="886" font-family="Arial,sans-serif" font-size="62" font-weight="900" letter-spacing="-2" fill="#0B3472">{{TRANSACTIONS}}</text>
+  <text x="247" y="940" font-family="Arial,sans-serif" font-size="27" font-weight="600" fill="#55729E">transaksi berhasil</text>
+  <text x="247" y="976" font-family="Arial,sans-serif" font-size="27" font-weight="600" fill="#55729E">dihindari</text>
+  <path d="M528 822v152" stroke="#D9E5F3" stroke-width="3"/>
+  <circle cx="638" cy="896" r="70" fill="#FFF6D7"/>
+  <image id="expenseIllustration" href="/challenges/30-days-no-paylater-assets/share/avoided-expense-coins.png" x="568" y="826" width="140" height="140" preserveAspectRatio="xMidYMid meet"/>
+  <text id="savedAmount" x="735" y="886" font-family="Arial,sans-serif" font-size="48" font-weight="900" letter-spacing="-2" fill="#0B3472">{{SAVED_AMOUNT}}</text>
+  <text x="735" y="940" font-family="Arial,sans-serif" font-size="27" font-weight="600" fill="#55729E">pengeluaran berhasil</text>
+  <text x="735" y="976" font-family="Arial,sans-serif" font-size="27" font-weight="600" fill="#55729E">dihindari</text>
+
+  <!-- Milestone card -->
+  <g filter="url(#shadow)"><rect x="42" y="1058" width="996" height="318" rx="45" fill="url(#yellow)"/></g>
+  <image id="milestoneIllustration" href="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.png" x="61" y="1088" width="254" height="254" preserveAspectRatio="xMidYMid meet"/>
+  <text id="milestoneHeadline" x="334" y="1169" font-family="Arial,sans-serif" font-size="55" font-weight="900" letter-spacing="-2" fill="#083B87">{{MILESTONE_HEADLINE}}</text>
+  <text id="milestoneText" x="334" y="1242" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="#0B438F">{{MILESTONE_TEXT}}</text>
+  <text x="334" y="1305" font-family="Arial,sans-serif" font-size="29" font-weight="500" fill="#3C6291">Terus konsisten sampai 30 hari, ya!</text>
+
+  <!-- Link CTA -->
+  <rect x="122" y="1424" width="836" height="108" rx="54" fill="#E1F0FF"/>
+  <image id="shareLinkIllustration" href="/challenges/30-days-no-paylater-assets/share/share-link-icon.png" x="188" y="1430" width="100" height="100" preserveAspectRatio="xMidYMid meet"/>
+  <text x="620" y="1495" text-anchor="middle" font-family="Arial,sans-serif" font-size="43" font-weight="900" letter-spacing="-1" fill="#1464E8">cekdulu.my.id/stopl</text>
+  <text x="540" y="1602" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="500" fill="#4A6996">Yuk, mulai challenge-nya juga.</text>
+
+  <!-- Friendly footer landscape -->
+  <path d="M0 1713C182 1600 351 1744 543 1712c209-35 325-198 537-92v300H0z" fill="url(#yellow)"/>
+  <path d="M0 1817c250-124 424 93 671-22 142-66 268-69 409-24v149H0z" fill="#FFCD28" opacity=".9"/>
+  <image id="brandLogoFooter" href="/images/logo-cekdulu.png" x="55" y="1761" width="290" height="97" preserveAspectRatio="xMinYMid meet"/>
+  <text x="60" y="1864" font-family="Arial,sans-serif" font-size="26" font-weight="600" fill="#0B438F">Sebelum nyicil, coba cekdulu.my.id</text>
+  <g transform="rotate(-7 820 1812)" fill="#0B438F"><text x="690" y="1794" font-family="cursive" font-size="31" font-weight="700">Keputusan lebih baik</text><text x="725" y="1832" font-family="cursive" font-size="31" font-weight="700">dimulai dari sini.</text><path d="M756 1848q83 14 165-8" fill="none" stroke="#1464E8" stroke-width="7" stroke-linecap="round"/></g>
+</svg>
