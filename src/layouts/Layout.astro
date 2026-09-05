@@ -62,18 +62,44 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
     <meta name="twitter:description" content={twitterDescription} />
     <slot name="head" />
     {publicMeasurementId && (
-      <>
-        <script is:inline define:vars={{ publicMeasurementId }}>
+      <script is:inline define:vars={{ publicMeasurementId }}>
+        (() => {
+          const key = 'cekdulu_internal_analytics';
+          const params = new URLSearchParams(window.location.search);
+
+          try {
+            if (params.get('internal') === '1') {
+              window.localStorage.setItem(key, '1');
+            } else if (params.get('internal') === '0') {
+              window.localStorage.removeItem(key);
+            }
+          } catch {
+            // Ignore storage errors and continue without internal filtering.
+          }
+
+          let isInternal = false;
+          try {
+            isInternal = window.localStorage.getItem(key) === '1';
+          } catch {
+            // Keep analytics enabled when storage is unavailable.
+          }
+
+          if (isInternal) return;
+
           window.dataLayer = window.dataLayer || [];
           function gtag() {
-            dataLayer.push(arguments);
+            window.dataLayer.push(arguments);
           }
           window.gtag = gtag;
           gtag('js', new Date());
           gtag('config', publicMeasurementId);
-        </script>
-        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${publicMeasurementId}`}></script>
-      </>
+
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(publicMeasurementId)}`;
+          document.head.appendChild(script);
+        })();
+      </script>
     )}
   </head>
   <body class="font-sans antialiased min-h-screen bg-background text-foreground">
