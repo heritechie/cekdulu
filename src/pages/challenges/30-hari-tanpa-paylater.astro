@@ -1,0 +1,1289 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { CHALLENGE_DAYS } from '../../lib/paylater-challenge';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import {
+  ArrowLeft,
+  ArrowRight,
+  CalendarDays,
+  Check,
+  ChevronDown,
+  Plus,
+  RefreshCw,
+  X,
+} from 'lucide-astro';
+
+const canonical = new URL('challenges/30-hari-tanpa-paylater', Astro.site).href;
+const milestoneRow = [7, 14, 21, 30] as const;
+---
+
+<script is:inline slot="head">
+  (() => {
+    try {
+      var raw = window.localStorage.getItem('cekdulu_paylater_challenge');
+      if (!raw) return;
+      var s = JSON.parse(raw);
+      if (!s || typeof s.startDate !== 'string' || !Array.isArray(s.logs)) return;
+      document.documentElement.dataset.pl = s.completed === true ? 'complete' : 'active';
+    } catch (e) {
+      // Ignore — page falls back to the landing screen.
+    }
+  })();
+</script>
+
+<style is:global>
+  /* Prevent a landing-screen flash for returning users before the bundle runs. */
+  html[data-pl="active"] [data-screen="active"],
+  html[data-pl="complete"] [data-screen="complete"] {
+    display: block !important;
+  }
+  html[data-pl="active"] [data-screen="landing"],
+  html[data-pl="complete"] [data-screen="landing"] {
+    display: none !important;
+  }
+  #activeRocketImg {
+    width: var(--rw, 172px);
+    right: var(--rr, -8px);
+    bottom: var(--rb, -16px);
+  }
+  @media (min-width: 640px) {
+    #activeRocketImg {
+      width: calc(var(--rw, 172px) * 1.28);
+      right: calc(var(--rr, -8px) * 1.28);
+      bottom: calc(var(--rb, -16px) * 1.28);
+    }
+  }
+</style>
+
+<Layout
+  title="30 Hari Tanpa PayLater — CekDulu"
+  description="Coba challenge 30 hari tanpa PayLater dan lihat berapa pengeluaran yang berhasil kamu hindari."
+  canonical={canonical}
+  ogTitle="30 Hari Tanpa PayLater — CekDulu"
+  ogDescription="Coba challenge 30 hari tanpa PayLater dan lihat berapa pengeluaran yang berhasil kamu hindari."
+  ogUrl={canonical}
+>
+  <main class="mx-auto w-full max-w-[560px] px-4 pt-6 pb-16 sm:px-6 sm:pt-8">
+    <!-- ============ LANDING ============ -->
+    <section data-screen="landing" id="screen-landing" aria-labelledby="heading-landing">
+      <h1
+        id="heading-landing"
+        tabindex="-1"
+        class="text-balance text-center text-3xl font-bold tracking-tight outline-none sm:text-4xl"
+      >
+        Berani 30 hari <span class="text-primary">tanpa PayLater?</span>
+      </h1>
+      <p class="mx-auto mt-3 max-w-md text-center text-base text-muted-foreground">
+        Coba berhenti menggunakan PayLater selama 30 hari. Lihat berapa pengeluaran yang berhasil
+        kamu hindari.
+      </p>
+
+      <div class="mt-6 flex justify-center">
+        <button
+          id="landingStartBtn"
+          type="button"
+          class={cn(buttonVariants({ variant: 'default' }), 'h-auto w-full max-w-xs gap-2 rounded-full px-8 py-3.5 text-base font-semibold')}
+        >
+          Mulai Challenge
+          <ArrowRight class="h-4 w-4" aria-hidden="true" />
+        </button>
+      </div>
+      <p class="mt-2 flex items-center justify-center gap-1.5 text-center text-sm text-muted-foreground">
+        <img
+          src="/cekdulu-30-hari-tanpa-paylater-assets/icons/lock-local.svg"
+          alt=""
+          width="18"
+          height="18"
+          class="h-3.5 w-3.5 shrink-0"
+        />
+        Gratis. Tanpa login. Data tersimpan di perangkatmu.
+      </p>
+
+      <div class="mt-8 flex justify-center">
+        <img
+          src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/30-days-no-paylater.png"
+          alt="Ilustrasi menghindari PayLater"
+          width="640"
+          height="533"
+          class="h-auto w-full max-w-[260px]"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+
+      <ul class="mt-8 space-y-2.5">
+        <li class="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
+          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <CalendarDays class="h-5 w-5" aria-hidden="true" />
+          </span>
+          <span class="text-sm text-foreground sm:text-base">
+            <strong class="font-semibold">Mulai challenge</strong> — cukup satu ketukan.
+          </span>
+        </li>
+        <li class="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
+          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
+            <img
+              src="/cekdulu-30-hari-tanpa-paylater-assets/icons/check.svg"
+              alt=""
+              width="28"
+              height="28"
+              class="h-5 w-5"
+            />
+          </span>
+          <span class="text-sm text-foreground sm:text-base">
+            <strong class="font-semibold">Catat</strong> saat berhasil menahan diri
+          </span>
+        </li>
+        <li class="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
+          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
+            <img
+              src="/cekdulu-30-hari-tanpa-paylater-assets/icons/share.svg"
+              alt=""
+              width="28"
+              height="28"
+              class="h-5 w-5"
+            />
+          </span>
+          <span class="text-sm text-foreground sm:text-base">
+            <strong class="font-semibold">Lihat hasil</strong> &amp; bagikan
+          </span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============ SETUP ============ -->
+    <section data-screen="setup" id="screen-setup" hidden aria-labelledby="heading-setup">
+      <button
+        id="setupBackBtn"
+        type="button"
+        class="-ml-2 inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+        Kembali
+      </button>
+
+      <div class="relative -mx-4 mt-5 rounded-b-[2rem] pb-8 bg-[radial-gradient(90%_70%_at_78%_8%,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0)_55%),linear-gradient(180deg,#F2F7FF_0%,#E7EFFF_42%,#DCE9FF_70%,#EFF4FF_100%)] sm:-mx-6">
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
+          <span class="absolute left-2 top-1 h-2.5 w-2.5 rotate-45 rounded-[2px] bg-yellow-300/70"></span>
+          <span class="absolute left-7 top-3 h-10 w-16 rounded-full bg-white/80 blur-md"></span>
+          <span class="absolute left-20 top-9 h-8 w-8 rounded-full border border-primary/15"></span>
+        </div>
+
+        <img
+          src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/rocket.png"
+          alt=""
+          aria-hidden="true"
+          width="1536"
+          height="1024"
+          loading="eager"
+          decoding="async"
+          class="pointer-events-none absolute right-6 -top-3 z-0 h-auto w-[180px] select-none sm:right-10 sm:w-[205px]"
+        />
+
+        <form id="setupForm" class="relative z-10 mx-auto mt-[4.5rem] w-[calc(100%-32px)] max-w-[430px] rounded-2xl border border-border/70 bg-card p-5 shadow-[0_18px_36px_-20px_rgba(21,52,95,0.4)]" novalidate>
+        <h2 id="heading-setup" tabindex="-1" class="text-xl font-semibold tracking-tight text-foreground outline-none">
+          Berapa biasanya kamu pakai PayLater per bulan?
+        </h2>
+        <p class="mt-1.5 text-sm leading-normal text-muted-foreground">
+          Perkiraan saja sudah cukup. Angka ini hanya pembanding di akhir challenge.
+        </p>
+
+        <div class="mt-4">
+          <label for="baselineInput" class="mb-1.5 block text-sm font-medium text-muted-foreground">
+            Biasanya menggunakan PayLater sekitar
+          </label>
+          <div class="relative">
+            <span
+              class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-medium text-muted-foreground"
+              aria-hidden="true"
+            >
+              Rp
+            </span>
+            <input
+              id="baselineInput"
+              name="baseline"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="0"
+              aria-describedby="baselineHint"
+              class="h-auto w-full rounded-xl border border-input bg-transparent px-4 py-3 pl-10 text-lg outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            />
+          </div>
+          <p id="baselineHint" class="mt-2 text-[13px] leading-normal text-muted-foreground">
+            Boleh dilewati. Challenge tetap berjalan tanpa angka ini.
+          </p>
+          <p id="setup-error" hidden class="mt-2 text-sm font-medium text-destructive" aria-live="polite"></p>
+        </div>
+
+        <div class="mt-5 space-y-1.5">
+          <button
+            type="submit"
+            class={cn(buttonVariants({ variant: 'default' }), 'h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold')}
+          >
+            Mulai 30 Hari
+            <ArrowRight class="h-4 w-4" aria-hidden="true" />
+          </button>
+          <button
+            id="skipBtn"
+            type="button"
+            class="mx-auto block rounded-full px-6 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            Lewati
+          </button>
+        </div>
+      </form>
+      </div>
+    </section>
+
+    <!-- ============ ACTIVE ============ -->
+    <section data-screen="active" id="screen-active" hidden aria-labelledby="heading-active">
+      <div id="milestone-banner" hidden role="status" class="rounded-2xl border border-primary/30 bg-primary/5 p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <Check class="h-5 w-5" aria-hidden="true" />
+            </span>
+            <div>
+              <p id="milestone-title" class="text-lg font-bold text-primary">7 Hari!</p>
+              <p id="milestone-body" class="mt-0.5 text-sm text-foreground">Hebat! Kamu sudah 7 hari tanpa PayLater.</p>
+            </div>
+          </div>
+          <button
+            id="milestoneClose"
+            type="button"
+            aria-label="Tutup ucapan milestone"
+            class="-mr-1 -mt-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            <X class="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+        <dl class="mt-3 grid grid-cols-2 gap-2">
+          <div class="rounded-xl bg-white/70 p-3 text-center">
+            <dt class="text-[11px] text-muted-foreground">Transaksi dihindari</dt>
+            <dd id="milestone-tx" class="mt-0.5 text-lg font-bold text-foreground">0</dd>
+          </div>
+          <div class="rounded-xl bg-white/70 p-3 text-center">
+            <dt class="text-[11px] text-muted-foreground">Pengeluaran dihindari</dt>
+            <dd id="milestone-expense" class="mt-0.5 text-lg font-bold text-primary">Rp0</dd>
+          </div>
+        </dl>
+        <button
+          id="milestoneContinue"
+          type="button"
+          class={cn(buttonVariants({ variant: 'default' }), 'mt-3 h-auto w-full gap-2 rounded-full px-6 py-2.5 text-sm font-semibold')}
+        >
+          Lanjutkan Challenge
+          <ArrowRight class="h-4 w-4" aria-hidden="true" />
+        </button>
+      </div>
+
+      <div class="mt-3 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        <div class="relative overflow-hidden bg-primary px-5 pb-6 pt-6 text-primary-foreground">
+          <div class="relative z-10">
+            <h2 id="heading-active" tabindex="-1" class="text-sm font-medium opacity-80 outline-none">30 Hari Tanpa PayLater</h2>
+            <p class="mt-1.5 flex flex-wrap items-baseline gap-x-2 pr-16 leading-none sm:pr-36">
+              <span class="text-3xl font-extrabold tracking-tight sm:text-4xl" aria-live="polite">
+                Hari ke-<span id="active-day-num" class="tabular-nums">1</span>
+              </span>
+              <span class="text-base font-semibold opacity-80">dari {CHALLENGE_DAYS}</span>
+            </p>
+            <div
+              id="active-progressbar"
+              role="progressbar"
+              aria-valuemin="1"
+              aria-valuemax={CHALLENGE_DAYS}
+              aria-valuenow="1"
+              aria-label="Progres challenge 30 hari"
+              class="mt-4 h-3 w-full overflow-hidden rounded-full bg-white/25"
+            >
+              <div id="active-progress" class="h-full rounded-full bg-[#FFD33D] transition-all duration-300" style="width: 3.3%"></div>
+            </div>
+          </div>
+          <img
+            id="activeRocketImg"
+            src="/challenges/30-days-no-paylater-assets/rocket-day-01.png"
+            alt=""
+            aria-hidden="true"
+            width="1536"
+            height="1024"
+            loading="lazy"
+            decoding="async"
+            class="pointer-events-none absolute bottom-0 right-0 z-0 h-auto select-none"
+          />
+        </div>
+        <div class="p-5">
+          <ul class="grid grid-cols-4 gap-2" aria-label="Milestone challenge">
+            {milestoneRow.map((m) => (
+              <li
+                id={`milestone-${m}`}
+                aria-label={`Hari ${m}`}
+                aria-current="false"
+                class="flex flex-col items-center justify-center rounded-full border border-border bg-muted py-2 text-muted-foreground"
+              >
+                <span class="text-sm font-semibold leading-none">{m}</span>
+                <span class="mt-0.5 text-[10px] leading-none">hari</span>
+              </li>
+            ))}
+          </ul>
+
+          <div
+            class="relative mt-4 overflow-hidden rounded-2xl bg-cover bg-center px-5 py-5 text-center"
+            style="background-image:url('/challenges/30-days-no-paylater-assets/yellow-aksen-banner.png')"
+          >
+            <p class="flex items-center justify-center gap-2 leading-none text-[#15345F]">
+              <img
+                id="activeStreakImg"
+                src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.png"
+                alt=""
+                aria-hidden="true"
+                width="280"
+                height="233"
+                class="h-11 w-auto shrink-0"
+              />
+              <span id="active-day-hero" class="text-5xl font-extrabold tracking-tight tabular-nums">1</span>
+            </p>
+            <p id="active-banner-heading" class="mt-2 text-base font-bold text-[#15345F]">hari tanpa PayLater</p>
+            <p id="active-banner-heading-30" hidden class="mt-2 text-base font-bold text-[#15345F]">Aku berhasil!</p>
+            <p id="active-banner-note" class="mx-auto mt-2.5 max-w-[32ch] text-[13px] leading-snug text-[#15345F]/75 sm:max-w-[34ch] sm:text-sm">
+              Challenge jalan terus meski kamu tidak membuka halaman ini tiap hari.
+            </p>
+            <p id="active-banner-note-30" hidden class="mx-auto mt-2.5 max-w-[32ch] text-[13px] leading-snug text-[#15345F]/75 sm:max-w-[34ch] sm:text-sm">
+              30 hari tanpa PayLater selesai.<br />
+              Satu kebiasaan baik sudah kamu mulai.
+            </p>
+          </div>
+
+          <dl class="mt-4 grid grid-cols-2 gap-3">
+            <div class="min-w-0 rounded-xl bg-muted/50 px-3 py-4 text-center">
+              <dt class="text-xs leading-snug text-muted-foreground">Transaksi yang berhasil dihindari</dt>
+              <dd id="active-tx" class="mt-1.5 break-words text-xl font-bold tabular-nums text-foreground sm:text-2xl">0</dd>
+            </div>
+            <div class="min-w-0 rounded-xl bg-muted/50 px-3 py-4 text-center">
+              <dt class="text-xs leading-snug text-muted-foreground">Pengeluaran yang berhasil dihindari</dt>
+              <dd id="active-expense" class="mt-1.5 break-words text-xl font-bold tabular-nums text-foreground sm:text-2xl">Rp0</dd>
+            </div>
+          </dl>
+          <p id="active-paylater-note" hidden class="mt-3 rounded-xl border border-border bg-muted/40 p-3">
+            <span class="block text-xs font-semibold text-foreground">PayLater berhasil dihindari</span>
+            <span id="active-paylater-note-text" class="mt-0.5 block text-xs leading-relaxed text-muted-foreground"></span>
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4 grid grid-cols-2 gap-2">
+        <button
+          id="logBtn"
+          type="button"
+          class={cn(buttonVariants({ variant: 'default' }), 'h-auto w-full gap-2 rounded-full px-3 py-3 text-sm font-semibold')}
+        >
+          <Plus class="h-4 w-4" aria-hidden="true" />
+          Catat
+        </button>
+        <button
+          id="activeShareBtn"
+          type="button"
+          class="inline-flex h-auto w-full items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-primary/40 bg-white px-3 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          <img
+            src="/cekdulu-30-hari-tanpa-paylater-assets/icons/share.svg"
+            alt=""
+            width="18"
+            height="18"
+            class="h-4 w-4"
+          />
+          <span id="activeShareBtnLabel">Bagikan</span>
+        </button>
+      </div>
+
+      <!-- ============ HISTORY ============ -->
+      <section aria-labelledby="history-heading" class="mt-6">
+        <h3 id="history-heading" class="text-base font-semibold text-foreground">Catatanmu</h3>
+
+        <div id="history-empty" class="mt-2 rounded-xl border border-dashed border-border bg-muted/30 px-4 py-3 text-center">
+          <p class="text-sm text-foreground">Belum ada catatan.</p>
+          <p class="mt-0.5 text-xs text-muted-foreground">Setiap momen yang kamu catat akan muncul di sini.</p>
+        </div>
+
+        <ul id="history-list" class="mt-2 space-y-2.5" hidden></ul>
+
+        <button
+          id="historyToggle"
+          type="button"
+          hidden
+          aria-expanded="false"
+          aria-controls="history-list"
+          class="mt-2 inline-flex h-auto w-full items-center justify-center gap-1.5 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+        >
+          <span id="historyToggleLabel">Lihat semua catatan</span>
+        </button>
+      </section>
+
+      <p class="mt-4 flex items-center justify-center gap-1.5 text-center text-xs text-muted-foreground">
+        <img
+          src="/cekdulu-30-hari-tanpa-paylater-assets/icons/lock-local.svg"
+          alt=""
+          width="16"
+          height="16"
+          class="h-3.5 w-3.5 shrink-0"
+        />
+        Setiap catatan hanya tersimpan di perangkatmu.
+      </p>
+    </section>
+
+    <!-- ============ LOG ============ -->
+    <section data-screen="log" id="screen-log" hidden aria-labelledby="heading-log">
+      <button
+        id="logBackBtn"
+        type="button"
+        class="-ml-2 inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+        Kembali
+      </button>
+
+      <div class="mt-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <h2 id="heading-log" tabindex="-1" class="text-xl font-semibold tracking-tight text-foreground outline-none">
+          Catat Momen Ini
+        </h2>
+        <p class="mt-1 text-sm text-muted-foreground">
+          Hampir checkout pakai PayLater? Atau memilih tidak membeli? Yuk, catat di sini.
+        </p>
+
+        <form id="logForm" class="mt-5 space-y-5" novalidate>
+          <div>
+            <label for="logAmount" class="mb-1.5 block text-sm font-medium text-muted-foreground">Nominal</label>
+            <div class="relative">
+              <span
+                class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-medium text-muted-foreground"
+                aria-hidden="true"
+              >
+                Rp
+              </span>
+              <input
+                id="logAmount"
+                name="log-amount"
+                type="text"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="0"
+                aria-describedby="logAmountHint"
+                class="h-auto w-full rounded-xl border border-input bg-transparent px-4 py-3 pl-10 text-lg outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              />
+            </div>
+            <p id="logAmountHint" class="mt-1.5 text-xs text-muted-foreground">Perkiraan saja sudah cukup.</p>
+          </div>
+
+          <div>
+            <label for="logCategory" class="mb-1.5 block text-sm font-medium text-muted-foreground">
+              Kategori (opsional)
+            </label>
+            <div class="relative">
+              <select
+                id="logCategory"
+                name="log-category"
+                class="w-full appearance-none rounded-xl border border-input bg-transparent px-4 py-3 pr-10 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                <option>Belanja Online</option>
+                <option>Makanan &amp; Minuman</option>
+                <option>Transportasi</option>
+                <option>Hiburan</option>
+                <option>Lainnya</option>
+              </select>
+              <ChevronDown
+                class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+
+          <fieldset>
+            <legend class="mb-1.5 block text-sm font-medium text-muted-foreground">Apa yang terjadi?</legend>
+            <div class="space-y-2.5">
+              <label
+                for="logTypeNotBought"
+                class="flex cursor-pointer items-start gap-3 rounded-xl border border-border p-4 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5"
+              >
+                <input id="logTypeNotBought" type="radio" name="log-type" value="not_bought" class="mt-0.5 size-4 shrink-0 accent-primary" />
+                <span class="min-w-0">
+                  <span class="block text-sm font-semibold text-foreground">Saya jadi tidak membeli</span>
+                  <span class="mt-0.5 block text-xs text-muted-foreground">Pengeluaran berhasil dihindari</span>
+                </span>
+              </label>
+              <label
+                for="logTypePaidOther"
+                class="flex cursor-pointer items-start gap-3 rounded-xl border border-border p-4 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5"
+              >
+                <input id="logTypePaidOther" type="radio" name="log-type" value="paid_other" class="mt-0.5 size-4 shrink-0 accent-primary" />
+                <span class="min-w-0">
+                  <span class="block text-sm font-semibold text-foreground">Saya tetap membeli, tapi bayar dengan metode lain</span>
+                  <span class="mt-0.5 block text-xs text-muted-foreground">Bukan penghematan, tapi PayLater berhasil dihindari</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <p id="log-error" hidden class="text-sm font-medium text-destructive" aria-live="polite"></p>
+
+          <button
+            type="submit"
+            class={cn(buttonVariants({ variant: 'default' }), 'h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold')}
+          >
+            Simpan
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ COMPLETE ============ -->
+    <section data-screen="complete" id="screen-complete" hidden aria-labelledby="heading-complete">
+      <div class="rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
+        <div class="flex justify-center">
+          <img
+            src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.png"
+            alt=""
+            width="420"
+            height="350"
+            class="h-28 w-auto"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <h2 id="heading-complete" tabindex="-1" class="mt-4 text-2xl font-bold tracking-tight text-foreground outline-none">
+          Challenge Selesai! 🎉
+        </h2>
+        <p class="mt-1 text-sm text-muted-foreground">30 hari tanpa PayLater</p>
+
+        <div class="mt-6 space-y-3">
+          <div class="rounded-xl bg-muted/50 p-4 text-center">
+            <p class="text-xs text-muted-foreground">Transaksi berhasil dihindari</p>
+            <p id="complete-tx" class="mt-1 text-3xl font-bold text-foreground">0</p>
+          </div>
+          <div class="rounded-xl bg-muted/50 p-4 text-center">
+            <p class="text-xs text-muted-foreground">Pengeluaran yang berhasil dihindari</p>
+            <p id="complete-expense" class="mt-1 text-3xl font-bold text-primary">Rp0</p>
+          </div>
+        </div>
+
+        <p id="complete-baseline" hidden class="mt-4 text-xs leading-relaxed text-muted-foreground"></p>
+        <div id="complete-paylater" hidden class="mt-3 rounded-xl bg-[#FFD33D]/50 p-3 text-left text-[#15345F]">
+          <p class="text-xs font-semibold">PayLater berhasil dihindari</p>
+          <p id="complete-paylater-text" class="mt-0.5 text-xs leading-relaxed"></p>
+        </div>
+      </div>
+
+      <div class="mt-4 rounded-2xl border border-border bg-muted/40 p-5">
+        <p class="text-sm font-semibold text-foreground">Kalau nominal ini kamu sisihkan setiap bulan…</p>
+        <div class="mt-3 space-y-2 text-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-muted-foreground">6 bulan</span>
+            <span id="proj-6" class="font-semibold text-foreground">Rp0</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-muted-foreground">12 bulan</span>
+            <span id="proj-12" class="font-semibold text-foreground">Rp0</span>
+          </div>
+        </div>
+        <p class="mt-3 text-xs leading-relaxed text-muted-foreground">
+          Ini hanya proyeksi ilustrasi — bukan penghematan yang pasti, dan bukan saran keuangan.
+        </p>
+      </div>
+
+      <div class="mt-4 overflow-hidden rounded-2xl border-2 border-primary bg-white text-center shadow-sm">
+        <div class="bg-primary px-5 py-3">
+          <p class="text-sm font-semibold text-primary-foreground">30 Hari Tanpa PayLater</p>
+        </div>
+        <div class="px-6 pt-5 pb-6">
+          <p class="text-lg font-bold text-[#15345F]">🔥 Aku berhasil menyelesaikan challenge!</p>
+          <p class="mt-4 text-sm text-muted-foreground">
+            <span id="share-card-tx" class="font-semibold text-foreground">0</span> transaksi berhasil dihindari
+          </p>
+          <p id="share-card-expense" class="mt-3 text-3xl font-extrabold tracking-tight text-primary">Rp0</p>
+          <p class="mt-1 text-sm text-muted-foreground">pengeluaran berhasil dihindari</p>
+          <div class="mx-auto mt-4 h-px w-full bg-border"></div>
+          <p class="mt-4 text-sm font-semibold text-foreground">Berani coba?</p>
+          <p class="mt-0.5 text-sm font-bold text-[#1769E0]">cekdulu.my.id/challenges/30-hari-tanpa-paylater</p>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-col gap-2.5">
+        <button
+          id="shareBtn"
+          type="button"
+          class={cn(buttonVariants({ variant: 'default' }), 'h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold')}
+        >
+          <span id="shareBtnLabel">Bagikan Hasilku</span>
+          <img
+            src="/cekdulu-30-hari-tanpa-paylater-assets/icons/share.svg"
+            alt=""
+            width="18"
+            height="18"
+            class="h-4 w-4"
+          />
+        </button>
+        <button
+          id="restartBtn"
+          type="button"
+          class={cn(buttonVariants({ variant: 'outline' }), 'h-auto w-full gap-2 rounded-full px-6 py-3 text-base')}
+        >
+          <RefreshCw class="h-4 w-4" aria-hidden="true" />
+          Coba Challenge Lagi
+        </button>
+      </div>
+
+      <p class="mt-3 text-center text-xs text-muted-foreground">
+        Mengulang challenge akan menghapus hasil saat ini dari perangkatmu.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    import { formatRupiah } from '../../lib/calculator/engine';
+    import { trackEvent } from '../../lib/analytics';
+    import {
+      buildChallengeShareText,
+      CHALLENGE_SHARE_URL,
+      type ChallengeShareContext,
+    } from '../../lib/paylater-share';
+    import { renderChallengeShareImagePng } from '../../lib/paylater-share-image';
+    import {
+      CELEBRATION_MILESTONES,
+      CHALLENGE_DAYS,
+      MILESTONES,
+      addLog,
+      allLogsNewestFirst,
+      avoidedExpenseCount,
+      clearChallengeStorage,
+      createEmptyState,
+      createLog,
+      dayForDate,
+      isChallengeComplete,
+      latestLogs,
+      logOutcomeLabel,
+      markMilestoneCelebrated,
+      nextUncelebratedMilestone,
+      paylaterAmountBucket,
+      paylaterAvoidedCount,
+      readChallengeStorage,
+      relativeLogDateLabel,
+      rocketStageForDay,
+      summarizeForAnalytics,
+      totalAvoidedExpense,
+      writeChallengeStorage,
+      type ChallengeState,
+      type LogKind,
+    } from '../../lib/paylater-challenge';
+
+    type ScreenName = 'landing' | 'setup' | 'active' | 'log' | 'complete';
+
+    // ---- money input helpers ----
+    const MAX_AMOUNT = 1_000_000_000;
+
+    function formatMoneyInput(input: HTMLInputElement) {
+      const caretDigits = input.value.slice(0, input.selectionStart ?? 0).replace(/\D/g, '').length;
+      const raw = input.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+      const formatted = raw ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+      input.dataset.value = raw;
+      input.value = formatted;
+      let digits = 0;
+      let pos = 0;
+      while (pos < formatted.length && digits < caretDigits) {
+        if (/\d/.test(formatted[pos])) digits += 1;
+        pos += 1;
+      }
+      input.setSelectionRange(pos, pos);
+    }
+
+    function readNumber(id: string): number {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (!el) return 0;
+      const raw = el.dataset.value ?? el.value.replace(/\D/g, '');
+      return raw ? parseFloat(raw) || 0 : 0;
+    }
+
+    ['baselineInput', 'logAmount'].forEach((id) => {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      el?.addEventListener('input', () => formatMoneyInput(el));
+      el?.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        if (e.key.length > 1 || /[0-9]/.test(e.key)) return;
+        e.preventDefault();
+      });
+    });
+
+    // ---- screens ----
+    const screenIds: Record<ScreenName, string> = {
+      landing: 'screen-landing',
+      setup: 'screen-setup',
+      active: 'screen-active',
+      log: 'screen-log',
+      complete: 'screen-complete',
+    };
+
+    function setText(id: string, text: string) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
+    function showScreen(name: ScreenName, focus: boolean) {
+      (Object.keys(screenIds) as ScreenName[]).forEach((key) => {
+        const el = document.getElementById(screenIds[key]);
+        if (el) el.hidden = key !== name;
+      });
+      window.scrollTo({ top: 0 });
+      if (focus) {
+        const heading = document.getElementById(`heading-${name}`);
+        heading?.focus({ preventScroll: true });
+      }
+    }
+
+    // ---- state ----
+    let state: ChallengeState | null = readChallengeStorage();
+
+    function save() {
+      if (state) writeChallengeStorage(state);
+    }
+
+    // ---- dev-only day preview ----
+    // Active only under `astro dev`; Astro inlines import.meta.env.PROD as true in builds,
+    // so this block is stripped from production output and ?testDay has no effect there.
+    const TEST_DAYS = [1, ...MILESTONES] as const;
+    let previewTestDay: number | null = null;
+    if (!import.meta.env.PROD) {
+      const raw = new URLSearchParams(window.location.search).get('testDay');
+      if (raw !== null) {
+        const n = Number(raw);
+        previewTestDay = (TEST_DAYS as readonly number[]).includes(n) ? n : null;
+      }
+    }
+
+    // ---- renderers ----
+    const ROCKET_IMAGES = {
+      1: '/challenges/30-days-no-paylater-assets/rocket-day-01.png',
+      7: '/challenges/30-days-no-paylater-assets/rocket-day-07.png',
+      14: '/challenges/30-days-no-paylater-assets/rocket-day-14.png',
+      21: '/challenges/30-days-no-paylater-assets/rocket-day-21.png',
+      30: '/challenges/30-days-no-paylater-assets/rocket-day-30.png',
+    } as const;
+
+    const ROCKET_LAYOUT: Record<string, { width: number; right: number; bottom: number }> = {
+      1: { width: 172, right: -8, bottom: -16 },
+      7: { width: 176, right: 0, bottom: -20 },
+      14: { width: 180, right: 4, bottom: -24 },
+      21: { width: 184, right: 8, bottom: -26 },
+      30: { width: 188, right: 10, bottom: -22 },
+    };
+
+    function renderActive() {
+      if (!state) return;
+      const day = previewTestDay ?? dayForDate(state.startDate);
+      setText('active-day-num', String(day));
+      setText('active-day-hero', String(day));
+      const rocketStage = rocketStageForDay(day);
+      const rocketImg = document.getElementById('activeRocketImg') as HTMLImageElement | null;
+      if (rocketImg) {
+        rocketImg.src = ROCKET_IMAGES[rocketStage];
+        const cfg = ROCKET_LAYOUT[rocketStage];
+        rocketImg.style.setProperty('--rw', `${cfg.width}px`);
+        rocketImg.style.setProperty('--rr', `${cfg.right}px`);
+        rocketImg.style.setProperty('--rb', `${cfg.bottom}px`);
+      }
+      const streakImg = document.getElementById('activeStreakImg') as HTMLImageElement | null;
+      if (streakImg) {
+        streakImg.src =
+          day >= CHALLENGE_DAYS
+            ? '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.png'
+            : '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.png';
+      }
+      const isFinished = day >= CHALLENGE_DAYS;
+      const headingDefault = document.getElementById('active-banner-heading');
+      const headingDone = document.getElementById('active-banner-heading-30');
+      const noteDefault = document.getElementById('active-banner-note');
+      const noteDone = document.getElementById('active-banner-note-30');
+      if (headingDefault) headingDefault.hidden = isFinished;
+      if (headingDone) headingDone.hidden = !isFinished;
+      if (noteDefault) noteDefault.hidden = isFinished;
+      if (noteDone) noteDone.hidden = !isFinished;
+      const progress = document.getElementById('active-progress');
+      if (progress) progress.style.width = `${Math.min(100, Math.round((day / CHALLENGE_DAYS) * 100))}%`;
+      document.getElementById('active-progressbar')?.setAttribute('aria-valuenow', String(day));
+      setText('active-tx', String(avoidedExpenseCount(state)));
+      setText('active-expense', formatRupiah(totalAvoidedExpense(state)));
+
+      const note = document.getElementById('active-paylater-note');
+      const noteText = document.getElementById('active-paylater-note-text');
+      const plc = paylaterAvoidedCount(state);
+      if (note && noteText) {
+        note.hidden = plc === 0;
+        if (plc > 0) {
+          noteText.textContent = `${plc} transaksi PayLater berhasil dihindari dengan membayar menggunakan metode lain. Ini tidak dihitung sebagai penghematan.`;
+        }
+      }
+
+      MILESTONES.forEach((m) => {
+        const chip = document.getElementById(`milestone-${m}`);
+        if (!chip) return;
+        const reached = day >= m;
+        const current = day === m;
+        chip.classList.toggle('border-primary', reached);
+        chip.classList.toggle('bg-primary', reached && !current);
+        chip.classList.toggle('text-primary-foreground', reached && !current);
+        chip.classList.toggle('bg-primary/10', current);
+        chip.classList.toggle('text-primary', current);
+        chip.classList.toggle('ring-2', current);
+        chip.classList.toggle('ring-primary/30', current);
+        chip.classList.toggle('bg-muted', !reached);
+        chip.classList.toggle('text-muted-foreground', !reached);
+        chip.classList.toggle('border-border', !reached);
+        chip.setAttribute('aria-current', current ? 'step' : 'false');
+      });
+
+      renderHistory();
+    }
+
+    let historyExpanded = false;
+
+    function escapeHtml(value: string): string {
+      return value.replace(
+        /[&<>"']/g,
+        (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string)
+      );
+    }
+
+    function renderHistory() {
+      if (!state) return;
+      const empty = document.getElementById('history-empty');
+      const list = document.getElementById('history-list');
+      const toggle = document.getElementById('historyToggle');
+      const toggleLabel = document.getElementById('historyToggleLabel');
+      if (!empty || !list) return;
+
+      const total = state.logs.length;
+      const items = historyExpanded ? allLogsNewestFirst(state) : latestLogs(state, 3);
+
+      empty.hidden = total > 0;
+      list.hidden = total === 0;
+      list.innerHTML = items
+        .map((log) => {
+          const category = log.category && log.category.trim() ? log.category : 'Catatan';
+          return `<li class="rounded-2xl border border-border bg-card p-4">
+            <div class="flex items-start justify-between gap-3">
+              <span class="min-w-0 text-xs font-semibold text-primary">${escapeHtml(category)}</span>
+              <span class="shrink-0 text-xs text-muted-foreground">${relativeLogDateLabel(log.createdAt)}</span>
+            </div>
+            <p class="mt-1.5 text-xl font-bold tracking-tight text-foreground">${formatRupiah(log.amount)}</p>
+            <p class="mt-0.5 text-xs text-muted-foreground">${logOutcomeLabel(log.kind)}</p>
+          </li>`;
+        })
+        .join('');
+
+      if (toggle && toggleLabel) {
+        const showToggle = total > 3;
+        toggle.hidden = !showToggle;
+        toggle.setAttribute('aria-expanded', String(historyExpanded));
+        toggleLabel.textContent = historyExpanded ? 'Tutup' : 'Lihat semua catatan';
+      }
+    }
+
+    function revealMilestone(ms: number) {
+      if (!state) return;
+      state = markMilestoneCelebrated(state, ms);
+      save();
+      currentMilestone = ms;
+      setText('milestone-title', `${ms} Hari!`);
+      setText('milestone-body', `Hebat! Kamu sudah ${ms} hari tanpa PayLater.`);
+      setText('milestone-tx', String(avoidedExpenseCount(state)));
+      setText('milestone-expense', formatRupiah(totalAvoidedExpense(state)));
+      const banner = document.getElementById('milestone-banner');
+      if (banner) {
+        banner.hidden = false;
+        banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      trackEvent('paylater_challenge_milestone', { milestone: ms });
+    }
+
+    function showMilestoneBanner(ms: number) {
+      if (!state) return;
+      currentMilestone = ms;
+      setText('milestone-title', `${ms} Hari!`);
+      setText('milestone-body', `Hebat! Kamu sudah ${ms} hari tanpa PayLater.`);
+      setText('milestone-tx', String(avoidedExpenseCount(state)));
+      setText('milestone-expense', formatRupiah(totalAvoidedExpense(state)));
+      const banner = document.getElementById('milestone-banner');
+      if (banner) {
+        banner.hidden = false;
+        banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function renderComplete() {
+      if (!state) return;
+      const tx = avoidedExpenseCount(state);
+      const expense = totalAvoidedExpense(state);
+      const plc = paylaterAvoidedCount(state);
+
+      setText('complete-tx', String(tx));
+      setText('complete-expense', formatRupiah(expense));
+      setText('share-card-tx', String(tx));
+      setText('share-card-expense', formatRupiah(expense));
+      setText('shareBtnLabel', 'Bagikan Hasilku');
+
+      const baseline = document.getElementById('complete-baseline');
+      if (baseline) {
+        baseline.hidden = !(state.baseline > 0);
+        if (state.baseline > 0) {
+          baseline.textContent = `Sebagai perbandingan: biasanya kamu memakai PayLater sekitar ${formatRupiah(state.baseline)} per bulan.`;
+        }
+      }
+
+      const paylater = document.getElementById('complete-paylater');
+      const paylaterText = document.getElementById('complete-paylater-text');
+      if (paylater && paylaterText) {
+        paylater.hidden = plc === 0;
+        if (plc > 0) {
+          paylaterText.textContent = `${plc} transaksi PayLater berhasil dihindari dengan membayar menggunakan metode lain. Ini tidak dihitung sebagai penghematan.`;
+        }
+      }
+
+      if (expense > 0) {
+        setText('proj-6', formatRupiah(expense * 6));
+        setText('proj-12', formatRupiah(expense * 12));
+      }
+    }
+
+    // ---- analytics ----
+    function fireCompleteEvent(current: ChallengeState) {
+      const s = summarizeForAnalytics(current);
+      trackEvent('paylater_challenge_complete', {
+        day: s.day,
+        log_count: s.log_count,
+        avoided_expense_bucket: s.avoided_expense_bucket,
+        paylater_avoided_bucket: s.paylater_avoided_bucket,
+        baseline_bucket: s.baseline_bucket,
+      });
+    }
+
+    // ---- flow ----
+    function startChallenge() {
+      const baseline = readNumber('baselineInput');
+      state = createEmptyState();
+      if (baseline > 0) state.baseline = Math.round(baseline);
+      save();
+      trackEvent('paylater_challenge_start', {
+        has_baseline: state.baseline > 0,
+        baseline_bucket: paylaterAmountBucket(state.baseline),
+      });
+      renderActive();
+      showScreen('active', true);
+    }
+
+    document.getElementById('landingStartBtn')?.addEventListener('click', () => showScreen('setup', true));
+    document.getElementById('setupBackBtn')?.addEventListener('click', () => showScreen('landing', true));
+    document.getElementById('setupForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const baseline = readNumber('baselineInput');
+      const err = document.getElementById('setup-error');
+      if (baseline > MAX_AMOUNT) {
+        if (err) {
+          err.textContent = 'Nominal terlalu besar.';
+          err.hidden = false;
+        }
+        (document.getElementById('baselineInput') as HTMLInputElement | null)?.focus();
+        return;
+      }
+      if (err) {
+        err.textContent = '';
+        err.hidden = true;
+      }
+      startChallenge();
+    });
+    document.getElementById('skipBtn')?.addEventListener('click', startChallenge);
+
+    document.getElementById('logBtn')?.addEventListener('click', () => showScreen('log', true));
+
+    document.getElementById('historyToggle')?.addEventListener('click', () => {
+      historyExpanded = !historyExpanded;
+      renderHistory();
+    });
+    document.getElementById('logBackBtn')?.addEventListener('click', () => showScreen('active', true));
+    document.getElementById('milestoneClose')?.addEventListener('click', () => {
+      const banner = document.getElementById('milestone-banner');
+      if (banner) banner.hidden = true;
+      currentMilestone = null;
+    });
+    document.getElementById('milestoneContinue')?.addEventListener('click', () => {
+      const banner = document.getElementById('milestone-banner');
+      if (banner) banner.hidden = true;
+      currentMilestone = null;
+    });
+
+    document.getElementById('logForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!state) return;
+      const day = dayForDate(state.startDate);
+      const amount = readNumber('logAmount');
+      const radio = document.querySelector<HTMLInputElement>('input[name="log-type"]:checked');
+      const category =
+        (document.getElementById('logCategory') as HTMLSelectElement | null)?.value || 'Belanja Online';
+      const err = document.getElementById('log-error');
+
+      const showError = (message: string) => {
+        if (!err) return;
+        err.textContent = message;
+        err.hidden = false;
+      };
+      const clearError = () => {
+        if (err) {
+          err.textContent = '';
+          err.hidden = true;
+        }
+      };
+
+      if (amount <= 0) {
+        showError('Masukkan nominal terlebih dahulu.');
+        (document.getElementById('logAmount') as HTMLInputElement | null)?.focus();
+        return;
+      }
+      if (amount > MAX_AMOUNT) {
+        showError('Nominal terlalu besar.');
+        (document.getElementById('logAmount') as HTMLInputElement | null)?.focus();
+        return;
+      }
+      if (!radio) {
+        showError('Pilih salah satu opsi terlebih dahulu.');
+        return;
+      }
+
+      const kind = radio.value as LogKind;
+      state = addLog(state, createLog(kind, amount, category, day));
+      save();
+      trackEvent('paylater_challenge_log', {
+        log_type: kind,
+        amount_bucket: paylaterAmountBucket(amount),
+      });
+
+      const form = document.getElementById('logForm') as HTMLFormElement | null;
+      form?.reset();
+      const amountInput = document.getElementById('logAmount') as HTMLInputElement | null;
+      if (amountInput) amountInput.dataset.value = '';
+      clearError();
+      renderActive();
+      showScreen('active', true);
+    });
+
+    // ---- share ----
+    function legacyCopy(text: string): boolean {
+      const tempInput = document.createElement('input');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      let ok = false;
+      try {
+        ok = document.execCommand('copy');
+      } catch {
+        ok = false;
+      }
+      document.body.removeChild(tempInput);
+      return ok;
+    }
+
+    /** The milestone (7/14/21) currently shown in the banner, if any. */
+    let currentMilestone: number | null = null;
+
+    /**
+     * One shared share flow reused by every challenge state. The copy is built
+     * from the actual state via `buildChallengeShareText`; `labelId` is the
+     * button label flipped to "Tersalin!" on the copy fallback.
+     */
+    let sharePending = false;
+
+    /** Collect Option A-only stats for the share image (matches on-screen stats). */
+    function shareImageData() {
+      const day = previewTestDay ?? (state ? dayForDate(state.startDate) : 1);
+      const transactions = state ? avoidedExpenseCount(state) : 0;
+      const expense = state ? totalAvoidedExpense(state) : 0;
+      return { day, transactions, savedAmount: formatRupiah(expense) };
+    }
+
+    function downloadPng(file: File) {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }
+
+    /**
+     * Image-first share used by the challenge "Bagikan" buttons (progress,
+     * milestone, completed). Renders a 1080x1920 PNG from the static SVG template
+     * and shares it via the Web Share file API when supported; otherwise the PNG
+     * is downloaded. Falls back to a short text share if the template fails.
+     */
+    async function shareWithImage(context: ChallengeShareContext, labelId: string) {
+      if (sharePending) return;
+      sharePending = true;
+
+      const labelEl = document.getElementById(labelId);
+      const originalLabel = labelEl?.textContent ?? 'Bagikan';
+      const setLabel = (t: string) => {
+        if (labelEl) labelEl.textContent = t;
+      };
+      const restoreLabel = () => setLabel(originalLabel);
+
+      setLabel('Menyiapkan gambar...');
+      try {
+        const data = shareImageData();
+        let file: File | null = null;
+        try {
+          file = await renderChallengeShareImagePng(data);
+        } catch {
+          file = null;
+        }
+
+        if (file && typeof navigator.share === 'function' && navigator.canShare?.({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file] });
+            trackEvent('paylater_challenge_share', { share_method: 'native', share_context: context });
+            return;
+          } catch (err) {
+            if ((err as Error).name === 'AbortError') {
+              return;
+            }
+            // Fall through to download.
+          } finally {
+            restoreLabel();
+          }
+        }
+
+        if (file) {
+          downloadPng(file);
+          trackEvent('paylater_challenge_share', { share_method: 'download', share_context: context });
+          restoreLabel();
+          return;
+        }
+
+        // Image failed — nothing to share.
+        restoreLabel();
+      } catch {
+        restoreLabel();
+      } finally {
+        sharePending = false;
+      }
+    }
+
+    async function copyText(text: string): Promise<boolean> {
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+      return legacyCopy(text);
+    }
+
+    /** Legacy text share (landing, pre-start). */
+    async function shareText(context: ChallengeShareContext, labelId: string) {
+      if (sharePending) return;
+      const day = previewTestDay ?? (state ? dayForDate(state.startDate) : 1);
+      const milestone = context === 'milestone' ? (currentMilestone ?? undefined) : undefined;
+      const text = buildChallengeShareText(context, { state, day, milestone });
+      if (!text) return;
+
+      if (typeof navigator.share === 'function') {
+        sharePending = true;
+        try {
+          await navigator.share({
+            title: '30 Hari Tanpa PayLater — CekDulu',
+            text,
+            url: CHALLENGE_SHARE_URL,
+          });
+          trackEvent('paylater_challenge_share', { share_method: 'native', share_context: context });
+          return;
+        } catch (err) {
+          if ((err as Error).name === 'AbortError') return;
+        } finally {
+          sharePending = false;
+        }
+      }
+
+      const copied = await copyText(text);
+      if (!copied) return;
+      const originalLabel = document.getElementById(labelId)?.textContent ?? 'Bagikan';
+      trackEvent('paylater_challenge_share', { share_method: 'copy', share_context: context });
+      setText(labelId, 'Tersalin!');
+      window.setTimeout(() => setText(labelId, originalLabel), 2000);
+    }
+
+    document.getElementById('landingShareBtn')?.addEventListener('click', () => {
+      shareText('landing', 'landingShareBtnLabel');
+    });
+    document.getElementById('activeShareBtn')?.addEventListener('click', () => {
+      const banner = document.getElementById('milestone-banner');
+      const bannerVisible = banner ? !banner.hidden : false;
+      shareWithImage(bannerVisible && currentMilestone ? 'milestone' : 'progress', 'activeShareBtnLabel');
+    });
+    document.getElementById('shareBtn')?.addEventListener('click', () => {
+      shareWithImage('completed', 'shareBtnLabel');
+    });
+
+    // ---- restart ----
+    document.getElementById('restartBtn')?.addEventListener('click', () => {
+      const ok = window.confirm(
+        'Mulai challenge baru? Data challenge saat ini akan dihapus dari perangkatmu.'
+      );
+      if (!ok) return;
+      clearChallengeStorage();
+      state = null;
+      const baseline = document.getElementById('baselineInput') as HTMLInputElement | null;
+      if (baseline) {
+        baseline.value = '';
+        baseline.dataset.value = '';
+      }
+      showScreen('setup', true);
+    });
+
+    // ---- init ----
+    document.documentElement.removeAttribute('data-pl');
+
+    function init() {
+      if (!state) {
+        showScreen('landing', false);
+        return;
+      }
+      if (!state.completed && isChallengeComplete(state)) {
+        state = { ...state, completed: true };
+        save();
+        fireCompleteEvent(state);
+      }
+      if (state.completed) {
+        renderComplete();
+        showScreen('complete', false);
+        return;
+      }
+      renderActive();
+      showScreen('active', false);
+      const day = previewTestDay ?? dayForDate(state.startDate);
+      const previewBannerDay =
+        previewTestDay !== null && (CELEBRATION_MILESTONES as readonly number[]).includes(previewTestDay)
+          ? previewTestDay
+          : null;
+      const milestone =
+        previewTestDay !== null ? previewBannerDay : nextUncelebratedMilestone(state, day);
+      if (milestone) {
+        if (previewTestDay !== null) {
+          showMilestoneBanner(milestone);
+        } else {
+          revealMilestone(milestone);
+        }
+      }
+    }
+
+    init();
+  </script>
+</Layout>

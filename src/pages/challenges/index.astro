@@ -1,0 +1,251 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Card, CardContent } from '@/components/ui/card';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ArrowRight, CalendarDays, Check, Flame } from 'lucide-astro';
+
+const canonical = new URL('challenges', Astro.site).href;
+
+const challenges = [
+  {
+    slug: '30-hari-tanpa-paylater',
+    title: '30 Hari Tanpa PayLater',
+    description: 'Berani mencoba 30 hari tanpa menggunakan PayLater?',
+    duration: '30 hari',
+    note: 'Gratis. Tanpa login.',
+    cta: 'Ikut Challenge',
+    featured: true,
+  },
+] as const;
+const calcUrl = '/kalkulator-kemampuan-cicilan';
+---
+
+<Layout
+  title="Challenge Keuangan — CekDulu"
+  description="Ikuti challenge sederhana dari CekDulu untuk membangun kebiasaan finansial yang lebih sehat."
+  canonical={canonical}
+  ogTitle="Challenge Keuangan — CekDulu"
+  ogDescription="Ikuti challenge sederhana dari CekDulu untuk membangun kebiasaan finansial yang lebih sehat."
+  ogUrl={canonical}
+>
+  <main class="mx-auto w-full max-w-2xl px-4 pt-6 pb-16 sm:px-6 sm:pt-10 sm:pb-20 lg:px-8">
+    <!-- ============ HERO ============ -->
+    <section class="text-center" aria-labelledby="challenges-heading">
+      <p class="text-sm font-medium text-muted-foreground">CekDulu</p>
+      <h1
+        id="challenges-heading"
+        class="mt-1 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+      >
+        Challenge <span class="text-primary">CekDulu</span>
+      </h1>
+      <p class="mx-auto mt-3 max-w-md text-base text-muted-foreground">
+        Uji kebiasaan finansialmu dengan challenge sederhana.
+      </p>
+    </section>
+
+    <!-- ============ AVAILABLE CHALLENGES ============ -->
+    <section class="mt-8" aria-labelledby="available-heading">
+      <h2 id="available-heading" class="text-lg font-semibold text-foreground">
+        Challenge tersedia
+      </h2>
+      <ul class="mt-4 space-y-4">
+        {challenges.map((c) => (
+          <li>
+            <Card className="overflow-hidden rounded-2xl border border-border py-0 shadow-sm ring-0">
+              {c.featured && (
+                <div
+                  class="overflow-hidden rounded-t-2xl border-b border-border bg-primary/5"
+                  aria-hidden="true"
+                >
+                  <img
+                    src="/challenges/banner/30-days-no-paylater-banner.jpg"
+                    alt=""
+                    width="1280"
+                    height="640"
+                    class="block h-auto w-full"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </div>
+              )}
+              <CardContent className="p-5 sm:p-6">
+                {c.featured && (
+                  <span
+                    id="challenge-badge"
+                    class="inline-flex items-center gap-1.5 rounded-full bg-[#FFD33D]/90 px-3 py-1 text-xs font-semibold text-[#15345F]"
+                  >
+                    <Flame id="challenge-badge-flame" class="h-3.5 w-3.5" aria-hidden="true" />
+                    <Check id="challenge-badge-check" hidden class="h-3.5 w-3.5" aria-hidden="true" />
+                    <span id="challenge-badge-text">Challenge pertama</span>
+                  </span>
+                )}
+                <h3 class="mt-3 text-xl font-bold tracking-tight text-foreground">{c.title}</h3>
+                <p class="mt-1 text-sm text-muted-foreground">{c.description}</p>
+
+                <div id="challenge-progress" hidden class="mt-3">
+                  <p id="challenge-progress-label" class="text-sm font-semibold text-foreground">
+                    Hari ke-1 dari 30
+                  </p>
+                  <div
+                    id="challenge-progress-track"
+                    class="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-muted"
+                    role="progressbar"
+                    aria-valuemin="1"
+                    aria-valuemax="30"
+                    aria-valuenow="1"
+                  >
+                    <div id="challenge-progress-fill" class="h-full rounded-full bg-primary" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <p id="challenge-done-note" hidden class="mt-3 text-sm font-bold text-primary">
+                  30 hari selesai!
+                </p>
+
+                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                  <span class="inline-flex items-center gap-1.5">
+                    <CalendarDays class="h-3.5 w-3.5" aria-hidden="true" />
+                    {c.duration}
+                  </span>
+                  <span class="inline-flex items-center gap-1.5">
+                    <img
+                      src="/cekdulu-30-hari-tanpa-paylater-assets/icons/lock-local.svg"
+                      alt=""
+                      width="20"
+                      height="20"
+                      class="h-3.5 w-3.5"
+                    />
+                    {c.note}
+                  </span>
+                </div>
+                <a
+                  id="challenge-cta"
+                  href={`/challenges/${c.slug}`}
+                  class={cn(
+                    buttonVariants({ variant: 'default' }),
+                    'mt-4 h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold'
+                  )}
+                >
+                  <span id="challenge-cta-text">{c.cta}</span>
+                  <ArrowRight class="h-4 w-4" aria-hidden="true" />
+                </a>
+              </CardContent>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="mt-8" aria-labelledby="how-heading">
+      <h2 id="how-heading" class="text-lg font-semibold text-foreground">Cara kerjanya</h2>
+      <p class="mt-1 text-sm text-muted-foreground">
+        Setiap challenge berjalan sederhana: mulai, catat, lalu lihat hasilnya.
+      </p>
+      <ul class="mt-4 space-y-2.5">
+        <li class="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
+          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <CalendarDays class="h-5 w-5" aria-hidden="true" />
+          </span>
+          <span class="text-sm text-foreground sm:text-base">
+            <strong class="font-semibold">Mulai challenge</strong> — cukup satu ketukan.
+          </span>
+        </li>
+        <li class="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
+          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
+            <img
+              src="/cekdulu-30-hari-tanpa-paylater-assets/icons/check.svg"
+              alt=""
+              width="28"
+              height="28"
+              class="h-5 w-5"
+            />
+          </span>
+          <span class="text-sm text-foreground sm:text-base">
+            <strong class="font-semibold">Catat</strong> saat berhasil menahan diri.
+          </span>
+        </li>
+        <li class="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
+          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
+            <img
+              src="/cekdulu-30-hari-tanpa-paylater-assets/icons/share.svg"
+              alt=""
+              width="28"
+              height="28"
+              class="h-5 w-5"
+            />
+          </span>
+          <span class="text-sm text-foreground sm:text-base">
+            <strong class="font-semibold">Lihat hasil</strong> &amp; bagikan.
+          </span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============ BACK TO CORE TOOL ============ -->
+    <section class="mt-8" aria-labelledby="tools-heading">
+      <div class="rounded-2xl border border-border bg-muted/40 p-5 sm:p-6">
+        <h2 id="tools-heading" class="text-base font-semibold text-foreground">
+          Setelah menahan diri, cek kemampuan cicilanmu
+        </h2>
+        <p class="mt-1 text-sm text-muted-foreground">
+          Challenge hanyalah langkah awal. Lihat apakah rencana cicilanmu masih seimbang dengan
+          kondisi keuanganmu.
+        </p>
+        <a
+          href={calcUrl}
+          class={cn(buttonVariants({ variant: 'outline' }), 'mt-4 h-auto w-full gap-2 rounded-full px-6 py-3 text-base')}
+        >
+          Kalkulator Kemampuan Cicilan
+          <ArrowRight class="h-4 w-4" aria-hidden="true" />
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    import { CHALLENGE_DAYS, dayForDate, isChallengeComplete, readChallengeStorage } from '../../lib/paylater-challenge';
+
+    const state = readChallengeStorage();
+    if (state) {
+      const done = state.completed || isChallengeComplete(state);
+      const day = dayForDate(state.startDate);
+
+      const badge = document.getElementById('challenge-badge');
+      const badgeText = document.getElementById('challenge-badge-text');
+      const flameIcon = document.getElementById('challenge-badge-flame');
+      const checkIcon = document.getElementById('challenge-badge-check');
+      const progress = document.getElementById('challenge-progress');
+      const progressLabel = document.getElementById('challenge-progress-label');
+      const progressFill = document.getElementById('challenge-progress-fill');
+      const progressTrack = document.getElementById('challenge-progress-track');
+      const doneNote = document.getElementById('challenge-done-note');
+      const ctaText = document.getElementById('challenge-cta-text');
+
+      if (done) {
+        if (badge) {
+          badge.className =
+            'inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground';
+        }
+        if (badgeText) badgeText.textContent = 'Selesai';
+        if (flameIcon) flameIcon.hidden = true;
+        if (checkIcon) checkIcon.hidden = false;
+        if (doneNote) doneNote.hidden = false;
+        if (ctaText) ctaText.textContent = 'Lihat Hasil';
+      } else {
+        if (badge) {
+          badge.className =
+            'inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary';
+        }
+        if (badgeText) badgeText.textContent = 'Sedang berjalan';
+        if (checkIcon) checkIcon.hidden = true;
+        if (progress) progress.hidden = false;
+        if (progressLabel) progressLabel.textContent = `Hari ke-${day} dari ${CHALLENGE_DAYS}`;
+        if (progressFill) progressFill.style.width = `${Math.round((day / CHALLENGE_DAYS) * 100)}%`;
+        if (progressTrack) progressTrack.setAttribute('aria-valuenow', String(day));
+        if (ctaText) ctaText.textContent = 'Lanjutkan Challenge';
+      }
+    }
+  </script>
+</Layout>

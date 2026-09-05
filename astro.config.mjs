@@ -20,5 +20,9 @@ export default defineConfig({
         return item;
       },
     }),
-  ]
+  ],
+
+  redirects: {
+    '/30-hari-tanpa-paylater': '/challenges/30-hari-tanpa-paylater',
+  },
 });
