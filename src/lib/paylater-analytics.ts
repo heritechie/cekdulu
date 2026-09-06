@@ -171,3 +171,25 @@ export function completeParamsFromState(state: ChallengeState): ChallengeComplet
 export function fireChallengeResume(emit: ChallengeEventEmitter, day: number): void {
   emit('paylater_challenge_resume', { day });
 }
+
+export interface ChallengeDayActiveParams {
+  /** Current challenge day (1-30) calculated from startDate. */
+  day: number;
+  /** Total number of logs recorded so far. */
+  logs_count: number;
+}
+
+/**
+ * Fires when user visits the challenge page with an active (non-completed) challenge.
+ * Useful for measuring daily active utilization.
+ */
+export function fireChallengeDayActive(
+  emit: ChallengeEventEmitter,
+  params: ChallengeDayActiveParams
+): void {
+  console.debug('[paylater-analytics] fireChallengeDayActive called', params);
+  emit('paylater_challenge_day_active', {
+    day: params.day,
+    logs_count: params.logs_count,
+  });
+}

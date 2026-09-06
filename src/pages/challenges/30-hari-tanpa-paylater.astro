@@ -521,6 +521,7 @@ const milestoneRow = [7, 14, 21, 30] as const;
       challengeEntrySource,
       completeParamsFromState,
       fireChallengeComplete,
+      fireChallengeDayActive,
       fireChallengeLog,
       fireChallengeMilestone,
       fireChallengeShare,
@@ -1130,6 +1131,12 @@ const milestoneRow = [7, 14, 21, 30] as const;
       renderActive();
       showScreen('active', false);
       const day = previewTestDay ?? dayForDate(state.startDate);
+      // Fire daily active event for utilization tracking
+      console.debug('[paylater] firing day_active', { day, logs_count: state.logs.length });
+      fireChallengeDayActive(trackEvent, {
+        day,
+        logs_count: state.logs.length,
+      });
       const previewBannerDay =
         previewTestDay !== null && (CELEBRATION_MILESTONES as readonly number[]).includes(previewTestDay)
           ? previewTestDay

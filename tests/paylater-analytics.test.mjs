@@ -5,6 +5,7 @@ import {
   challengeEntrySource,
   completeParamsFromState,
   fireChallengeComplete,
+  fireChallengeDayActive,
   fireChallengeLog,
   fireChallengeMilestone,
   fireChallengeResume,
@@ -178,6 +179,32 @@ describe('paylater_challenge_resume', () => {
     const { events, emit } = spyEmitter();
     fireChallengeResume(emit, 14);
     assert.deepEqual(events, [{ name: 'paylater_challenge_resume', params: { day: 14 } }]);
+  });
+});
+
+describe('paylater_challenge_day_active', () => {
+  test('emits day and logs_count for active challenge', () => {
+    const { events, emit } = spyEmitter();
+    fireChallengeDayActive(emit, { day: 14, logs_count: 5 });
+    assert.deepEqual(events, [
+      { name: 'paylater_challenge_day_active', params: { day: 14, logs_count: 5 } },
+    ]);
+  });
+
+  test('emits day 1 with zero logs for fresh challenge', () => {
+    const { events, emit } = spyEmitter();
+    fireChallengeDayActive(emit, { day: 1, logs_count: 0 });
+    assert.deepEqual(events, [
+      { name: 'paylater_challenge_day_active', params: { day: 1, logs_count: 0 } },
+    ]);
+  });
+
+  test('emits day 30 with logs for completed challenge', () => {
+    const { events, emit } = spyEmitter();
+    fireChallengeDayActive(emit, { day: 30, logs_count: 12 });
+    assert.deepEqual(events, [
+      { name: 'paylater_challenge_day_active', params: { day: 30, logs_count: 12 } },
+    ]);
   });
 });
 
