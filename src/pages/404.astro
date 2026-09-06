@@ -1,0 +1,203 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card, CardContent } from '@/components/ui/card';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ArrowRight, Home, Search, RefreshCw } from 'lucide-astro';
+
+const canonical = new URL('404', Astro.site).href;
+---
+
+<Layout
+  title="Halaman Tidak Ditemukan — CekDulu"
+  description="Halaman yang kamu cari tidak ditemukan. Kembali ke beranda atau cek kemampuan cicilanmu."
+  canonical={canonical}
+  ogTitle="Halaman Tidak Ditemukan — CekDulu"
+  ogDescription="Halaman yang kamu cari tidak ditemukan. Kembali ke beranda atau cek kemampuan cicilanmu."
+  ogUrl={canonical}
+  ogType="website"
+>
+  <main class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+    <!-- ============ HERO ============ -->
+    <section id="hero" class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div class="grid items-center gap-8 pt-10 pb-4 sm:gap-10 sm:pt-14 sm:pb-6 lg:grid-cols-2 lg:gap-14 lg:pt-20 lg:pb-8">
+        <div id="hero-text" class="order-1 text-center lg:order-none lg:col-start-1 lg:row-start-1 lg:text-left">
+          <p class="text-sm font-semibold text-primary uppercase tracking-wider">404</p>
+          <h1 class="mt-4 text-balance text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+            Halaman Tidak Ditemukan
+          </h1>
+          <p class="mx-auto mt-4 max-w-xl text-lg text-muted-foreground sm:text-xl lg:mx-0">
+            Sepertinya kamu mengambil jalan yang salah. Tenang, kita bantu balik ke halaman yang benar.
+          </p>
+        </div>
+
+        <div
+          id="hero-illustration"
+          class="order-2 flex items-center justify-center lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-2"
+        >
+          <div class="w-full max-w-[400px] sm:max-w-md lg:max-w-lg">
+            <img
+              src="/404/404.png"
+              alt="Ilustrasi halaman tidak ditemukan"
+              width="512"
+              height="384"
+              class="h-auto w-full"
+            />
+          </div>
+        </div>
+
+        <div
+          id="hero-cta"
+          class="order-3 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:order-none lg:col-start-1 lg:row-start-2 lg:justify-start"
+        >
+          <a
+            href="/"
+            class={cn(buttonVariants({ variant: 'default' }), 'h-auto w-full gap-2 rounded-full px-8 py-3.5 text-base font-semibold sm:w-auto')}
+          >
+            <Home class="h-4 w-4" aria-hidden="true" />
+            Kembali ke Beranda
+          </a>
+          <a
+            href="/kalkulator-kemampuan-cicilan"
+            class={cn(buttonVariants({ variant: 'outline' }), 'h-auto w-full gap-2 rounded-full px-8 py-3.5 text-base font-semibold sm:w-auto')}
+          >
+            <Search class="h-4 w-4" aria-hidden="true" />
+            Cek Kemampuan Cicilan
+            <ArrowRight class="h-4 w-4" aria-hidden="true" />
+          </a>
+        </div>
+
+        <p class="order-4 mt-6 text-center text-sm text-muted-foreground lg:order-none lg:col-start-1 lg:row-start-3 lg:text-left lg:col-span-2">
+          Sebelum nyicil, cek dulu.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ MUNGKIN KAMU MENCARI INI? ============ -->
+    <section id="suggestions" class="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20 bg-muted/30">
+      <div class="mx-auto max-w-4xl text-center">
+        <p class="text-sm font-semibold text-primary uppercase tracking-wider">MUNGKIN KAMU MENCARI INI?</p>
+        <h2 class="mt-4 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+          Beberapa halaman yang mungkin kamu cari
+        </h2>
+      </div>
+      <div class="mx-auto mt-10 max-w-5xl grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <a
+          href="/kalkulator-kemampuan-cicilan?type=rumah"
+          class="group flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted/50 hover:border-primary/50"
+        >
+          <img
+            src="/images/illustrations/home.png"
+            alt=""
+            width="512"
+            height="512"
+            loading="lazy"
+            class="h-20 w-20 object-contain sm:h-24 sm:w-24"
+          />
+          <span class="text-base font-semibold text-foreground">Kalkulator Kemampuan Cicilan</span>
+          <span class="text-sm text-muted-foreground">Rumah / KPR</span>
+        </a>
+        <a
+          href="/kalkulator-kemampuan-cicilan?type=kendaraan"
+          class="group flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted/50 hover:border-primary/50"
+        >
+          <img
+            src="/images/illustrations/vehicle.png"
+            alt=""
+            width="512"
+            height="512"
+            loading="lazy"
+            class="h-20 w-20 object-contain sm:h-24 sm:w-24"
+          />
+          <span class="text-base font-semibold text-foreground">Kalkulator Kemampuan Cicilan</span>
+          <span class="text-sm text-muted-foreground">Kendaraan</span>
+        </a>
+        <a
+          href="/kalkulator-kemampuan-cicilan?type=elektronik"
+          class="group flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted/50 hover:border-primary/50"
+        >
+          <img
+            src="/images/illustrations/electronics.png"
+            alt=""
+            width="512"
+            height="512"
+            loading="lazy"
+            class="h-20 w-20 object-contain sm:h-24 sm:w-24"
+          />
+          <span class="text-base font-semibold text-foreground">Kalkulator Kemampuan Cicilan</span>
+          <span class="text-sm text-muted-foreground">Elektronik</span>
+        </a>
+        <a
+          href="/kalkulator-kemampuan-cicilan?type=lainnya"
+          class="group flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted/50 hover:border-primary/50"
+        >
+          <img
+            src="/images/illustrations/other.png"
+            alt=""
+            width="512"
+            height="512"
+            loading="lazy"
+            class="h-20 w-20 object-contain sm:h-24 sm:w-24"
+          />
+          <span class="text-base font-semibold text-foreground">Kalkulator Kemampuan Cicilan</span>
+          <span class="text-sm text-muted-foreground">Lainnya</span>
+        </a>
+        <a
+          href="/apa-itu-dbr"
+          class="group flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted/50 hover:border-primary/50"
+        >
+          <img
+            src="/images/illustrations/other.png"
+            alt=""
+            width="512"
+            height="512"
+            loading="lazy"
+            class="h-20 w-20 object-contain sm:h-24 sm:w-24"
+          />
+          <span class="text-base font-semibold text-foreground">Apa Itu DBR?</span>
+          <span class="text-sm text-muted-foreground">Panduan DBR</span>
+        </a>
+        <a
+          href="/articles"
+          class="group flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 transition-colors hover:bg-muted/50 hover:border-primary/50"
+        >
+          <img
+            src="/images/illustrations/other.png"
+            alt=""
+            width="512"
+            height="512"
+            loading="lazy"
+            class="h-20 w-20 object-contain sm:h-24 sm:w-24"
+          />
+          <span class="text-base font-semibold text-foreground">Artikel & Panduan</span>
+          <span class="text-sm text-muted-foreground">Belajar Sebelum Nyicil</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section id="cta" class="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20 bg-primary/5">
+      <div class="mx-auto max-w-3xl text-center">
+        <h2 class="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+          Masih bingung mulai dari mana?
+        </h2>
+        <p class="mt-4 text-lg text-muted-foreground leading-relaxed">
+          CekDulu bantu kamu cek cicilan yang masuk akal untuk kondisi keuanganmu.
+        </p>
+        <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <a
+            href="/kalkulator-kemampuan-cicilan"
+            class={cn(buttonVariants({ variant: 'default' }), 'h-auto w-full gap-2 rounded-full px-8 py-3.5 text-base font-semibold sm:w-auto')}
+          >
+            <Search class="h-4 w-4" aria-hidden="true" />
+            Cek Kemampuan Cicilan
+            <ArrowRight class="h-4 w-4" aria-hidden="true" />
+          </a>
+        </div>
+        <p class="mt-6 text-sm text-muted-foreground">
+          Gratis, cepat, tanpa perlu login.
+        </p>
+      </div>
+    </section>
+  </main>
+</Layout>

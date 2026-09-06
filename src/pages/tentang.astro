@@ -1,0 +1,331 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Card, CardContent } from '@/components/ui/card';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ArrowRight } from 'lucide-astro';
+
+const canonical = new URL('tentang', Astro.site).href;
+---
+
+<Layout
+  title="Tentang CekDulu — Sebelum Nyicil, Cek Dulu"
+  description="Kenali CekDulu, alat bantu sederhana untuk memahami kemampuan cicilan dan kondisi keuangan sebelum mengambil utang atau cicilan jangka panjang."
+  canonical={canonical}
+  ogTitle="Tentang CekDulu — Sebelum Nyicil, Cek Dulu"
+  ogDescription="Kenali CekDulu, alat bantu sederhana untuk memahami kemampuan cicilan dan kondisi keuangan sebelum mengambil utang atau cicilan jangka panjang."
+  ogUrl={canonical}
+  ogType="website"
+>
+  <main class="w-full">
+
+    <!-- ============ HERO ============ -->
+    <section id="hero" class="w-full">
+      <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="grid items-center gap-10 py-14 sm:py-16 lg:grid-cols-12 lg:gap-12 lg:py-20">
+          <div class="lg:col-span-5">
+            <p class="text-xs font-semibold text-primary uppercase tracking-wider sm:text-sm">TENTANG CEKDULU</p>
+            <h1 class="mt-4 text-balance text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+              Sebelum Nyicil,<br /> <span class="text-primary">Cek Dulu.</span>
+            </h1>
+            <p class="mt-5 max-w-md text-base text-muted-foreground leading-relaxed sm:text-lg">
+              CekDulu adalah alat bantu sederhana untuk membantu kamu memahami kondisi keuangan sebelum mengambil cicilan atau utang jangka panjang.
+            </p>
+            <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+              <a
+                href="/kalkulator-kemampuan-cicilan"
+                class={cn(buttonVariants({ variant: 'default' }), 'h-auto gap-2 rounded-full px-8 py-3.5 text-base font-semibold')}
+              >
+                Cek Kemampuan Cicilan
+                <ArrowRight class="h-4 w-4" aria-hidden="true" />
+              </a>
+            </div>
+            <p class="mt-5 text-sm text-muted-foreground">Gratis, cepat, tanpa perlu login.</p>
+          </div>
+          <div class="mx-auto w-full max-w-[480px] lg:col-span-7 lg:max-w-[640px] lg:justify-self-end">
+            <img
+              src="/tentang-checkdulu/hero.png"
+              alt="Ilustrasi Tentang CekDulu"
+              width="1536"
+              height="1024"
+              class="h-auto w-full"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ KENAPA CEKDULU DIBUAT? ============ -->
+    <section id="kenapa" class="w-full">
+      <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="grid items-center gap-10 py-14 sm:py-16 lg:grid-cols-12 lg:gap-12">
+          <div class="lg:col-span-7">
+            <p class="text-xs font-semibold text-primary uppercase tracking-wider sm:text-sm">KENAPA CEKDULU DIBUAT?</p>
+            <h2 class="mt-4 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+              Karena keputusan finansial sering dimulai dari pertanyaan yang salah.
+            </h2>
+            <div class="mt-6 space-y-4 text-base text-muted-foreground leading-relaxed">
+              <p>
+                Banyak orang hanya bertanya:
+                <span class="font-semibold text-foreground"> "Bisa bayar cicilan per bulan nggak?"</span>
+              </p>
+              <p>
+                Padahal pertanyaan yang lebih penting adalah:
+                <span class="font-semibold text-foreground"> "Setelah bayar cicilan, uang saya masih cukup nggak?"</span>
+              </p>
+              <p class="pt-1">
+                CekDulu membantu kamu melihat gambaran yang lebih lengkap, bukan hanya angka cicilan.
+              </p>
+            </div>
+          </div>
+          <div class="mx-auto w-full max-w-[300px] lg:col-span-5 lg:max-w-[340px] lg:justify-self-end">
+            <img
+              src="/tentang-checkdulu/why.png"
+              alt="Ilustrasi Kenapa CekDulu Dibuat"
+              width="512"
+              height="384"
+              class="h-auto w-full"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CEKDULU MEMBANTU MENGHITUNG APA? ============ -->
+    <section id="menghitung" class="w-full bg-muted/30">
+      <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="py-14 sm:py-16">
+          <div class="text-center">
+            <p class="text-xs font-semibold text-primary uppercase tracking-wider sm:text-sm">CEKDULU MEMBANTU MENGHITUNG APA?</p>
+            <h2 class="mt-4 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+              Masukkan data sederhana, dapat gambaran yang jelas.
+            </h2>
+          </div>
+          <div class="mx-auto mt-10 w-full max-w-[900px]">
+            <img
+              src="/tentang-checkdulu/flow.png"
+              alt="Alur perhitungan CekDulu: dari penghasilan, cicilan lama, cicilan baru, pengeluaran, hingga sisa uang dan DBR"
+              width="1774"
+              height="887"
+              class="mx-auto h-auto w-full object-contain"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DISCLAIMER / TRANSPARENCY ============ -->
+    <section id="disclaimer" class="w-full">
+      <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="py-14 sm:py-16">
+          <div class="grid items-center gap-5 rounded-2xl border border-yellow-100 bg-yellow-50 p-5 sm:grid-cols-[110px_1fr] sm:gap-6 sm:px-6 sm:py-4">
+            <div class="flex justify-center">
+              <img
+                src="/tentang-checkdulu/disclaimer.png"
+                alt="Ilustrasi disclaimer"
+                width="1536"
+                height="1024"
+                class="h-auto w-[110px] object-contain"
+              />
+            </div>
+            <div class="text-center sm:text-left">
+              <h3 class="text-[20px] font-bold leading-[1.25] text-foreground sm:text-[22px]">
+                CekDulu bukan bank, bukan fintech, dan bukan pemberi pinjaman.
+              </h3>
+              <div class="mt-2 space-y-1.5 text-sm leading-normal text-muted-foreground">
+                <p>
+                  CekDulu tidak menawarkan pinjaman, tidak melakukan penilaian kredit, dan tidak menjamin
+                  kamu akan mendapatkan persetujuan dari lembaga keuangan mana pun.
+                </p>
+                <p>
+                  Hasil kalkulator adalah indikasi berdasarkan data yang kamu masukkan, bukan keputusan
+                  finansial atau persetujuan kredit.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRINSIP CEKDULU ============ -->
+    <section id="prinsip" class="w-full bg-muted/30">
+      <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="py-14 sm:py-16">
+          <div class="text-center">
+            <p class="text-xs font-semibold text-primary uppercase tracking-wider sm:text-sm">PRINSIP CEKDULU</p>
+            <h2 class="mt-4 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+              Sederhana, netral, dan transparan.
+            </h2>
+          </div>
+          <div class="mt-10 grid gap-5 sm:grid-cols-3">
+            <Card className="rounded-2xl border border-border py-0 ring-0">
+              <CardContent className="p-6 text-center sm:p-8">
+                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden sm:h-18 sm:w-18">
+                  <img
+                    src="/tentang-checkdulu/principle-simple.png"
+                    alt="Ikon Sederhana"
+                    width="1536"
+                    height="1024"
+                    class="w-[103px] max-w-none shrink-0 object-contain sm:w-[117px]"
+                  />
+                </div>
+                <h3 class="text-lg font-semibold text-foreground">Sederhana</h3>
+                <p class="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  Hanya data yang benar-benar diperlukan. Cepat dan mudah digunakan.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="rounded-2xl border border-border py-0 ring-0">
+              <CardContent className="p-6 text-center sm:p-8">
+                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden sm:h-18 sm:w-18">
+                  <img
+                    src="/tentang-checkdulu/principle-neutral.png"
+                    alt="Ikon Netral"
+                    width="1536"
+                    height="1024"
+                    class="w-[126px] max-w-none shrink-0 object-contain sm:w-[142px]"
+                  />
+                </div>
+                <h3 class="text-lg font-semibold text-foreground">Netral</h3>
+                <p class="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  Kami tidak mendorong kamu mengambil utang.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="rounded-2xl border border-border py-0 ring-0">
+              <CardContent className="p-6 text-center sm:p-8">
+                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center overflow-hidden sm:h-18 sm:w-18">
+                  <img
+                    src="/tentang-checkdulu/principle-transparent.png"
+                    alt="Ikon Transparan"
+                    width="1536"
+                    height="1024"
+                    class="w-[131px] max-w-none shrink-0 object-contain sm:w-[148px]"
+                  />
+                </div>
+                <h3 class="text-lg font-semibold text-foreground">Transparan</h3>
+                <p class="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  Metode perhitungan dijelaskan dengan bahasa yang mudah dipahami.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TOOLS CEKDULU ============ -->
+    <section id="tools" class="w-full">
+      <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="py-14 sm:py-16">
+          <div class="text-center">
+            <p class="text-xs font-semibold text-primary uppercase tracking-wider sm:text-sm">TOOLS CEKDULU</p>
+            <h2 class="mt-4 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+              Mulai dari kalkulator yang kamu butuhkan.
+            </h2>
+          </div>
+          <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <a
+              href="/kalkulator-kemampuan-cicilan?type=rumah"
+              class="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center transition-colors hover:bg-muted/50 hover:border-primary/50"
+            >
+              <img
+                src="/images/illustrations/home.png"
+                alt=""
+                width="512"
+                height="512"
+                loading="lazy"
+                class="h-12 w-12 object-contain sm:h-14 sm:w-14"
+              />
+              <span class="text-sm font-semibold text-foreground">Kalkulator Kemampuan Cicilan</span>
+              <span class="text-xs text-muted-foreground">Rumah / KPR</span>
+            </a>
+            <a
+              href="/kalkulator-kemampuan-cicilan?type=kendaraan"
+              class="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center transition-colors hover:bg-muted/50 hover:border-primary/50"
+            >
+              <img
+                src="/images/illustrations/vehicle.png"
+                alt=""
+                width="512"
+                height="512"
+                loading="lazy"
+                class="h-12 w-12 object-contain sm:h-14 sm:w-14"
+              />
+              <span class="text-sm font-semibold text-foreground">Kalkulator Kemampuan Cicilan</span>
+              <span class="text-xs text-muted-foreground">Kendaraan</span>
+            </a>
+            <a
+              href="/kalkulator-kemampuan-cicilan?type=elektronik"
+              class="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center transition-colors hover:bg-muted/50 hover:border-primary/50"
+            >
+              <img
+                src="/images/illustrations/electronics.png"
+                alt=""
+                width="512"
+                height="512"
+                loading="lazy"
+                class="h-12 w-12 object-contain sm:h-14 sm:w-14"
+              />
+              <span class="text-sm font-semibold text-foreground">Kalkulator Kemampuan Cicilan</span>
+              <span class="text-xs text-muted-foreground">Elektronik</span>
+            </a>
+            <a
+              href="/kalkulator-kemampuan-cicilan?type=lainnya"
+              class="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center transition-colors hover:bg-muted/50 hover:border-primary/50"
+            >
+              <img
+                src="/images/illustrations/other.png"
+                alt=""
+                width="512"
+                height="512"
+                loading="lazy"
+                class="h-12 w-12 object-contain sm:h-14 sm:w-14"
+              />
+              <span class="text-sm font-semibold text-foreground">Kalkulator Kemampuan Cicilan</span>
+              <span class="text-xs text-muted-foreground">Lainnya</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section id="cta" class="w-full bg-primary/5">
+      <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="py-14 sm:py-16">
+          <div class="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+            <div class="text-center lg:col-span-7 lg:text-left">
+              <h2 class="text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+                Mau tahu cicilan yang masih masuk akal untuk kondisi keuanganmu?
+              </h2>
+              <p class="mt-4 text-lg text-muted-foreground leading-relaxed">
+                Sebelum nyicil, cek dulu.
+              </p>
+              <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                <a
+                  href="/kalkulator-kemampuan-cicilan"
+                  class={cn(buttonVariants({ variant: 'default' }), 'h-auto gap-2 rounded-full px-8 py-3.5 text-base font-semibold')}
+                >
+                  Cek Sekarang
+                  <ArrowRight class="h-4 w-4" aria-hidden="true" />
+                </a>
+              </div>
+              <p class="mt-5 text-sm text-muted-foreground">Gratis, cepat, tanpa perlu login.</p>
+            </div>
+            <div class="mx-auto w-full max-w-[280px] lg:col-span-5 lg:max-w-[340px] lg:justify-self-end">
+              <img
+                src="/tentang-checkdulu/cta.png"
+                alt="Ilustrasi CTA"
+                width="384"
+                height="288"
+                class="h-auto w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

@@ -1,7 +1,9 @@
 ---
 import '../styles/global.css';
-import { Menu } from 'lucide-astro';
+import { Menu, ArrowRight } from 'lucide-astro';
 import SiteLogo from '../components/site-logo.astro';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface Props {
   title?: string;
@@ -46,6 +48,11 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:type" content={ogType} />
@@ -109,12 +116,6 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
         <div class="flex items-center gap-2">
           <nav aria-label="Menu utama" class="hidden items-center md:flex">
             <a
-              href="/kalkulator-kemampuan-cicilan"
-              class="rounded-full px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-            >
-              Cek Kemampuan Cicilan
-            </a>
-            <a
               href="/articles"
               class="rounded-full px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
@@ -126,7 +127,23 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
             >
               Challenges
             </a>
+            <a
+              href="/tentang"
+              class="rounded-full px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              Tentang
+            </a>
           </nav>
+          <a
+            href="/kalkulator-kemampuan-cicilan"
+            class={cn(
+              buttonVariants({ variant: 'default' }),
+              'ml-3 hidden gap-2 rounded-full px-6 py-2.5 text-sm font-semibold md:inline-flex',
+            )}
+          >
+            Cek Kemampuan Cicilan
+            <ArrowRight class="h-4 w-4" aria-hidden="true" />
+          </a>
           <button
             id="menuBtn"
             type="button"
@@ -145,6 +162,7 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
           <a href="/kalkulator-kemampuan-cicilan" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Cek Kemampuan Cicilan</a>
           <a href="/articles" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Artikel</a>
           <a href="/challenges" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Challenges</a>
+          <a href="/tentang" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Tentang</a>
         </div>
       </nav>
     </header>
