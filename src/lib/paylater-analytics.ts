@@ -187,7 +187,6 @@ export function fireChallengeDayActive(
   emit: ChallengeEventEmitter,
   params: ChallengeDayActiveParams
 ): void {
-  console.debug('[paylater-analytics] fireChallengeDayActive called', params);
   emit('paylater_challenge_day_active', {
     day: params.day,
     logs_count: params.logs_count,

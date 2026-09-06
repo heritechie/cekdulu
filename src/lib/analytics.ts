@@ -30,21 +30,16 @@ export function isInternalAnalyticsUser(): boolean {
  * available, or GA4 is not configured.
  */
 export function trackEvent(name: string, params?: AnalyticsParams): void {
-  console.debug('[analytics] trackEvent called', { name, params });
   if (isInternalAnalyticsUser()) return;
 
   const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
-  if (typeof gtag !== 'function') {
-    console.warn('[analytics] gtag not available');
-    return;
-  }
+  if (typeof gtag !== 'function') return;
   const payload: Record<string, string | number | boolean> = {};
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value !== undefined) payload[key] = value;
     }
   }
-  console.debug('[analytics] calling gtag', { name, payload });
   gtag('event', name, payload);
 }
 

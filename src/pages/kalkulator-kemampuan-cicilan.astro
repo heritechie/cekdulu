@@ -440,8 +440,8 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       lainnya: 'Cicilan',
     };
 
-    // ---- currency formatting on all wizard inputs ----
-    document.querySelectorAll<HTMLInputElement>('#wizardForm input').forEach((input) => {
+    // ---- currency formatting on all wizard inputs (exclude range slider) ----
+    document.querySelectorAll<HTMLInputElement>('#wizardForm input:not([type="range"])').forEach((input) => {
       input.addEventListener('input', () => formatMoneyInput(input));
       input.addEventListener('keydown', (e) => {
         if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -648,7 +648,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
           : `Ruang cicilan ${noun} mulai sempit`;
       }
       return hasNewInst
-        ? `Beban cicilan ${noun} terlalu besar`
+        ? `Beban ${noun} terlalu besar`
         : `Ruang cicilan ${noun} terlalu sempit`;
     }
 
@@ -760,7 +760,7 @@ function fillResult() {
       }
       // critical
       const base = hasNewInst
-        ? `Beban cicilan ${noun} terlalu besar dan menyisakan sedikit ruang untuk kebutuhan lain. Perlu dipertimbangkan kembali.`
+        ? `Beban ${noun} terlalu besar dan menyisakan sedikit ruang untuk kebutuhan lain. Perlu dipertimbangkan kembali.`
         : `Ruang cicilan ${noun} terlalu sempit untuk rencana baru.`;
       return base + expensesAwareness;
     }
@@ -772,21 +772,16 @@ function fillResult() {
       const sisaEl = document.getElementById('scenario-sisa') as HTMLElement | null;
       if (!slider || !valueEl || !maxLabelEl || !sisaEl) return;
 
-      // Set max: allow testing up to 10M or at least 1M above the original installment
-      // so user can test higher values than what they originally entered
-      const income = readNumber('monthlyIncome');
-      const initialVal = baseNew > 0 ? baseNew : 0;
-      const incomeBasedMax = Math.min(Math.max(1_000_000, Math.floor(income * 0.5)), 10_000_000);
-      const minMaxForTesting = initialVal > 0 ? Math.ceil((initialVal + 1_000_000) / 100_000) * 100_000 : 10_000_000;
-      const maxValRounded = Math.ceil(Math.max(incomeBasedMax, minMaxForTesting) / 100_000) * 100_000;
-      slider.max = String(maxValRounded);
+      // Fixed max per spec: always 0 to 10,000,000 with step 100,000
+      slider.max = '10000000';
       slider.step = '100000';
 
       // Set initial value: use baseNew if provided, else 0
+      const initialVal = baseNew > 0 ? baseNew : 0;
       slider.value = String(initialVal);
 
       // Update max label
-      maxLabelEl.textContent = formatRupiah(maxValRounded);
+      maxLabelEl.textContent = formatRupiah(10_000_000);
 
       // Update value display
       const updateValueDisplay = (val: number) => {
@@ -806,11 +801,19 @@ function fillResult() {
         updateMainResult(imgIncome, existing, val, expenses, hasExpensesInput);
       };
 
-      // Slider input handler
+      // Slider input handler - snap to step to avoid browser quirks
+      const STEP = 100_000;
+      const snapToStep = (v: number) => Math.round(v / STEP) * STEP;
+
       if (!(slider.dataset.hooked === '1')) {
         slider.dataset.hooked = '1';
         slider.addEventListener('input', () => {
-          const val = Number(slider.value);
+          const rawVal = Number(slider.value);
+          const val = snapToStep(rawVal);
+          // If browser didn't snap, force the slider value to the snapped value
+          if (val !== rawVal) {
+            slider.value = String(val);
+          }
           updateValueDisplay(val);
           recalc(val);
         });
