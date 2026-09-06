@@ -27,7 +27,7 @@
   </g>
 
   <!-- Day and progress -->
-  <text x="72" y="318" font-family="Arial,sans-serif" font-size="92" font-weight="900" letter-spacing="-3" fill="#FFF">Hari ke-</text>
+  <text x="72" y="318" font-family="Arial,sans-serif" font-size="92" font-weight="900" letter-spacing="-3" fill="#FFF">Hari ke -</text>
   <text id="dayHero" x="68" y="550" font-family="Arial,sans-serif" font-size="255" font-weight="900" letter-spacing="-12" fill="url(#yellow)" stroke="#FFF49C" stroke-width="2" paint-order="stroke">{{DAY}}</text>
   <text x="75" y="614" font-family="Arial,sans-serif" font-size="54" font-weight="800" fill="#FFF">dari 30</text>
   <rect x="72" y="650" width="650" height="28" rx="14" fill="#D5ECFF" opacity=".78"/>

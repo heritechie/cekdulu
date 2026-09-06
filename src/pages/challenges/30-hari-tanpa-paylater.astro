@@ -77,7 +77,19 @@ const milestoneRow = [7, 14, 21, 30] as const;
       <p class="mx-auto mt-3 max-w-md text-center text-base text-muted-foreground">
         Coba berhenti menggunakan PayLater selama 30 hari. Lihat berapa pengeluaran yang berhasil
         kamu hindari.
-      </p>
+</p>
+
+      <div class="mt-10 flex justify-center">
+        <img
+          src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/30-days-no-paylater.png"
+          alt="Ilustrasi menghindari PayLater"
+          width="640"
+          height="533"
+          class="h-auto w-full max-w-[320px]"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
 
       <div class="mt-6 flex justify-center">
         <button
@@ -99,142 +111,6 @@ const milestoneRow = [7, 14, 21, 30] as const;
         />
         Gratis. Tanpa login. Data tersimpan di perangkatmu.
       </p>
-
-      <div class="mt-8 flex justify-center">
-        <img
-          src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/30-days-no-paylater.png"
-          alt="Ilustrasi menghindari PayLater"
-          width="640"
-          height="533"
-          class="h-auto w-full max-w-[260px]"
-          loading="eager"
-          decoding="async"
-        />
-      </div>
-
-      <ul class="mt-8 space-y-2.5">
-        <li class="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
-          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <CalendarDays class="h-5 w-5" aria-hidden="true" />
-          </span>
-          <span class="text-sm text-foreground sm:text-base">
-            <strong class="font-semibold">Mulai challenge</strong> — cukup satu ketukan.
-          </span>
-        </li>
-        <li class="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
-          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
-            <img
-              src="/cekdulu-30-hari-tanpa-paylater-assets/icons/check.svg"
-              alt=""
-              width="28"
-              height="28"
-              class="h-5 w-5"
-            />
-          </span>
-          <span class="text-sm text-foreground sm:text-base">
-            <strong class="font-semibold">Catat</strong> saat berhasil menahan diri
-          </span>
-        </li>
-        <li class="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
-          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
-            <img
-              src="/cekdulu-30-hari-tanpa-paylater-assets/icons/share.svg"
-              alt=""
-              width="28"
-              height="28"
-              class="h-5 w-5"
-            />
-          </span>
-          <span class="text-sm text-foreground sm:text-base">
-            <strong class="font-semibold">Lihat hasil</strong> &amp; bagikan
-          </span>
-        </li>
-      </ul>
-    </section>
-
-    <!-- ============ SETUP ============ -->
-    <section data-screen="setup" id="screen-setup" hidden aria-labelledby="heading-setup">
-      <button
-        id="setupBackBtn"
-        type="button"
-        class="-ml-2 inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        <ArrowLeft class="h-4 w-4" aria-hidden="true" />
-        Kembali
-      </button>
-
-      <div class="relative -mx-4 mt-5 rounded-b-[2rem] pb-8 bg-[radial-gradient(90%_70%_at_78%_8%,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0)_55%),linear-gradient(180deg,#F2F7FF_0%,#E7EFFF_42%,#DCE9FF_70%,#EFF4FF_100%)] sm:-mx-6">
-        <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
-          <span class="absolute left-2 top-1 h-2.5 w-2.5 rotate-45 rounded-[2px] bg-yellow-300/70"></span>
-          <span class="absolute left-7 top-3 h-10 w-16 rounded-full bg-white/80 blur-md"></span>
-          <span class="absolute left-20 top-9 h-8 w-8 rounded-full border border-primary/15"></span>
-        </div>
-
-        <img
-          src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/rocket.png"
-          alt=""
-          aria-hidden="true"
-          width="1536"
-          height="1024"
-          loading="eager"
-          decoding="async"
-          class="pointer-events-none absolute right-6 -top-3 z-0 h-auto w-[180px] select-none sm:right-10 sm:w-[205px]"
-        />
-
-        <form id="setupForm" class="relative z-10 mx-auto mt-[4.5rem] w-[calc(100%-32px)] max-w-[430px] rounded-2xl border border-border/70 bg-card p-5 shadow-[0_18px_36px_-20px_rgba(21,52,95,0.4)]" novalidate>
-        <h2 id="heading-setup" tabindex="-1" class="text-xl font-semibold tracking-tight text-foreground outline-none">
-          Berapa biasanya kamu pakai PayLater per bulan?
-        </h2>
-        <p class="mt-1.5 text-sm leading-normal text-muted-foreground">
-          Perkiraan saja sudah cukup. Angka ini hanya pembanding di akhir challenge.
-        </p>
-
-        <div class="mt-4">
-          <label for="baselineInput" class="mb-1.5 block text-sm font-medium text-muted-foreground">
-            Biasanya menggunakan PayLater sekitar
-          </label>
-          <div class="relative">
-            <span
-              class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-medium text-muted-foreground"
-              aria-hidden="true"
-            >
-              Rp
-            </span>
-            <input
-              id="baselineInput"
-              name="baseline"
-              type="text"
-              inputmode="numeric"
-              autocomplete="off"
-              placeholder="0"
-              aria-describedby="baselineHint"
-              class="h-auto w-full rounded-xl border border-input bg-transparent px-4 py-3 pl-10 text-lg outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-            />
-          </div>
-          <p id="baselineHint" class="mt-2 text-[13px] leading-normal text-muted-foreground">
-            Boleh dilewati. Challenge tetap berjalan tanpa angka ini.
-          </p>
-          <p id="setup-error" hidden class="mt-2 text-sm font-medium text-destructive" aria-live="polite"></p>
-        </div>
-
-        <div class="mt-5 space-y-1.5">
-          <button
-            type="submit"
-            class={cn(buttonVariants({ variant: 'default' }), 'h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold')}
-          >
-            Mulai 30 Hari
-            <ArrowRight class="h-4 w-4" aria-hidden="true" />
-          </button>
-          <button
-            id="skipBtn"
-            type="button"
-            class="mx-auto block rounded-full px-6 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            Lewati
-          </button>
-        </div>
-      </form>
-      </div>
     </section>
 
     <!-- ============ ACTIVE ============ -->
@@ -642,6 +518,17 @@ const milestoneRow = [7, 14, 21, 30] as const;
     import { formatRupiah } from '../../lib/calculator/engine';
     import { trackEvent } from '../../lib/analytics';
     import {
+      challengeEntrySource,
+      completeParamsFromState,
+      fireChallengeComplete,
+      fireChallengeLog,
+      fireChallengeMilestone,
+      fireChallengeShare,
+      fireChallengeStart,
+      fireChallengeView,
+      type ChallengeShareAnalyticsContext,
+    } from '../../lib/paylater-analytics';
+    import {
       buildChallengeShareText,
       CHALLENGE_SHARE_URL,
       type ChallengeShareContext,
@@ -663,19 +550,17 @@ const milestoneRow = [7, 14, 21, 30] as const;
       logOutcomeLabel,
       markMilestoneCelebrated,
       nextUncelebratedMilestone,
-      paylaterAmountBucket,
       paylaterAvoidedCount,
       readChallengeStorage,
       relativeLogDateLabel,
       rocketStageForDay,
-      summarizeForAnalytics,
       totalAvoidedExpense,
       writeChallengeStorage,
       type ChallengeState,
       type LogKind,
     } from '../../lib/paylater-challenge';
 
-    type ScreenName = 'landing' | 'setup' | 'active' | 'log' | 'complete';
+    type ScreenName = 'landing' | 'active' | 'log' | 'complete';
 
     // ---- money input helpers ----
     const MAX_AMOUNT = 1_000_000_000;
@@ -702,20 +587,17 @@ const milestoneRow = [7, 14, 21, 30] as const;
       return raw ? parseFloat(raw) || 0 : 0;
     }
 
-    ['baselineInput', 'logAmount'].forEach((id) => {
-      const el = document.getElementById(id) as HTMLInputElement | null;
-      el?.addEventListener('input', () => formatMoneyInput(el));
-      el?.addEventListener('keydown', (e) => {
-        if (e.ctrlKey || e.metaKey || e.altKey) return;
-        if (e.key.length > 1 || /[0-9]/.test(e.key)) return;
-        e.preventDefault();
-      });
+    const logAmountEl = document.getElementById('logAmount') as HTMLInputElement | null;
+    logAmountEl?.addEventListener('input', () => formatMoneyInput(logAmountEl));
+    logAmountEl?.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key.length > 1 || /[0-9]/.test(e.key)) return;
+      e.preventDefault();
     });
 
     // ---- screens ----
     const screenIds: Record<ScreenName, string> = {
       landing: 'screen-landing',
-      setup: 'screen-setup',
       active: 'screen-active',
       log: 'screen-log',
       complete: 'screen-complete',
@@ -900,7 +782,7 @@ const milestoneRow = [7, 14, 21, 30] as const;
         banner.hidden = false;
         banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
-      trackEvent('paylater_challenge_milestone', { milestone: ms });
+      fireChallengeMilestone(trackEvent, ms);
     }
 
     function showMilestoneBanner(ms: number) {
@@ -954,51 +836,22 @@ const milestoneRow = [7, 14, 21, 30] as const;
 
     // ---- analytics ----
     function fireCompleteEvent(current: ChallengeState) {
-      const s = summarizeForAnalytics(current);
-      trackEvent('paylater_challenge_complete', {
-        day: s.day,
-        log_count: s.log_count,
-        avoided_expense_bucket: s.avoided_expense_bucket,
-        paylater_avoided_bucket: s.paylater_avoided_bucket,
-        baseline_bucket: s.baseline_bucket,
-      });
+      // Milestone day 30 (only Option A stats are included in amounts).
+      fireChallengeComplete(trackEvent, completeParamsFromState(current));
     }
 
     // ---- flow ----
     function startChallenge() {
-      const baseline = readNumber('baselineInput');
       state = createEmptyState();
-      if (baseline > 0) state.baseline = Math.round(baseline);
       save();
-      trackEvent('paylater_challenge_start', {
-        has_baseline: state.baseline > 0,
-        baseline_bucket: paylaterAmountBucket(state.baseline),
+      fireChallengeStart(trackEvent, {
+        setupSkipped: true,
       });
       renderActive();
       showScreen('active', true);
     }
 
-    document.getElementById('landingStartBtn')?.addEventListener('click', () => showScreen('setup', true));
-    document.getElementById('setupBackBtn')?.addEventListener('click', () => showScreen('landing', true));
-    document.getElementById('setupForm')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const baseline = readNumber('baselineInput');
-      const err = document.getElementById('setup-error');
-      if (baseline > MAX_AMOUNT) {
-        if (err) {
-          err.textContent = 'Nominal terlalu besar.';
-          err.hidden = false;
-        }
-        (document.getElementById('baselineInput') as HTMLInputElement | null)?.focus();
-        return;
-      }
-      if (err) {
-        err.textContent = '';
-        err.hidden = true;
-      }
-      startChallenge();
-    });
-    document.getElementById('skipBtn')?.addEventListener('click', startChallenge);
+    document.getElementById('landingStartBtn')?.addEventListener('click', startChallenge);
 
     document.getElementById('logBtn')?.addEventListener('click', () => showScreen('log', true));
 
@@ -1058,10 +911,7 @@ const milestoneRow = [7, 14, 21, 30] as const;
       const kind = radio.value as LogKind;
       state = addLog(state, createLog(kind, amount, category, day));
       save();
-      trackEvent('paylater_challenge_log', {
-        log_type: kind,
-        amount_bucket: paylaterAmountBucket(amount),
-      });
+      fireChallengeLog(trackEvent, { outcome: kind, amount, day });
 
       const form = document.getElementById('logForm') as HTMLFormElement | null;
       form?.reset();
@@ -1147,7 +997,11 @@ const milestoneRow = [7, 14, 21, 30] as const;
         if (file && typeof navigator.share === 'function' && navigator.canShare?.({ files: [file] })) {
           try {
             await navigator.share({ files: [file] });
-            trackEvent('paylater_challenge_share', { share_method: 'native', share_context: context });
+            fireChallengeShare(trackEvent, {
+              day: data.day,
+              shareMethod: 'web_share',
+              context: context as ChallengeShareAnalyticsContext,
+            });
             return;
           } catch (err) {
             if ((err as Error).name === 'AbortError') {
@@ -1161,7 +1015,11 @@ const milestoneRow = [7, 14, 21, 30] as const;
 
         if (file) {
           downloadPng(file);
-          trackEvent('paylater_challenge_share', { share_method: 'download', share_context: context });
+          fireChallengeShare(trackEvent, {
+            day: data.day,
+            shareMethod: 'download',
+            context: context as ChallengeShareAnalyticsContext,
+          });
           restoreLabel();
           return;
         }
@@ -1240,16 +1098,19 @@ const milestoneRow = [7, 14, 21, 30] as const;
       if (!ok) return;
       clearChallengeStorage();
       state = null;
-      const baseline = document.getElementById('baselineInput') as HTMLInputElement | null;
-      if (baseline) {
-        baseline.value = '';
-        baseline.dataset.value = '';
-      }
-      showScreen('setup', true);
+      showScreen('landing', true);
     });
 
     // ---- init ----
     document.documentElement.removeAttribute('data-pl');
+
+    // ---- analytics: page view ----
+    // Fires once per tab session so a refresh does not double-count the entry.
+    fireChallengeView(
+      trackEvent,
+      challengeEntrySource(document.referrer, window.location.origin),
+      window.sessionStorage
+    );
 
     function init() {
       if (!state) {

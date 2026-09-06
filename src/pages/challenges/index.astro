@@ -32,7 +32,6 @@ const calcUrl = '/kalkulator-kemampuan-cicilan';
   <main class="mx-auto w-full max-w-2xl px-4 pt-6 pb-16 sm:px-6 sm:pt-10 sm:pb-20 lg:px-8">
     <!-- ============ HERO ============ -->
     <section class="text-center" aria-labelledby="challenges-heading">
-      <p class="text-sm font-medium text-muted-foreground">CekDulu</p>
       <h1
         id="challenges-heading"
         class="mt-1 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
@@ -206,11 +205,14 @@ const calcUrl = '/kalkulator-kemampuan-cicilan';
 
   <script>
     import { CHALLENGE_DAYS, dayForDate, isChallengeComplete, readChallengeStorage } from '../../lib/paylater-challenge';
+    import { trackEvent } from '../../lib/analytics';
+    import { fireChallengeResume } from '../../lib/paylater-analytics';
 
     const state = readChallengeStorage();
     if (state) {
       const done = state.completed || isChallengeComplete(state);
       const day = dayForDate(state.startDate);
+      const cta = document.getElementById('challenge-cta') as HTMLAnchorElement | null;
 
       const badge = document.getElementById('challenge-badge');
       const badgeText = document.getElementById('challenge-badge-text');
@@ -245,6 +247,9 @@ const calcUrl = '/kalkulator-kemampuan-cicilan';
         if (progressFill) progressFill.style.width = `${Math.round((day / CHALLENGE_DAYS) * 100)}%`;
         if (progressTrack) progressTrack.setAttribute('aria-valuenow', String(day));
         if (ctaText) ctaText.textContent = 'Lanjutkan Challenge';
+        cta?.addEventListener('click', () => {
+          fireChallengeResume(trackEvent, day);
+        });
       }
     }
   </script>

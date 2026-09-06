@@ -135,13 +135,15 @@ export function paylaterAvoidedCount(state: ChallengeState): number {
 }
 
 /**
- * The highest celebration milestone (7/14/21) reached but not yet
- * acknowledged, or null when nothing should be celebrated.
+ * The celebration milestone (7/14/21) matching the current challenge day and
+ * not yet acknowledged, or null when nothing should be celebrated. A milestone
+ * fires exactly once — when its own day is reached — so refreshing a later
+ * day never re-reveals or re-fires an earlier milestone.
  */
 export function nextUncelebratedMilestone(state: ChallengeState, day: number): Milestone | null {
   const celebrated = new Set(state.celebratedMilestones);
-  const candidates = CELEBRATION_MILESTONES.filter((m) => day >= m && !celebrated.has(m));
-  return candidates.length ? (Math.max(...candidates) as Milestone) : null;
+  const candidate = CELEBRATION_MILESTONES.find((m) => m === day && !celebrated.has(m));
+  return candidate ?? null;
 }
 
 /** Mark a milestone as acknowledged (persisted by the caller). */

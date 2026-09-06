@@ -106,23 +106,45 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
     <header class="relative border-b border-border/60">
       <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <SiteLogo />
-        <button
-          id="menuBtn"
-          type="button"
-          aria-haspopup="true"
-          aria-expanded="false"
-          aria-label="Menu"
-          class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted"
-        >
-          <Menu class="h-5 w-5" aria-hidden="true" />
-        </button>
+        <div class="flex items-center gap-2">
+          <nav aria-label="Menu utama" class="hidden items-center md:flex">
+            <a
+              href="/kalkulator-kemampuan-cicilan"
+              class="rounded-full px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              Cek Kemampuan Cicilan
+            </a>
+            <a
+              href="/articles"
+              class="rounded-full px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              Artikel
+            </a>
+            <a
+              href="/challenges"
+              class="rounded-full px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              Challenges
+            </a>
+          </nav>
+          <button
+            id="menuBtn"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Menu"
+            class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted"
+          >
+            <Menu class="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
       </div>
       <nav id="mobileMenu" aria-label="Menu utama" class="absolute left-0 right-0 top-full z-40 hidden w-full border-t border-b border-border/60 bg-background shadow-sm md:hidden">
         <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
           <a href="/" class="block py-4 text-base font-medium text-foreground">Beranda</a>
-          <a href="/kalkulator-kemampuan-cicilan" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Kalkulator Cicilan</a>
+          <a href="/kalkulator-kemampuan-cicilan" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Cek Kemampuan Cicilan</a>
+          <a href="/articles" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Artikel</a>
           <a href="/challenges" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">Challenges</a>
-          <a href="/apa-itu-dbr" class="block border-t border-border/60 py-4 text-base font-medium text-foreground">DBR</a>
         </div>
       </nav>
     </header>

@@ -12,7 +12,7 @@
  */
 
 export const SHARE_CARD_WIDTH = 1080;
-export const SHARE_CARD_HEIGHT = 1350;
+export const SHARE_CARD_HEIGHT = 880;
 
 /** Same-origin brand logo used by the website header (source of truth). */
 export const LOGO_PATH = '/images/logo-cekdulu.png';
@@ -23,11 +23,22 @@ const COLORS = {
   ink: '#1f2430',
   muted: '#5c6570',
   faint: '#8a919c',
-  line: '#c6ccd4',
+  line: '#e6ebf2',
+  soft: '#f4f8fd',
+  yellow: '#ffd51f',
   healthy: '#0f9d6c',
   warning: '#d97706',
   risk: '#dc2626',
 };
+
+/** Same-origin balance illustration (the signature visual). */
+export const BALANCE_PATH = '/images/illustrations/hero-balance-v1.png';
+
+export interface PersonalReportRow {
+  label: string;
+  value: number;
+  emphasize: boolean;
+}
 
 type Status = 'healthy' | 'warning' | 'critical' | 'negative';
 
@@ -45,11 +56,23 @@ export interface ShareCardOptions {
   totalExpenses: number;
 }
 
-const FONT =
-  "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
-
-function font(weight: number, size: number): string {
-  return `${weight} ${size}px ${FONT}`;
+/**
+ * The four figures shown on the personal result card, in display order. Kept
+ * as a pure helper so tests can lock down that EVERY financial detail the user
+ * entered still appears on the "Simpan Hasil" image.
+ */
+export function personalReportRows(
+  remaining: number,
+  income: number,
+  totalDebt: number,
+  totalExpenses: number
+): PersonalReportRow[] {
+  return [
+    { label: 'Penghasilan', value: income, emphasize: false },
+    { label: 'Total cicilan', value: totalDebt, emphasize: false },
+    { label: 'Pengeluaran', value: totalExpenses, emphasize: false },
+    { label: 'Sisa uang', value: remaining, emphasize: true },
+  ];
 }
 
 /** Indonesian rupiah compact integer format, e.g. "1.500.000". */
@@ -61,6 +84,13 @@ export function formatRupiahInt(amount: number): string {
 function formatMoney(amount: number): string {
   if (amount < 0) return `-Rp ${formatRupiahInt(-amount)}`;
   return `Rp ${formatRupiahInt(amount)}`;
+}
+
+const FONT =
+  "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+
+function font(weight: number, size: number): string {
+  return `${weight} ${size}px ${FONT}`;
 }
 
 /** Measure text width for a given font size (weight 700). */
@@ -174,12 +204,6 @@ function roundRect(
   ctx.closePath();
 }
 
-/** Convert a hex #rrggbb to rgba string with the given alpha (0-1). */
-function hexA(hex: string, alpha: number): string {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
-}
-
 function accentFor(status: Status): string {
   if (status === 'healthy') return COLORS.healthy;
   if (status === 'warning') return COLORS.warning;
@@ -209,132 +233,157 @@ export function renderShareCard(
   const padX = 88;
   const contentW = W - padX * 2;
 
-  // ---- Branding: official CekDulu logo (top-left, proportional) ----
-  const logoTop = 84;
-  const logoH = 92;
+  // ---- Branding: official CekDulu logo (natural colors, top-left) ----
+  const logoTop = 32;
+  const logoHt = 64;
   if (logo && logo.naturalWidth > 0) {
-    const logoW = logoH * (logo.naturalWidth / logo.naturalHeight);
-    ctx.drawImage(logo, padX, logoTop, logoW, logoH);
+    const logoW = logoHt * (logo.naturalWidth / logo.naturalHeight);
+    ctx.drawImage(logo, padX, logoTop, logoW, logoHt);
   }
 
-  // ---- Headline (max 2 lines) ----
-  ctx.textBaseline = 'alphabetic';
+  // ---- Hero band: blue gradient with headline + status badge ----
+  const heroTop = 24;
+  const heroH = 160;
+  const heroBottom = heroTop + heroH;
+  const heroGrad = ctx.createLinearGradient(0, heroTop, 0, heroBottom);
+  heroGrad.addColorStop(0, '#0b5fe0');
+  heroGrad.addColorStop(0.5, '#1189f6');
+  heroGrad.addColorStop(1, '#3da9ff');
+  roundRect(ctx, padX, heroTop, contentW, heroH, 32);
+  ctx.fillStyle = heroGrad;
+  ctx.fill();
+
+  // Subtle decorative circle inside hero band.
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
+  ctx.beginPath();
+  ctx.arc(padX + contentW / 2, heroTop + heroH / 2 + 10, 70, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Headline inside hero (white, max 2 lines) — generous top padding
   ctx.textAlign = 'left';
-  const wrapped = wrapText(ctx, opts.headline, contentW, 2, 58);
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = '#ffffff';
+  const wrapped = wrapText(ctx, opts.headline, contentW - 40, 2, 36);
   const hlSize = wrapped.fontSize;
-  const lineH = hlSize * 1.18;
-  let hlY = 340;
+  const lineH = hlSize * 1.2;
+  let hlY = heroTop + 48;
   for (const line of wrapped.lines) {
-    ctx.fillStyle = COLORS.ink;
-    ctx.font = font(700, hlSize);
-    ctx.fillText(line.text, padX, hlY);
+    ctx.font = font(800, hlSize);
+    ctx.fillText(line.text, padX + 52, hlY);
     hlY += lineH;
   }
 
-  // ---- Status badge ----
-  const accent = accentFor(opts.status);
-  const badgeH = 64;
-  const badgeFont = 32;
-  const badgePadX = 32;
-  const badgeW = r(measure(ctx, opts.statusLabel, badgeFont) + badgePadX * 2);
-  const badgeTop = 460;
-  const badgeX = padX;
-  ctx.fillStyle = hexA(accent, 0.14);
-  roundRect(ctx, badgeX, badgeTop, badgeW, badgeH, badgeH / 2);
+  // Status badge: solid yellow pill with status text — generous bottom padding
+  const badgeFont = 24;
+  const badgeHt = 40;
+  const badgeW = r(measure(ctx, opts.statusLabel, badgeFont) + 32 * 2);
+  const badgeY = heroBottom - badgeHt - 24;
+  ctx.fillStyle = COLORS.yellow;
+  roundRect(ctx, padX + 48, badgeY, badgeW, badgeHt, badgeHt / 2);
   ctx.fill();
-  ctx.fillStyle = accent;
+  ctx.fillStyle = COLORS.ink;
   ctx.font = font(600, badgeFont);
   ctx.textAlign = 'left';
-  ctx.fillText(opts.statusLabel, badgeX + badgePadX, badgeTop + badgeH / 2 + 11);
+  ctx.fillText(opts.statusLabel, padX + 64, badgeY + badgeHt / 2 + 8);
 
-  // ---- Remaining money (primary figure) ----
-  ctx.textAlign = 'left';
+  // ---- Sisa uang (primary figure) ----
+  // Clear section gap after hero
+  const sectionGap = 32;
+  const labelY = heroBottom + sectionGap;
   ctx.fillStyle = COLORS.muted;
-  ctx.font = font(500, 34);
-  ctx.fillText('Sisa uang setelah semua beban', padX, 600);
+  ctx.font = font(500, 30);
+  ctx.fillText('Sisa uang setelah semua beban', padX, labelY);
 
+  const accent = accentFor(opts.status);
   const money = formatMoney(opts.remaining);
-  const remSize = fitFont(ctx, money, contentW - 60, 88, 46);
+  const moneyAvail = contentW - 60;
+  const moneySize = fitFont(ctx, money, moneyAvail, 80, 48);
+  // Breathing room between label and nominal
+  const moneyGap = 18;
+  const moneyY = labelY + moneyGap + moneySize;
   ctx.fillStyle = accent;
-  ctx.font = font(800, remSize);
-  ctx.fillText(money, padX, 756);
+  ctx.font = font(800, moneySize);
+  ctx.fillText(money, padX, moneyY);
 
   // ---- Divider ----
+  const dividerGap = 28;
+  const dividerY = moneyY + dividerGap;
   ctx.strokeStyle = COLORS.line;
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(padX, 828);
-  ctx.lineTo(W - padX, 828);
+  ctx.moveTo(padX, dividerY);
+  ctx.lineTo(W - padX, dividerY);
   ctx.stroke();
 
-  // ---- Breakdown rows ----
-  const rows: Array<[string, number, boolean]> = [
-    ['Penghasilan', opts.income, false],
-    ['Total cicilan', opts.totalDebt, false],
-    ['Pengeluaran', opts.totalExpenses, false],
-    ['Sisa uang', opts.remaining, true],
-  ];
-  const rowTop = 884;
-  const rowGap = 78;
-  const valueMax = contentW - 48;
+  // ---- Breakdown card: rounded soft card with all four figures ----
+  const cardGap = 24;
+  const cardY = dividerY + cardGap;
+  const cardH = 380;
+  roundRect(ctx, padX, cardY, contentW, cardH, 32);
+  ctx.fillStyle = COLORS.soft;
+  ctx.fill();
+
+  const rows = personalReportRows(
+    opts.remaining,
+    opts.income,
+    opts.totalDebt,
+    opts.totalExpenses
+  );
+  const rowStart = cardY + 28;
+  const rowGap = 82;
   for (let i = 0; i < rows.length; i++) {
-    const [label, value, emphasize] = rows[i];
-    const y = rowTop + i * rowGap;
-    const labelSize = 38;
-    ctx.textAlign = 'left';
-    ctx.fillStyle = COLORS.muted;
-    ctx.font = font(500, labelSize);
+    const { label, value, emphasize } = rows[i];
+    const y = rowStart + i * rowGap;
+    const labelSize = 26;
     const labelW = measure(ctx, label, labelSize);
 
-    const valText = formatMoney(value);
-    const valueAvailable = valueMax - labelW;
-    const valueSize = fitFont(ctx, valText, valueAvailable, emphasize ? 40 : 38, 22);
-
-    // Label: left-aligned at the safe horizontal padding.
+    ctx.textAlign = 'left';
     ctx.fillStyle = COLORS.muted;
     ctx.font = font(500, labelSize);
-    ctx.textAlign = 'left';
-    ctx.fillText(label, padX, y);
+    ctx.fillText(label, padX + 32, y + 6);
 
-    // Value: right-aligned with the same right margin.
-    const vColor = emphasize ? accent : COLORS.ink;
-    ctx.fillStyle = vColor;
-    ctx.font = font(emphasize ? 800 : 650, valueSize);
+    const valText = formatMoney(value);
+    const valAvail = W - padX - 32 - (padX + 32 + labelW) - 12;
+    const valSize = fitFont(ctx, valText, valAvail, emphasize ? 36 : 32, 22);
+    ctx.fillStyle = emphasize ? accent : COLORS.ink;
+    ctx.font = font(emphasize ? 800 : 650, valSize);
     ctx.textAlign = 'right';
-    ctx.fillText(valText, W - padX, y);
+    ctx.fillText(valText, W - padX - 32, y + 6);
   }
 
-  // ---- Footer: tagline + URL (URL is a separate CTA, not part of the logo) ----
-  const slogan = 'Sebelum nyicil, cek dulu.';
+  // ---- Footer: tagline + URL ----
+  const footerTop = cardY + cardH + 16;
   ctx.fillStyle = COLORS.ink;
-  ctx.font = font(600, 40);
+  ctx.font = font(600, 34);
   ctx.textAlign = 'center';
-  ctx.fillText(slogan, W / 2, 1180);
+  ctx.fillText('Sebelum nyicil, cek dulu.', W / 2, footerTop);
   ctx.fillStyle = '#1e46ad';
-  ctx.font = font(700, 46);
-  ctx.fillText('cekdulu.my.id', W / 2, 1248);
+  ctx.font = font(700, 40);
+  ctx.fillText('cekdulu.my.id', W / 2, footerTop + 40);
 }
 
-/** Load the official brand logo (same-origin, cached by the browser). */
-function loadLogo(): Promise<HTMLImageElement | null> {
+/** Load a same-origin image asset (cached by the browser). Resolves to null on
+ * failure so rendering can continue without the image.
+ */
+function loadImage(src: string): Promise<HTMLImageElement | null> {
   return new Promise((resolve) => {
     const img = new Image();
     img.decoding = 'async';
     img.onload = () => resolve(img);
     img.onerror = () => resolve(null);
-    img.src = LOGO_PATH;
+    img.src = src;
   });
 }
 
 /**
  * Generate a PNG Blob of the share card. Resolves to null if generation fails
- * (so the page can fall back). Also returns the loaded logo for reuse.
+ * (so the page can fall back).
  */
 export async function generateShareImageBlob(
   opts: ShareCardOptions
 ): Promise<Blob | null> {
   try {
-    const logo = await loadLogo();
+    const logo = await loadImage(LOGO_PATH);
     return await new Promise<Blob | null>((resolve) => {
       const canvas = document.createElement('canvas');
       renderShareCard(canvas, opts, logo);
