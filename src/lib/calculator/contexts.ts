@@ -1,11 +1,12 @@
 /**
  * CalculatorWizard context definitions.
  *
- * A context describes how one financing product (rumah, kendaraan, elektronik,
- * lainnya, ...) adapts the shared wizard UI: the labels the user sees, whether
- * the price simulator shows a DP field, and which tenors are offered.
+ * A context describes how one financing product (rumah, mobil, kendaraan,
+ * elektronik, lainnya, ...) adapts the shared wizard UI: the labels the user
+ * sees, whether the price simulator shows a DP field, and which tenors are
+ * offered.
  *
- * Future products (mobil, motor, pinjaman pribadi, ...) can be added as new
+ * Future products (motor, pinjaman pribadi, ...) can be added as new
  * entries here without touching the wizard component. Unknown slugs resolve to
  * "lainnya" so the utility always renders something sensible.
  */
@@ -61,6 +62,23 @@ export const INSTALLMENT_CONTEXTS: Record<string, ContextConfig> = {
     nounCapitalized: 'Kendaraan',
     burdenNoun: 'kendaraan',
     priceLabel: 'Harga kendaraan',
+    showDp: true,
+    tenureOptions: [
+      { months: 12, label: '1 tahun (12 bulan)' },
+      { months: 24, label: '2 tahun (24 bulan)' },
+      { months: 36, label: '3 tahun (36 bulan)' },
+      { months: 48, label: '4 tahun (48 bulan)' },
+      { months: 60, label: '5 tahun (60 bulan)' },
+    ],
+    interestPlaceholder: 'Contoh: 9,5',
+  },
+  mobil: {
+    slug: 'mobil',
+    label: 'Mobil',
+    noun: 'mobil',
+    nounCapitalized: 'Mobil',
+    burdenNoun: 'cicilan mobil',
+    priceLabel: 'Harga mobil',
     showDp: true,
     tenureOptions: [
       { months: 12, label: '1 tahun (12 bulan)' },

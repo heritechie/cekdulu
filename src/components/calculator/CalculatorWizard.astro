@@ -16,9 +16,11 @@ interface Props {
   context?: string | null;
   /** Page heading rendered inside the wizard. Overridable per landing page. */
   title?: string;
+  /** Whether the wizard renders its own <h1>. Landing pages that own the H1 pass false. */
+  showTitle?: boolean;
 }
 
-const { context = 'lainnya', title = 'Cek Kemampuan Cicilan' } = Astro.props;
+const { context = 'lainnya', title = 'Cek Kemampuan Cicilan', showTitle = true } = Astro.props;
 const slug = context ?? 'lainnya';
 const cfg = resolveContext(slug);
 ---
@@ -35,7 +37,7 @@ const cfg = resolveContext(slug);
 </button>
 
 <div id="calculator-wizard" data-context={slug} class="mt-2 w-full text-center">
-  <h1 class="text-balance text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>
+  {showTitle && <h1 class="text-balance text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>}
   <p id="wizard-type" class="mt-1 text-sm text-muted-foreground">Kredit yang dicek: {cfg.label}</p>
 
   <p id="step-label" class="mt-5 text-sm font-medium text-muted-foreground" aria-live="polite">1 dari 5</p>
