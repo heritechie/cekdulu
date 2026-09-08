@@ -89,6 +89,23 @@ export const INSTALLMENT_CONTEXTS: Record<string, ContextConfig> = {
     ],
     interestPlaceholder: 'Contoh: 9,5',
   },
+  motor: {
+    slug: 'motor',
+    label: 'Motor',
+    noun: 'motor',
+    nounCapitalized: 'Motor',
+    burdenNoun: 'cicilan motor',
+    priceLabel: 'Harga motor',
+    showDp: true,
+    tenureOptions: [
+      { months: 12, label: '1 tahun (12 bulan)' },
+      { months: 24, label: '2 tahun (24 bulan)' },
+      { months: 36, label: '3 tahun (36 bulan)' },
+      { months: 48, label: '4 tahun (48 bulan)' },
+      { months: 60, label: '5 tahun (60 bulan)' },
+    ],
+    interestPlaceholder: 'Contoh: 9,5',
+  },
   elektronik: {
     slug: 'elektronik',
     label: 'Elektronik',

@@ -11,8 +11,8 @@ import { resolveContext } from '../src/lib/calculator/contexts.ts';
  */
 
 describe('INSTALLMENT_CONTEXTS — supported slugs', () => {
-  test('all five current contexts resolve to themselves with complete config', () => {
-    for (const slug of ['rumah', 'mobil', 'kendaraan', 'elektronik', 'lainnya']) {
+  test('all six current contexts resolve to themselves with complete config', () => {
+    for (const slug of ['rumah', 'mobil', 'motor', 'kendaraan', 'elektronik', 'lainnya']) {
       const ctx = resolveContext(slug);
       assert.equal(ctx.slug, slug);
       assert.ok(ctx.label.length > 0, `${slug} needs a label`);
@@ -45,6 +45,17 @@ describe('INSTALLMENT_CONTEXTS — supported slugs', () => {
     assert.equal(ctx.showDp, true);
   });
 
+  test('motor offers the 1-tahun (12) s.d. 5-tahun (60) auto tenors', () => {
+    const months = resolveContext('motor').tenureOptions.map((o) => o.months);
+    assert.deepEqual(months, [12, 24, 36, 48, 60]);
+  });
+
+  test('motor labels the price field "Harga motor" and shows DP', () => {
+    const ctx = resolveContext('motor');
+    assert.equal(ctx.priceLabel, 'Harga motor');
+    assert.equal(ctx.showDp, true);
+  });
+
   test('elektronik offers short tenors down to 3 bulan', () => {
     assert.ok(resolveContext('elektronik').tenureOptions.some((o) => o.months === 3));
   });
@@ -56,9 +67,9 @@ describe('INSTALLMENT_CONTEXTS — supported slugs', () => {
 
 describe('resolveContext — fallback safety', () => {
   test('unknown slug falls back to lainnya', () => {
-    assert.equal(resolveContext('motor').slug, 'lainnya');
     assert.equal(resolveContext('pinjaman-pribadi').slug, 'lainnya');
     assert.equal(resolveContext('sepeda').slug, 'lainnya');
+    assert.equal(resolveContext('kamera').slug, 'lainnya');
   });
 
   test('empty / missing slug falls back to lainnya', () => {

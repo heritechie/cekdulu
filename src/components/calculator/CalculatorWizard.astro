@@ -766,6 +766,12 @@ const cfg = resolveContext(slug);
     });
   }
 
+  const step3ContextIllustrations: Record<string, { src: string; alt: string }> = {
+    mobil: { src: '/images/illustrations/car-installment.png', alt: 'Ilustrasi simulasi cicilan mobil' },
+    motor: { src: '/images/illustrations/motor-installment.png', alt: 'Ilustrasi simulasi cicilan motor' },
+    rumah: { src: '/images/illustrations/kpr-installment.png', alt: 'Ilustrasi simulasi cicilan KPR' },
+  };
+
   function updateIllustration() {
     const wrap = document.getElementById('wizard-illustration-wrap');
     if (currentStep === 5) {
@@ -773,7 +779,9 @@ const cfg = resolveContext(slug);
       return;
     }
     wrap?.classList.remove('hidden');
-    const ill = illustrations[currentStep];
+    const ill = currentStep === 3
+      ? (step3ContextIllustrations[typeSlug] ?? illustrations[3])
+      : illustrations[currentStep];
     if (wizardIllustration && ill) {
       wizardIllustration.setAttribute('src', ill.src);
       wizardIllustration.setAttribute('alt', ill.alt);
