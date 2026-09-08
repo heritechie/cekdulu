@@ -625,7 +625,8 @@ const cfg = resolveContext(slug);
   }
 
   function computeEstimate(): number {
-    const principal = calculateLoanPrincipal(readMoney('financingPrice'), readMoney('downPayment'));
+    const dp = cfg.showDp ? readMoney('downPayment') : 0;
+    const principal = calculateLoanPrincipal(readMoney('financingPrice'), dp);
     return calculateMonthlyInstallment({
       principal,
       annualInterestRate: readNumberInput('interestRate'),
@@ -727,14 +728,15 @@ const cfg = resolveContext(slug);
     }
     if (step === 3 && isSimPath()) {
       const price = readMoney('financingPrice');
-      const principal = calculateLoanPrincipal(price, readMoney('downPayment'));
+      const dp = cfg.showDp ? readMoney('downPayment') : 0;
+      const principal = calculateLoanPrincipal(price, dp);
       const tenure = readTenure();
       if (price <= 0) {
         showError('error-step3', 'Masukkan harga barang atau pokok pinjaman terlebih dahulu.');
         document.getElementById('financingPrice')?.focus();
         return false;
       }
-      if (principal <= 0) {
+      if (cfg.showDp && principal <= 0) {
         showError('error-step3', 'Uang muka (DP) tidak boleh melebihi harga barang.');
         document.getElementById('downPayment')?.focus();
         return false;
@@ -771,6 +773,7 @@ const cfg = resolveContext(slug);
     motor: { src: '/images/illustrations/motor-installment.png', alt: 'Ilustrasi simulasi cicilan motor' },
     rumah: { src: '/images/illustrations/kpr-installment.png', alt: 'Ilustrasi simulasi cicilan KPR' },
     kpr: { src: '/images/illustrations/kpr-installment.png', alt: 'Ilustrasi simulasi cicilan KPR' },
+    pinjaman: { src: '/images/illustrations/loan-installment.png', alt: 'Ilustrasi simulasi cicilan pinjaman' },
   };
 
   function updateIllustration() {

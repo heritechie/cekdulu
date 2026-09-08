@@ -11,8 +11,8 @@ import { resolveContext } from '../src/lib/calculator/contexts.ts';
  */
 
 describe('INSTALLMENT_CONTEXTS — supported slugs', () => {
-  test('all seven current contexts resolve to themselves with complete config', () => {
-    for (const slug of ['rumah', 'kpr', 'mobil', 'motor', 'kendaraan', 'elektronik', 'lainnya']) {
+  test('all eight current contexts resolve to themselves with complete config', () => {
+    for (const slug of ['rumah', 'kpr', 'mobil', 'motor', 'kendaraan', 'elektronik', 'pinjaman', 'lainnya']) {
       const ctx = resolveContext(slug);
       assert.equal(ctx.slug, slug);
       assert.ok(ctx.label.length > 0, `${slug} needs a label`);
@@ -35,6 +35,17 @@ describe('INSTALLMENT_CONTEXTS — supported slugs', () => {
     const ctx = resolveContext('kpr');
     assert.equal(ctx.priceLabel, 'Harga rumah');
     assert.equal(ctx.showDp, true);
+  });
+
+  test('pinjaman offers the 3 s.d. 60 bulan practical loan tenors', () => {
+    const months = resolveContext('pinjaman').tenureOptions.map((o) => o.months);
+    assert.deepEqual(months, [3, 6, 12, 18, 24, 36, 48, 60]);
+  });
+
+  test('pinjaman labels the price field "Jumlah pinjaman" and hides DP', () => {
+    const ctx = resolveContext('pinjaman');
+    assert.equal(ctx.priceLabel, 'Jumlah pinjaman');
+    assert.equal(ctx.showDp, false);
   });
 
   test('rumah offers the 20-tahun (240 bulan) KPR tenor', () => {
