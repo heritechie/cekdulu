@@ -11,8 +11,8 @@ import { resolveContext } from '../src/lib/calculator/contexts.ts';
  */
 
 describe('INSTALLMENT_CONTEXTS — supported slugs', () => {
-  test('all six current contexts resolve to themselves with complete config', () => {
-    for (const slug of ['rumah', 'mobil', 'motor', 'kendaraan', 'elektronik', 'lainnya']) {
+  test('all seven current contexts resolve to themselves with complete config', () => {
+    for (const slug of ['rumah', 'kpr', 'mobil', 'motor', 'kendaraan', 'elektronik', 'lainnya']) {
       const ctx = resolveContext(slug);
       assert.equal(ctx.slug, slug);
       assert.ok(ctx.label.length > 0, `${slug} needs a label`);
@@ -24,6 +24,17 @@ describe('INSTALLMENT_CONTEXTS — supported slugs', () => {
       assert.ok(Array.isArray(ctx.tenureOptions), `${slug} tenureOptions must be an array`);
       assert.ok(ctx.interestPlaceholder.length > 0, `${slug} needs interestPlaceholder`);
     }
+  });
+
+  test('kpr offers the 5 s.d. 30 tahun (60–360) KPR tenors', () => {
+    const months = resolveContext('kpr').tenureOptions.map((o) => o.months);
+    assert.deepEqual(months, [60, 120, 180, 240, 300, 360]);
+  });
+
+  test('kpr labels the price field "Harga rumah" and shows DP', () => {
+    const ctx = resolveContext('kpr');
+    assert.equal(ctx.priceLabel, 'Harga rumah');
+    assert.equal(ctx.showDp, true);
   });
 
   test('rumah offers the 20-tahun (240 bulan) KPR tenor', () => {

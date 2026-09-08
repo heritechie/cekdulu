@@ -1,0 +1,153 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CalculatorWizard from '../components/calculator/CalculatorWizard.astro';
+
+const canonical = new URL('simulasi-kpr', Astro.site).href;
+---
+<Layout
+  title="Simulasi KPR & Kalkulator Cicilan Rumah | CekDulu"
+  description="Hitung estimasi cicilan KPR berdasarkan harga rumah, DP, bunga, dan tenor. Setelah itu, cek apakah cicilannya masih sesuai dengan kondisi keuangan kamu."
+  canonical={canonical}
+  ogTitle="Simulasi KPR & Kalkulator Cicilan Rumah | CekDulu"
+  ogDescription="Hitung estimasi cicilan KPR berdasarkan harga rumah, DP, bunga, dan tenor. Setelah itu, cek apakah cicilannya masih sesuai dengan kondisi keuangan kamu."
+  ogUrl={canonical}
+>
+  <main>
+    <!-- CALCULATOR -->
+    <section class="mx-auto w-full max-w-2xl px-4 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <h1 class="text-balance text-3xl font-bold leading-tight tracking-tight sm:text-4xl">Simulasi KPR</h1>
+      <p class="mt-3 text-base text-muted-foreground sm:text-lg">
+        Hitung perkiraan cicilan KPR berdasarkan harga rumah, DP, bunga, dan tenor. Setelah itu, cek apakah cicilannya masih sesuai dengan kondisi keuangan kamu.
+      </p>
+      <div class="mt-6">
+        <CalculatorWizard context="kpr" showTitle={false} />
+      </div>
+    </section>
+
+    <!-- CARA MENGHITUNG -->
+    <section class="mx-auto w-full max-w-2xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Simulasi KPR: bagaimana cara menghitung cicilan rumah?</h2>
+      <p class="mt-3">
+        Simulasi KPR menghitung perkiraan cicilan bulanan berdasarkan beberapa angka yang kamu masukkan.
+      </p>
+
+      <ul class="mt-4 space-y-3 text-sm sm:text-base">
+        <li>
+          <strong class="text-foreground">Harga rumah</strong>
+          <span class="text-muted-foreground"> — harga rumah yang menjadi dasar perhitungan, biasanya sudah termasuk pajak dan biaya administrasi jika disebutkan oleh pengembang atau bank.</span>
+        </li>
+        <li>
+          <strong class="text-foreground">DP (uang muka)</strong>
+          <span class="text-muted-foreground"> — uang yang kamu bayarkan di awal. Semakin besar DP, semakin kecil sisa harga yang dibiayai melalui KPR.</span>
+        </li>
+        <li>
+          <strong class="text-foreground">Pokok pembiayaan</strong>
+          <span class="text-muted-foreground"> — sisa harga rumah setelah dikurangi DP. Inilah jumlah yang akan dicicil.</span>
+        </li>
+        <li>
+          <strong class="text-foreground">Bunga</strong>
+          <span class="text-muted-foreground"> — tingkat bunga memengaruhi besar cicilan dan total pembayaran. Pada simulasi ini, bunga digunakan untuk memperkirakan cicilan dengan metode anuitas.</span>
+        </li>
+        <li>
+          <strong class="text-foreground">Tenor</strong>
+          <span class="text-muted-foreground"> — lama waktu cicilan, umumnya 5 sampai 30 tahun untuk KPR.</span>
+        </li>
+        <li>
+          <strong class="text-foreground">Estimasi cicilan</strong>
+          <span class="text-muted-foreground"> — pokok pembiayaan beserta bunga yang dihitung menjadi pembayaran bulanan sama besar selama tenor.</span>
+        </li>
+      </ul>
+
+      <p class="mt-4 text-sm text-muted-foreground">
+        Perhitungan di atas adalah simulasi, bukan penawaran resmi dari bank. Perhitungan aktual bank dapat berbeda karena produk, suku bunga, biaya, asuransi, ketentuan pembiayaan, dan faktor lainnya.
+      </p>
+
+      <div class="mt-5 rounded-2xl border border-border bg-muted/40 p-5 sm:p-6">
+        <p class="text-sm font-semibold text-foreground">Contoh singkat</p>
+        <dl class="mt-3 space-y-2 text-sm">
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-muted-foreground">Harga rumah</dt>
+            <dd class="font-medium text-foreground">Rp500.000.000</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-muted-foreground">DP</dt>
+            <dd class="font-medium text-foreground">Rp100.000.000</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3 border-t border-border/60 pt-2">
+            <dt class="text-muted-foreground">Pokok pembiayaan</dt>
+            <dd class="font-medium text-foreground">Rp400.000.000</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-muted-foreground">Tenor</dt>
+            <dd class="font-medium text-foreground">20 tahun</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3 border-t border-border/60 pt-2">
+            <dt class="text-foreground">Estimasi cicilan</dt>
+            <dd class="text-base font-bold text-primary">sekitar Rp3.700.000 / bulan</dd>
+          </div>
+        </dl>
+        <p class="mt-3 text-sm text-muted-foreground">
+          Ini hanya contoh ilustrasi dengan bunga 9,5% per tahun. Hasil dari kalkulator bisa berbeda tergantung harga, DP, bunga, dan tenor yang kamu gunakan.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAKTOR YANG MEMENGARUHI -->
+    <section class="mx-auto w-full max-w-2xl px-4 pt-10 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Apa yang memengaruhi cicilan KPR?</h2>
+      <p class="mt-3">
+        Besaran cicilan KPR tidak ditentukan oleh satu angka saja. Beberapa hal berikut saling memengaruhi hasilnya.
+      </p>
+
+      <div class="mt-5 space-y-4">
+        <div class="rounded-2xl border border-border bg-muted/40 p-5">
+          <p class="text-sm font-semibold text-foreground">Harga rumah</p>
+          <p class="mt-2 text-sm text-muted-foreground">
+            Semakin tinggi harga rumah, semakin besar jumlah yang perlu dibiayai setelah dikurangi DP.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-border bg-muted/40 p-5">
+          <p class="text-sm font-semibold text-foreground">DP</p>
+          <p class="mt-2 text-sm text-muted-foreground">
+            Semakin besar uang muka yang kamu bayarkan di awal, semakin kecil pokok pembiayaan yang tersisa untuk dicicil.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-border bg-muted/40 p-5">
+          <p class="text-sm font-semibold text-foreground">Bunga</p>
+          <p class="mt-2 text-sm text-muted-foreground">
+            Bunga menentukan biaya tambahan di luar pokok pembiayaan. Perubahan bunga mengubah jumlah cicilan bulanan dan total yang harus dibayar selama masa pembiayaan.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-border bg-muted/40 p-5">
+          <p class="text-sm font-semibold text-foreground">Tenor</p>
+          <p class="mt-2 text-sm text-muted-foreground">
+            Lama waktu mencicil, umumnya 5 sampai 30 tahun untuk KPR. Pilihan tenor menentukan besar cicilan bulanan dan berapa lama total biaya harus dibayar.
+          </p>
+        </div>
+      </div>
+
+      <p class="mt-5">
+        Tenor yang lebih panjang bisa membuat cicilan bulanan terasa lebih ringan, tetapi biasanya menambah total pembayaran selama masa pembiayaan karena bunga dihitung lebih lama.
+      </p>
+      <p class="mt-3">
+        Kamu bisa mengubah harga, DP, bunga, dan tenor di kalkulator untuk melihat perbandingan setiap kombinasi.
+      </p>
+    </section>
+
+    <!-- LINKS -->
+    <section class="mx-auto w-full max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
+      <ul class="space-y-2 text-sm">
+        <li>
+          <a href="/kalkulator-kemampuan-cicilan" class="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4 hover:text-primary/80">
+            Cek kemampuan cicilanmu secara umum
+          </a>
+        </li>
+        <li>
+          <a href="/apa-itu-dbr" class="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4 hover:text-primary/80">
+            Apa itu DBR (Debt Burden Ratio)?
+          </a>
+        </li>
+      </ul>
+    </section>
+  </main>
+</Layout>
