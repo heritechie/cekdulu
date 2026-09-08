@@ -12,7 +12,6 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      filter: (page) => page !== 'https://cekdulu.my.id/calculator/',
       serialize: (item) => {
         if (item.url !== 'https://cekdulu.my.id/' && item.url.endsWith('/')) {
           item.url = item.url.slice(0, -1);

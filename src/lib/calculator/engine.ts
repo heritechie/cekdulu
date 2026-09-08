@@ -7,7 +7,8 @@
  * 
  * @param monthlyIncome - Penghasilan per bulan (in rupiah)
  * @param existingInstallments - Cicilan yang sudah berjalan per bulan (in rupiah)
- * @param newInstallment - Cicilan baru per bulan (in rupiah)
+ * @param newInstallment - Cicilan baru per bulan (in rupiah), bisa dari
+ *   calculateMonthlyInstallment bila user menghitung estimasinya sendiri
  * @param monthlyExpenses - Pengeluaran bulanan per bulan (in rupiah)
  * @returns Calculated financial metrics
  */
@@ -84,6 +85,72 @@ export function calculateFinancialBalance(
     financialStatus,
     financialStatusClass,
   };
+}
+
+/**
+ * Interest calculation method used to estimate a monthly installment.
+ *
+ * The method is passed explicitly on purpose: CekDulu must not silently
+ * assume one interest method for every financing product. Each product may
+ * declare the method that matches how its lender actually quotes payments.
+ */
+export type InterestMethod = 'annuity';
+
+/**
+ * Inputs for installment estimation. Framework-independent and product-agnostic
+ * (no "mobil"/"motor"/"KPR" concepts here) so the same function can serve any
+ * calculator without duplicating logic.
+ */
+export interface MonthlyInstallmentInput {
+  /** Pokok pinjaman setelah uang muka (harga - DP), in rupiah. */
+  principal: number;
+  /** Suku bunga per tahun dalam persen (mis. 9.5 untuk 9.5%). */
+  annualInterestRate: number;
+  /** Tenor pinjaman dalam bulan. */
+  tenureMonths: number;
+  /** Metode perhitungan bunga (wajib eksplisit). */
+  interestMethod: InterestMethod;
+}
+
+/**
+ * Pokok pinjaman yang dibiayai = financing price - down payment.
+ * Rupiah dibulatkan dan diklem ke 0 bila uang muka >= harga barang.
+ */
+export function calculateLoanPrincipal(financingPrice: number, downPayment: number): number {
+  const price = Math.max(0, financingPrice);
+  const dp = Math.max(0, downPayment);
+  return Math.max(0, Math.round(price - dp));
+}
+
+/**
+ * Estimate the fixed monthly installment using the effective annuity method
+ * (cicilan tetap per bulan, umum dipakai kredit konsumer).
+ *
+ * Formula: M = P·r·(1+r)^n / ((1+r)^n − 1), dengan r = bunga bulanan.
+ * Bunga 0% dihitung proporsional (P / n).
+ *
+ * Pure function. Input non-positif / tidak valid dikembalikan sebagai 0
+ * sehingga alur affordability tetap berjalan aman. Hasil dibulatkan ke rupiah
+ * terdekat.
+ */
+export function calculateMonthlyInstallment(input: MonthlyInstallmentInput): number {
+  const { principal, annualInterestRate, tenureMonths, interestMethod } = input;
+
+  if (!isFinite(principal) || !isFinite(annualInterestRate) || !isFinite(tenureMonths)) {
+    return 0;
+  }
+  if (interestMethod !== 'annuity') return 0;
+  if (principal <= 0 || tenureMonths <= 0) return 0;
+
+  const monthlyRate = Math.max(0, annualInterestRate) / 100 / 12;
+  if (monthlyRate === 0) {
+    return Math.round(principal / tenureMonths);
+  }
+
+  const growth = Math.pow(1 + monthlyRate, tenureMonths);
+  if (growth === 1) return 0; // safety: never divide by zero
+  const installment = (principal * monthlyRate * growth) / (growth - 1);
+  return Math.round(installment);
 }
 
 /**

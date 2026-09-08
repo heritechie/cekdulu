@@ -4,8 +4,10 @@ import NumberField from '../components/number-field.astro';
 import MoneyRow from '../components/money-row.astro';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Info, ArrowLeft, ArrowRight, Share2, RefreshCw, Download } from 'lucide-astro';
+import { Info, ArrowLeft, ArrowRight, Share2, RefreshCw, Download, ChevronDown } from 'lucide-astro';
 import AdSlotBetween from '../components/ad-slot-between.astro';
 import AdSlotAfterResult from '../components/ad-slot-after-result.astro';
 
@@ -131,15 +133,107 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
         className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
       >
         <CardContent className="p-5 sm:p-6">
-          <h2 class="text-lg font-semibold text-foreground sm:text-xl">Rencana Cicilan Baru</h2>
-          <p class="mt-1 text-sm text-muted-foreground">Masukkan estimasi cicilan bulanan dari pinjaman yang ingin kamu ambil (opsional).</p>
+          <h2 id="sim-heading" class="text-lg font-semibold text-foreground sm:text-xl">Rencana Cicilan Baru</h2>
+          <p id="sim-heading-copy" class="mt-1 text-sm text-muted-foreground">Tentukan cicilan yang ingin kamu ambil. Cicilan baru bersifat opsional.</p>
+
           <div class="mt-4">
+            <p class="text-sm font-medium text-muted-foreground">Bagaimana kamu ingin menentukan cicilan?</p>
+            <div class="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Cara menentukan cicilan baru">
+              <button
+                type="button"
+                id="pathManualBtn"
+                data-instpath="manual"
+                aria-pressed="true"
+                class="inline-flex h-auto w-full items-center justify-center rounded-xl border border-primary bg-primary/10 px-3 py-3 text-sm font-semibold text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              >
+                Saya sudah tahu cicilannya
+              </button>
+              <button
+                type="button"
+                id="pathSimBtn"
+                data-instpath="sim"
+                aria-pressed="false"
+                class="inline-flex h-auto w-full items-center justify-center rounded-xl border border-border bg-card px-3 py-3 text-sm font-semibold text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 hover:text-foreground"
+              >
+                Hitung estimasi cicilan
+              </button>
+            </div>
+            <p id="error-step3" class="mt-2 hidden text-sm font-medium text-[#ef4444]" aria-live="polite"></p>
+          </div>
+
+          <div id="path-manual" class="mt-4">
             <NumberField id="newInstallment" label="Cicilan baru per bulan" />
             <div class="mt-3 flex items-start gap-2.5 rounded-xl bg-muted/50 p-3 text-sm text-muted-foreground">
               <Info class="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
               <span>Gunakan angka perkiraan cicilan per bulan dari pihak bank atau leasing. Kosongkan jika hanya ingin cek ruang cicilan.</span>
             </div>
           </div>
+
+          <div id="path-sim" class="mt-4 hidden">
+            <div class="space-y-3">
+              <div id="price-wrap">
+                <NumberField id="financingPrice" label="Harga barang / pokok pinjaman" />
+              </div>
+              <div id="dp-wrap">
+                <NumberField id="downPayment" label="Uang muka (DP)" />
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="interestRate" className="mb-1.5 block text-sm font-medium text-muted-foreground">
+                    Bunga per tahun (%)
+                  </Label>
+                  <div class="relative">
+                    <Input
+                      type="number"
+                      id="interestRate"
+                      inputMode="decimal"
+                      min="0"
+                      step="0.1"
+                      placeholder="Contoh: 9,5"
+                      aria-label="Suku bunga per tahun dalam persen"
+                      className="h-auto w-full rounded-xl px-4 py-3 pr-10 text-lg"
+                    />
+                    <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-lg font-medium text-muted-foreground" aria-hidden="true">%</span>
+                  </div>
+                  <p class="mt-1.5 text-xs text-muted-foreground">Gunakan angka dari penawaran bank atau leasing yang kamu pertimbangkan.</p>
+                </div>
+                <div>
+                  <Label htmlFor="tenureMonths" className="mb-1.5 block text-sm font-medium text-muted-foreground">
+                    Tenor (bulan)
+                  </Label>
+                  <div id="tenure-select-wrap" class="relative hidden">
+                    <select
+                      id="tenureMonthsSelect"
+                      aria-label="Tenor cicilan dalam bulan"
+                      class="h-auto w-full cursor-pointer appearance-none rounded-xl border border-input bg-transparent px-4 py-3 pr-10 text-lg outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                    >
+                      <option value="">Pilih tenor</option>
+                    </select>
+                    <ChevronDown class="pointer-events-none absolute inset-y-0 right-3.5 my-auto h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                  </div>
+                  <div id="tenure-input-wrap" class="relative">
+                    <Input
+                      type="number"
+                      id="tenureMonths"
+                      inputMode="numeric"
+                      min="1"
+                      step="1"
+                      placeholder="24"
+                      aria-label="Tenor cicilan dalam bulan"
+                      className="h-auto w-full rounded-xl px-4 py-3 pr-14 text-lg"
+                    />
+                    <span class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-lg font-medium text-muted-foreground" aria-hidden="true">bln</span>
+                  </div>
+                </div>
+              </div>
+              <div class="relative rounded-xl border border-primary/20 bg-primary/5 p-4 text-center">
+                <p class="text-sm font-medium text-muted-foreground">Estimasi cicilan per bulan</p>
+                <p id="estimate-value" class="mt-1 text-2xl font-bold text-foreground">—</p>
+                <p class="mt-1 text-xs text-muted-foreground">Perkiraan metode bunga anuitas (cicilan tetap), bukan penawaran resmi bank atau leasing.</p>
+              </div>
+            </div>
+          </div>
+
           <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
             <Button type="button" data-back variant="outline" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base sm:w-auto">
               <ArrowLeft class="h-4 w-4" aria-hidden="true" />
@@ -239,7 +333,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
               <span id="result-existing" class="font-medium"></span>
             </div>
             <div class="flex justify-between">
-              <span class="text-muted-foreground">Cicilan baru</span>
+              <span data-result-new-label class="text-muted-foreground">Cicilan baru</span>
               <span id="result-new" class="font-medium"></span>
             </div>
             <div class="flex justify-between">
@@ -299,7 +393,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
                 </div>
               </div>
               <div class="mt-3 rounded-xl bg-muted/50 p-3 text-center">
-                <p class="text-xs text-muted-foreground">Sisa uang jika cicilan ini</p>
+                <p class="text-xs text-muted-foreground">Sisa uang setelah cicilan baru</p>
                 <p id="scenario-sisa" class="mt-0.5 text-xl font-bold text-foreground">Rp 0</p>
               </div>
             </div>
@@ -332,7 +426,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
   </div>
 
   <script>
-    import { calculateFinancialBalance } from '../lib/calculator/engine';
+    import { calculateFinancialBalance, calculateLoanPrincipal, calculateMonthlyInstallment } from '../lib/calculator/engine';
     import { generateShareFile } from '../lib/share-image';
     import { renderCalculatorShareImagePng } from '../lib/calculator-share-image';
     import {
@@ -439,9 +533,206 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       elektronik: 'Elektronik',
       lainnya: 'Cicilan',
     };
+    const typeBurdenNoun: Record<string, string> = {
+      rumah: 'rumah',
+      kendaraan: 'kendaraan',
+      elektronik: 'elektronik',
+      lainnya: 'ini',
+    };
 
-    // ---- currency formatting on all wizard inputs (exclude range slider) ----
-    document.querySelectorAll<HTMLInputElement>('#wizardForm input:not([type="range"])').forEach((input) => {
+    // ---- step 3 simulator: per-type context (labels, DP, tenure) ----
+    // tenureOptions empty = fall back to the free numeric tenure input.
+    const simTypeConfig: Record<string, { priceLabel: string; showDp: boolean; tenureOptions: { months: number; label: string }[] }> = {
+      rumah: {
+        priceLabel: 'Harga rumah',
+        showDp: true,
+        tenureOptions: [
+          { months: 60, label: '5 tahun (60 bulan)' },
+          { months: 120, label: '10 tahun (120 bulan)' },
+          { months: 180, label: '15 tahun (180 bulan)' },
+          { months: 240, label: '20 tahun (240 bulan)' },
+          { months: 300, label: '25 tahun (300 bulan)' },
+          { months: 360, label: '30 tahun (360 bulan)' },
+        ],
+      },
+      kendaraan: {
+        priceLabel: 'Harga kendaraan',
+        showDp: true,
+        tenureOptions: [
+          { months: 12, label: '1 tahun (12 bulan)' },
+          { months: 24, label: '2 tahun (24 bulan)' },
+          { months: 36, label: '3 tahun (36 bulan)' },
+          { months: 48, label: '4 tahun (48 bulan)' },
+          { months: 60, label: '5 tahun (60 bulan)' },
+        ],
+      },
+      elektronik: {
+        priceLabel: 'Harga barang',
+        showDp: true,
+        tenureOptions: [
+          { months: 3, label: '3 bulan' },
+          { months: 6, label: '6 bulan' },
+          { months: 9, label: '9 bulan' },
+          { months: 12, label: '12 bulan' },
+          { months: 18, label: '18 bulan' },
+          { months: 24, label: '24 bulan' },
+        ],
+      },
+      lainnya: {
+        priceLabel: 'Harga barang / pokok pinjaman',
+        showDp: true,
+        tenureOptions: [],
+      },
+    };
+
+    function applySimTypeContext() {
+      const cfg = simTypeConfig[typeSlug] ?? simTypeConfig.lainnya;
+      const priceLabel = document.querySelector('label[for="financingPrice"]');
+      if (priceLabel) priceLabel.textContent = cfg.priceLabel;
+      const dpWrap = document.getElementById('dp-wrap');
+      if (dpWrap) dpWrap.classList.toggle('hidden', !cfg.showDp);
+
+      const sel = document.getElementById('tenureMonthsSelect') as HTMLSelectElement | null;
+      const selectWrap = document.getElementById('tenure-select-wrap');
+      const inputWrap = document.getElementById('tenure-input-wrap');
+      const numInput = document.getElementById('tenureMonths') as HTMLInputElement | null;
+      if (!sel || !selectWrap || !inputWrap) return;
+      if (cfg.tenureOptions.length > 0) {
+        sel.innerHTML =
+          '<option value="">Pilih tenor</option>' +
+          cfg.tenureOptions
+            .map((o) => `<option value="${o.months}">${o.label}</option>`)
+            .join('');
+        selectWrap.classList.remove('hidden');
+        inputWrap.classList.add('hidden');
+        if (numInput) numInput.value = '';
+      } else {
+        selectWrap.classList.add('hidden');
+        inputWrap.classList.remove('hidden');
+      }
+    }
+
+    function readTenure(): number {
+      const selectWrap = document.getElementById('tenure-select-wrap');
+      const sel = document.getElementById('tenureMonthsSelect') as HTMLSelectElement | null;
+      if (sel && selectWrap && !selectWrap.classList.contains('hidden')) {
+        const value = Number(sel.value);
+        return Number.isFinite(value) && value > 0 ? value : 0;
+      }
+      return Math.floor(readNumberInput('tenureMonths'));
+    }
+
+    // ---- step 3: "Saya sudah tahu cicilannya" vs "Hitung estimasi cicilan" ----
+    let stepPath: 'manual' | 'sim' = 'manual';
+    const pathManualBtn = document.getElementById('pathManualBtn') as HTMLButtonElement | null;
+    const pathSimBtn = document.getElementById('pathSimBtn') as HTMLButtonElement | null;
+
+    function isSimPath(): boolean {
+      return stepPath === 'sim';
+    }
+
+    function pathBtnClass(active: boolean): string {
+      const base =
+        'inline-flex h-auto w-full items-center justify-center rounded-xl border px-3 py-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50';
+      return active
+        ? `${base} border-primary bg-primary/10 text-primary`
+        : `${base} border-border bg-card text-muted-foreground hover:text-foreground`;
+    }
+
+    function updatePathUI() {
+      const headingEl = document.getElementById('sim-heading');
+      const copyEl = document.getElementById('sim-heading-copy');
+      if (headingEl) headingEl.textContent = isSimPath() ? 'Hitung Estimasi Cicilan' : 'Rencana Cicilan Baru';
+      if (copyEl) {
+        copyEl.textContent = isSimPath()
+          ? 'Masukkan harga, DP, bunga, dan tenor untuk melihat perkiraan cicilan per bulan.'
+          : 'Tentukan cicilan yang ingin kamu ambil. Cicilan baru bersifat opsional.';
+      }
+      document.getElementById('path-manual')?.classList.toggle('hidden', isSimPath());
+      document.getElementById('path-sim')?.classList.toggle('hidden', !isSimPath());
+      if (pathManualBtn) {
+        pathManualBtn.setAttribute('aria-pressed', String(!isSimPath()));
+        pathManualBtn.className = pathBtnClass(!isSimPath());
+      }
+      if (pathSimBtn) {
+        pathSimBtn.setAttribute('aria-pressed', String(isSimPath()));
+        pathSimBtn.className = pathBtnClass(isSimPath());
+      }
+    }
+
+    pathManualBtn?.addEventListener('click', () => {
+      stepPath = 'manual';
+      updatePathUI();
+    });
+    pathSimBtn?.addEventListener('click', () => {
+      stepPath = 'sim';
+      updatePathUI();
+      syncEstimate();
+    });
+
+    function readNumberInput(id: string): number {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      const value = el ? Number(el.value) : NaN;
+      return Number.isFinite(value) && value > 0 ? value : 0;
+    }
+
+    // Read the CURRENT rendered digits of a formatted money field.
+    // dataset.value is only refreshed by formatMoneyInput, which runs AFTER the
+    // sim listeners on the same input event; depending on it would make the live
+    // estimate lag one keystroke (stale price). el.value is always current.
+    function readMoney(id: string): number {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      const raw = el ? el.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '') : '';
+      return raw ? parseFloat(raw) || 0 : 0;
+    }
+
+    function computeEstimate(): number {
+      const principal = calculateLoanPrincipal(readMoney('financingPrice'), readMoney('downPayment'));
+      return calculateMonthlyInstallment({
+        principal,
+        annualInterestRate: readNumberInput('interestRate'),
+        tenureMonths: readTenure(),
+        interestMethod: 'annuity',
+      });
+    }
+
+    function syncEstimate(): void {
+      if (!isSimPath()) return;
+      const est = computeEstimate();
+      const valueEl = document.getElementById('estimate-value');
+      if (valueEl) valueEl.textContent = est > 0 ? formatRupiah(est) : '—';
+      const ni = document.getElementById('newInstallment') as HTMLInputElement | null;
+      if (est > 0) {
+        setRupiahInput('newInstallment', est);
+      } else if (ni) {
+        ni.value = '';
+        delete ni.dataset.value;
+      }
+    }
+
+    ['financingPrice', 'downPayment', 'interestRate', 'tenureMonths'].forEach((id) => {
+      document.getElementById(id)?.addEventListener('input', syncEstimate);
+    });
+    document.getElementById('tenureMonthsSelect')?.addEventListener('change', syncEstimate);
+
+    function getEffectiveNewInstallment(): { value: number; fromEstimate: boolean; hasInput: boolean } {
+      if (isSimPath()) {
+        const est = computeEstimate();
+        return { value: est, fromEstimate: est > 0, hasInput: est > 0 };
+      }
+      const manualEl = document.getElementById('newInstallment') as HTMLInputElement | null;
+      const hasManualInput =
+        !!manualEl && manualEl.dataset.value !== undefined && manualEl.dataset.value !== '';
+      return { value: readNumber('newInstallment'), fromEstimate: false, hasInput: hasManualInput };
+    }
+
+    function setResultNewLabel(fromEstimate: boolean) {
+      const label = document.querySelector('[data-result-new-label]') as HTMLElement | null;
+      if (label) label.textContent = fromEstimate ? 'Cicilan baru (estimasi)' : 'Cicilan baru';
+    }
+
+    // ---- currency formatting on all wizard inputs (exclude range + native number inputs) ----
+    document.querySelectorAll<HTMLInputElement>('#wizardForm input:not([type="range"]):not([type="number"])').forEach((input) => {
       input.addEventListener('input', () => formatMoneyInput(input));
       input.addEventListener('keydown', (e) => {
         if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -496,7 +787,33 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
           return false;
         }
       }
+      if (step === 3 && isSimPath()) {
+        const price = readMoney('financingPrice');
+        const principal = calculateLoanPrincipal(price, readMoney('downPayment'));
+        const tenure = readTenure();
+        if (price <= 0) {
+          showError('error-step3', 'Masukkan harga barang atau pokok pinjaman terlebih dahulu.');
+          document.getElementById('financingPrice')?.focus();
+          return false;
+        }
+        if (principal <= 0) {
+          showError('error-step3', 'Uang muka (DP) tidak boleh melebihi harga barang.');
+          document.getElementById('downPayment')?.focus();
+          return false;
+        }
+        if (tenure <= 0) {
+          showError('error-step3', 'Pilih tenor sesuai pilihan yang tersedia.');
+          const selectWrap = document.getElementById('tenure-select-wrap');
+          const tenureTarget =
+            selectWrap && !selectWrap.classList.contains('hidden')
+              ? document.getElementById('tenureMonthsSelect')
+              : document.getElementById('tenureMonths');
+          (tenureTarget as HTMLElement | null)?.focus();
+          return false;
+        }
+      }
       clearError('error-monthlyIncome');
+      clearError('error-step3');
       return true;
     }
 
@@ -549,16 +866,14 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     function compute() {
       const income = readNumber('monthlyIncome');
       const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
-      const newInst = readNumber('newInstallment');
-      const hasNewInstInput = (document.getElementById('newInstallment') as HTMLInputElement | null)?.dataset.value !== undefined &&
-        (document.getElementById('newInstallment') as HTMLInputElement | null)?.dataset.value !== '';
+      const { value: newInst, fromEstimate, hasInput: hasNewInstInput } = getEffectiveNewInstallment();
       const totalExpenses = step4Ids.reduce((sum, id) => sum + readNumber(id), 0);
       const hasExpensesInput = step4Ids.some(id => {
         const el = document.getElementById(id) as HTMLInputElement | null;
         return el && el.dataset.value !== undefined && el.dataset.value !== '';
       });
       const result = calculateFinancialBalance(income, existing, newInst, totalExpenses);
-      return { result, income, totalExpenses, hasNewInstInput, hasExpensesInput };
+      return { result, income, existing, newInst, fromEstimate, hasNewInstInput, totalExpenses, hasExpensesInput };
     }
 
     // ---- form submit: validate current step, then advance or show result ----
@@ -583,16 +898,13 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     function trackCompleteAndView() {
       if (completed) return;
       completed = true;
-      const { result } = compute();
-      const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
-      const newInst = readNumber('newInstallment');
-      const expenses = step4Ids.reduce((sum, id) => sum + readNumber(id), 0);
+      const { result, income, existing, newInst, totalExpenses } = compute();
       const completeParams = {
         calculator_type: 'affordability',
         income_range: incomeRange(readNumber('monthlyIncome')),
         existing_debt_range: installmentRange(existing),
         new_installment_range: installmentRange(newInst),
-        monthly_expense_range: expenseRange(expenses),
+        monthly_expense_range: expenseRange(totalExpenses),
         debt_ratio_range: debtRatioRange(result.debtRatio),
         remaining_income_range: remainingIncomeRange(result.remainingAfterDebtAndExpenses),
         result_category: resultCategory(result),
@@ -616,7 +928,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       remainingAfterDebtAndExpenses: number;
       financialStatusClass: string;
     }, hasNewInst: boolean, hasNewInstInput: boolean): string {
-      const noun = typeNoun[typeSlug] ?? 'cicilan';
+      const noun = typeNoun[typeSlug] ?? 'pinjaman';
       const hasIncome = readNumber('monthlyIncome') > 0;
       
       if (!hasIncome) {
@@ -644,7 +956,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
       }
       if (result.financialStatusClass === 'warning') {
         return hasNewInst
-          ? `Rencana cicilan ${noun} ini mulai terasa berat`
+          ? `Cicilan ${typeBurdenNoun[typeSlug] ?? 'ini'} cukup membebani keuanganmu`
           : `Ruang cicilan ${noun} mulai sempit`;
       }
       return hasNewInst
@@ -660,9 +972,7 @@ const canonical = new URL('kalkulator-kemampuan-cicilan', Astro.site).href;
     }
 
 function fillResult() {
-      const { result, income, totalExpenses, hasNewInstInput, hasExpensesInput } = compute();
-      const existing = step2Ids.reduce((sum, id) => sum + readNumber(id), 0);
-      const newInst = readNumber('newInstallment');
+      const { result, income, existing, newInst, fromEstimate, hasNewInstInput, totalExpenses, hasExpensesInput } = compute();
       const hasNewInst = newInst > 0;
 
       const badgeClass =
@@ -703,6 +1013,7 @@ function fillResult() {
       incomeEl.textContent = formatRupiah(income);
       existingEl.textContent = formatRupiah(existing);
       newEl.textContent = hasNewInstInput ? formatRupiah(newInst) : '—';
+      setResultNewLabel(fromEstimate);
       expenseEl.textContent = hasExpensesInput ? formatRupiah(totalExpenses) : '—';
       totalBebanEl.textContent = formatRupiah(result.totalMonthlyDebt + totalExpenses);
       breakdownSisaEl.textContent = formatRupiah(result.remainingAfterDebtAndExpenses);
@@ -789,6 +1100,8 @@ function fillResult() {
       };
       updateValueDisplay(initialVal);
 
+      const simEst = isSimPath() ? computeEstimate() : 0;
+
       // Recalculate and update scenario sisa
       const recalc = (val: number) => {
         const imgIncome = readNumber('monthlyIncome');
@@ -798,7 +1111,8 @@ function fillResult() {
           sisaEl.className = `mt-0.5 text-xl font-bold ${r.remainingAfterDebtAndExpenses < 0 ? 'text-[#ef4444]' : 'text-[#10b981]'}`;
         }
         // Also update the main result display in real-time
-        updateMainResult(imgIncome, existing, val, expenses, hasExpensesInput);
+        const fromEstimate = simEst > 0 && val === simEst;
+        updateMainResult(imgIncome, existing, val, expenses, hasExpensesInput, fromEstimate);
       };
 
       // Slider input handler - snap to step to avoid browser quirks
@@ -826,9 +1140,8 @@ function fillResult() {
       recalc(initialVal);
     }
 
-    function updateMainResult(income: number, existing: number, newInst: number, expenses: number, hasExpensesInput: boolean) {
+    function updateMainResult(income: number, existing: number, newInst: number, expenses: number, hasExpensesInput: boolean, fromEstimate = false) {
       const result = calculateFinancialBalance(income, existing, newInst, expenses);
-      const hasNewInstInput = newInst > 0;
 
       const badgeClass =
         result.remainingAfterDebtAndExpenses < 0
@@ -867,6 +1180,7 @@ function fillResult() {
       incomeEl.textContent = formatRupiah(income);
       existingEl.textContent = formatRupiah(existing);
       newEl.textContent = formatRupiah(newInst);
+      setResultNewLabel(fromEstimate);
       expenseEl.textContent = formatRupiah(expenses);
       totalBebanEl.textContent = formatRupiah(result.totalMonthlyDebt + expenses);
       breakdownSisaEl.textContent = formatRupiah(result.remainingAfterDebtAndExpenses);
@@ -919,8 +1233,8 @@ function fillResult() {
       const btn = document.getElementById('saveResultBtn') as HTMLButtonElement | null;
       if (!btn || busyAction) return;
       busyAction = 'save';
-      const { result, income, totalExpenses, hasNewInstInput } = compute();
-      const hasNewInst = readNumber('newInstallment') > 0;
+      const { result, income, newInst, totalExpenses, hasNewInstInput } = compute();
+      const hasNewInst = newInst > 0;
       const originalBtn = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = 'Membuat gambar…';
@@ -1036,6 +1350,8 @@ function fillResult() {
     })();
 
     // ---- initial render ----
+    applySimTypeContext();
+    updatePathUI();
     if (!hadSharedParams) render(false);
   </script>
 </Layout>
