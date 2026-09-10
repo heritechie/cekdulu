@@ -154,6 +154,44 @@ const homepage = new URL('/', Astro.site).href;
       </div>
     </section>
 
+    <!-- Simulasi cicilan: contextual simulator hub -->
+    <section id="simulasi" class="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8">
+      <div class="mx-auto max-w-2xl">
+        <h2 class="text-center text-lg font-semibold text-foreground">Simulasi Cicilan</h2>
+        <p class="mt-1 text-center text-sm text-muted-foreground">Pilih simulasi sesuai kebutuhanmu.</p>
+        <div class="mt-5 grid gap-3 sm:grid-cols-2">
+          <a
+            href="/simulasi-kpr"
+            class="group flex items-center justify-between gap-3 rounded-xl border border-border bg-card p-5 transition-colors hover:bg-muted/50"
+          >
+            <span class="text-sm font-semibold text-foreground">Simulasi KPR</span>
+            <ArrowRight class="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          </a>
+          <a
+            href="/simulasi-kredit-mobil"
+            class="group flex items-center justify-between gap-3 rounded-xl border border-border bg-card p-5 transition-colors hover:bg-muted/50"
+          >
+            <span class="text-sm font-semibold text-foreground">Simulasi Kredit Mobil</span>
+            <ArrowRight class="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          </a>
+          <a
+            href="/simulasi-kredit-motor"
+            class="group flex items-center justify-between gap-3 rounded-xl border border-border bg-card p-5 transition-colors hover:bg-muted/50"
+          >
+            <span class="text-sm font-semibold text-foreground">Simulasi Kredit Motor</span>
+            <ArrowRight class="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          </a>
+          <a
+            href="/simulasi-pinjaman"
+            class="group flex items-center justify-between gap-3 rounded-xl border border-border bg-card p-5 transition-colors hover:bg-muted/50"
+          >
+            <span class="text-sm font-semibold text-foreground">Simulasi Pinjaman</span>
+            <ArrowRight class="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- Pelajari sebelum nyicil: educational discovery -->
     <section id="belajar" class="mx-auto w-full max-w-6xl px-4 pt-2 pb-12 sm:px-6 sm:pb-16 lg:px-8">
       <div class="mx-auto max-w-2xl">
