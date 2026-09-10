@@ -170,13 +170,26 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
     <slot />
 
     <footer class="mt-16 border-t border-border/60">
-      <div class="mx-auto w-full max-w-6xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">
-        <p>
-          Sebelum nyicil, coba <a href="/" class="transition-colors hover:text-foreground underline underline-offset-4 decoration-muted-foreground/30">cekdulu.co.id</a>
-        </p>
-        <nav aria-label="Tautan situs" class="mt-4">
-          <a href="/privacy-policy" class="transition-colors hover:text-foreground">Kebijakan Privasi</a>
-        </nav>
+      <div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <a
+              href="/"
+              class="text-lg font-semibold leading-tight tracking-tight text-foreground transition-colors hover:text-foreground/80"
+            >
+              CekDulu
+            </a>
+            <p class="mt-1 text-sm text-muted-foreground">Baru Ambil Keputusan.</p>
+          </div>
+          <div class="text-sm text-muted-foreground sm:text-right">
+            <p>
+              Sebelum nyicil, coba <a href="/" class="transition-colors hover:text-foreground underline underline-offset-4 decoration-muted-foreground/30">cekdulu.co.id</a>
+            </p>
+            <nav aria-label="Tautan situs" class="mt-3">
+              <a href="/privacy-policy" class="transition-colors hover:text-foreground">Kebijakan Privasi</a>
+            </nav>
+          </div>
+        </div>
       </div>
     </footer>
 
