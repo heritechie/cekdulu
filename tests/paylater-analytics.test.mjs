@@ -228,14 +228,14 @@ describe('paylater_challenge_share', () => {
 
 describe('paylater_challenge_view', () => {
   test('source classification: homepage, challenges hub, others/direct', () => {
-    const origin = 'https://cekdulu.my.id';
-    assert.equal(challengeEntrySource('https://cekdulu.my.id/', origin), 'homepage');
-    assert.equal(challengeEntrySource('https://cekdulu.my.id', origin), 'homepage');
-    assert.equal(challengeEntrySource('https://cekdulu.my.id/challenges', origin), 'challenges');
-    assert.equal(challengeEntrySource('https://cekdulu.my.id/challenges/30-hari-tanpa-paylater', origin), 'challenges');
+    const origin = 'https://cekdulu.co.id';
+    assert.equal(challengeEntrySource('https://cekdulu.co.id/', origin), 'homepage');
+    assert.equal(challengeEntrySource('https://cekdulu.co.id', origin), 'homepage');
+    assert.equal(challengeEntrySource('https://cekdulu.co.id/challenges', origin), 'challenges');
+    assert.equal(challengeEntrySource('https://cekdulu.co.id/challenges/30-hari-tanpa-paylater', origin), 'challenges');
     assert.equal(challengeEntrySource('', origin), 'direct');
     assert.equal(challengeEntrySource('https://play.google.com/', origin), 'direct');
-    assert.equal(challengeEntrySource('https://cekdulu.my.id/kalkulator-kemampuan-cicilan', origin), 'direct');
+    assert.equal(challengeEntrySource('https://cekdulu.co.id/kalkulator-kemampuan-cicilan', origin), 'direct');
     assert.equal(challengeEntrySource('not-a-url', origin), 'direct');
   });
 

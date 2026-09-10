@@ -4,7 +4,7 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://cekdulu.my.id',
+  site: 'https://cekdulu.co.id',
   vite: {
     plugins: [tailwindcss()]
   },
@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     sitemap({
       serialize: (item) => {
-        if (item.url !== 'https://cekdulu.my.id/' && item.url.endsWith('/')) {
+        if (item.url !== 'https://cekdulu.co.id/' && item.url.endsWith('/')) {
           item.url = item.url.slice(0, -1);
         }
         return item;

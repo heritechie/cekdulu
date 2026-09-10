@@ -131,7 +131,7 @@ describe('social image differs from the personal result card', () => {
   test('social CTA is a static invitation to check one\u2019s own finances', () => {
     assert.match(template, /coba cek dulu kondisi keuanganmu\./);
     assert.match(template, /Kalau kamu juga lagi mau ambil cicilan,/);
-    assert.match(template, /cekdulu\.my\.id/);
+    assert.match(template, /cekdulu\.co\.id/);
     assert.ok(!/(beli|ambil kredit|daftar|pinjam) sekarang|tawaran/i.test(template));
   });
 });

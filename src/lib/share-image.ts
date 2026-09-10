@@ -359,7 +359,7 @@ export function renderShareCard(
   ctx.fillText('Sebelum nyicil, cek dulu.', W / 2, footerTop);
   ctx.fillStyle = '#1e46ad';
   ctx.font = font(700, 40);
-  ctx.fillText('cekdulu.my.id', W / 2, footerTop + 40);
+  ctx.fillText('cekdulu.co.id', W / 2, footerTop + 40);
 }
 
 /** Load a same-origin image asset (cached by the browser). Resolves to null on
