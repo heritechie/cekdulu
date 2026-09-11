@@ -23,23 +23,23 @@ export interface ChallengeShareImageData {
 const TEMPLATE_PATH = '/share/30-days-no-paylater-share-template.svg';
 
 const ROCKET_IMAGES: Record<DayShown, string> = {
-  1: '/challenges/30-days-no-paylater-assets/rocket-day-01.png',
-  7: '/challenges/30-days-no-paylater-assets/rocket-day-07.png',
-  14: '/challenges/30-days-no-paylater-assets/rocket-day-14.png',
-  21: '/challenges/30-days-no-paylater-assets/rocket-day-21.png',
-  30: '/challenges/30-days-no-paylater-assets/rocket-day-30.png',
+  1: '/challenges/30-days-no-paylater-assets/rocket-day-01.webp',
+  7: '/challenges/30-days-no-paylater-assets/rocket-day-07.webp',
+  14: '/challenges/30-days-no-paylater-assets/rocket-day-14.webp',
+  21: '/challenges/30-days-no-paylater-assets/rocket-day-21.webp',
+  30: '/challenges/30-days-no-paylater-assets/rocket-day-30.webp',
 };
 
 /**
- * Supporting artwork is raster too. These PNGs are inlined before canvas
+ * Supporting artwork is raster too. These WebP files are inlined before canvas
  * rendering because an SVG loaded from a Blob cannot reliably resolve relative
  * image URLs.
  */
 const SUPPORTING_ILLUSTRATIONS = {
-  brandLogo: '/images/logo-cekdulu.png',
-  transactionIllustration: '/challenges/30-days-no-paylater-assets/share/avoided-transaction-bag.png',
-  expenseIllustration: '/challenges/30-days-no-paylater-assets/share/avoided-expense-coins.png',
-  shareLinkIllustration: '/challenges/30-days-no-paylater-assets/share/share-link-icon.png',
+  brandLogo: '/images/logo-cekdulu.webp',
+  transactionIllustration: '/challenges/30-days-no-paylater-assets/share/avoided-transaction-bag.webp',
+  expenseIllustration: '/challenges/30-days-no-paylater-assets/share/avoided-expense-coins.webp',
+  shareLinkIllustration: '/challenges/30-days-no-paylater-assets/share/share-link-icon.webp',
 } as const;
 
 /**
@@ -48,9 +48,9 @@ const SUPPORTING_ILLUSTRATIONS = {
  */
 export function milestoneIllustrationForShareImage(day: number): string {
   if (day >= 30) {
-    return '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.png';
+    return '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.webp';
   }
-  return '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.png';
+  return '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.webp';
 }
 
 /** Rocket stage to use for a given progress day (matches screen mapping). */

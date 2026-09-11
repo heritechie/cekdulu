@@ -109,7 +109,7 @@ describe('milestoneIllustrationForShareImage', () => {
     for (const day of [1, 7, 14, 21]) {
       assert.equal(
         milestoneIllustrationForShareImage(day),
-        '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.png',
+        '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.webp',
       );
     }
   });
@@ -117,14 +117,14 @@ describe('milestoneIllustrationForShareImage', () => {
   test('uses trophy only on day 30', () => {
     assert.equal(
       milestoneIllustrationForShareImage(30),
-      '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.png',
+      '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.webp',
     );
   });
 
   test('days above 30 also get the trophy (day >= 30 rule)', () => {
     assert.equal(
       milestoneIllustrationForShareImage(31),
-      '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.png',
+      '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.webp',
     );
   });
 });

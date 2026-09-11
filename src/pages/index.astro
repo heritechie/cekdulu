@@ -32,13 +32,19 @@ const homepage = new URL('/', Astro.site).href;
           class="order-2 flex items-center justify-center lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-2"
         >
           <div class="w-full max-w-[340px] sm:max-w-sm lg:max-w-md">
-            <img
-              src="/images/illustrations/hero-balance-v1.png"
-              alt="Timbangan keuangan CekDulu"
-              width="1536"
-              height="1024"
-              class="h-auto w-full"
-            />
+            <picture>
+              <source type="image/avif" srcset="/images/illustrations/hero-balance-v1.avif" width="1280" height="853" />
+              <source type="image/webp" srcset="/images/illustrations/hero-balance-v1.webp" width="1280" height="853" />
+              <img
+                src="/images/illustrations/hero-balance-v1.png"
+                alt="Timbangan keuangan CekDulu"
+                width="1536"
+                height="1024"
+                decoding="async"
+                fetchpriority="high"
+                class="h-auto w-full"
+              />
+            </picture>
           </div>
         </div>
 
@@ -79,10 +85,10 @@ const homepage = new URL('/', Astro.site).href;
                 class="flex flex-col items-center gap-2 rounded-xl border px-4 py-4 text-sm font-medium transition-colors border-primary bg-primary/5 text-primary"
               >
                 <img
-                  src="/images/illustrations/home.png"
+                  src="/images/illustrations/home.webp"
                   alt=""
-                  width="512"
-                  height="512"
+                  width="320"
+                  height="320"
                   loading="lazy"
                   class="h-20 w-20 object-contain sm:h-24 sm:w-24"
                 />
@@ -95,10 +101,10 @@ const homepage = new URL('/', Astro.site).href;
                 class="flex flex-col items-center gap-2 rounded-xl border px-4 py-4 text-sm font-medium transition-colors border-border bg-card text-foreground"
               >
                 <img
-                  src="/images/illustrations/vehicle.png"
+                  src="/images/illustrations/vehicle.webp"
                   alt=""
-                  width="512"
-                  height="512"
+                  width="320"
+                  height="320"
                   loading="lazy"
                   class="h-20 w-20 object-contain sm:h-24 sm:w-24"
                 />
@@ -111,10 +117,10 @@ const homepage = new URL('/', Astro.site).href;
                 class="flex flex-col items-center gap-2 rounded-xl border px-4 py-4 text-sm font-medium transition-colors border-border bg-card text-foreground"
               >
                 <img
-                  src="/images/illustrations/electronics.png"
+                  src="/images/illustrations/electronics.webp"
                   alt=""
-                  width="512"
-                  height="512"
+                  width="320"
+                  height="320"
                   loading="lazy"
                   class="h-20 w-20 object-contain sm:h-24 sm:w-24"
                 />
@@ -127,10 +133,10 @@ const homepage = new URL('/', Astro.site).href;
                 class="flex flex-col items-center gap-2 rounded-xl border px-4 py-4 text-sm font-medium transition-colors border-border bg-card text-foreground"
               >
                 <img
-                  src="/images/illustrations/other.png"
+                  src="/images/illustrations/other.webp"
                   alt=""
-                  width="512"
-                  height="512"
+                  width="320"
+                  height="320"
                   loading="lazy"
                   class="h-20 w-20 object-contain sm:h-24 sm:w-24"
                 />
@@ -230,11 +236,12 @@ const homepage = new URL('/', Astro.site).href;
           <span class="flex min-w-0 items-center gap-3">
             <img
               id="challenge-resume-icon"
-              src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.png"
+              src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.webp"
               alt=""
               aria-hidden="true"
-              width="280"
-              height="233"
+              width="340"
+              height="283"
+              loading="lazy"
               class="h-9 w-auto shrink-0"
               hidden
             />
@@ -306,7 +313,7 @@ const homepage = new URL('/', Astro.site).href;
       const done = challengeState.completed || isChallengeComplete(challengeState);
       if (done) {
         if (icon) {
-          icon.src = '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.png';
+          icon.src = '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.webp';
           icon.hidden = false;
         }
         if (sub) {

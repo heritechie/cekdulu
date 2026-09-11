@@ -57,15 +57,23 @@ const calcUrl = '/kalkulator-kemampuan-cicilan';
                   class="overflow-hidden rounded-t-2xl border-b border-border bg-primary/5"
                   aria-hidden="true"
                 >
-                  <img
-                    src="/challenges/banner/30-days-no-paylater-banner.jpg"
-                    alt=""
-                    width="1280"
-                    height="640"
-                    class="block h-auto w-full"
-                    loading="eager"
-                    decoding="async"
-                  />
+                  <picture>
+                    <source
+                      type="image/avif"
+                      srcset="/challenges/banner/30-days-no-paylater-banner.avif"
+                      width="1280"
+                      height="640"
+                    />
+                    <img
+                      src="/challenges/banner/30-days-no-paylater-banner.webp"
+                      alt=""
+                      width="1280"
+                      height="640"
+                      class="block h-auto w-full"
+                      loading="eager"
+                      decoding="async"
+                    />
+                  </picture>
                 </div>
               )}
               <CardContent className="p-5 sm:p-6">

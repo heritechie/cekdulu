@@ -181,7 +181,7 @@ export async function renderCalculatorShareImagePng(
   let svg: string;
   try {
     const [logoDataUri, balanceDataUri] = await Promise.all([
-      toDataUri('/images/logo-cekdulu.png'),
+      toDataUri('/images/logo-cekdulu.webp'),
       toDataUri(BALANCE_IMAGE_PATH),
     ]);
     let inlined = fillCalculatorSharePlaceholders(template, data);

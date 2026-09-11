@@ -4,7 +4,7 @@
  * Generate a 1080x1350 portrait PNG share card entirely client-side using the
  * native Canvas 2D API. Zero dependencies, no external fonts, no backend.
  *
- * The brand logo (`/images/logo-cekdulu.png`) is loaded as a same-origin static
+ * The brand logo (`/images/logo-cekdulu.webp`) is loaded as a same-origin static
  * asset and drawn as-is — we never recreate the logo with emoji or text.
  *
  * PRIVACY: The card only renders aggregate figures the user already entered.
@@ -15,7 +15,7 @@ export const SHARE_CARD_WIDTH = 1080;
 export const SHARE_CARD_HEIGHT = 880;
 
 /** Same-origin brand logo used by the website header (source of truth). */
-export const LOGO_PATH = '/images/logo-cekdulu.png';
+export const LOGO_PATH = '/images/logo-cekdulu.webp';
 
 /** Brand & status colors following the CekDulu visual identity. */
 const COLORS = {

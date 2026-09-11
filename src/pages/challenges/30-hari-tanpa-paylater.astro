@@ -81,7 +81,7 @@ const milestoneRow = [7, 14, 21, 30] as const;
 
       <div class="mt-10 flex justify-center">
         <img
-          src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/30-days-no-paylater.png"
+          src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/30-days-no-paylater.webp"
           alt="Ilustrasi menghindari PayLater"
           width="640"
           height="533"
@@ -179,11 +179,11 @@ const milestoneRow = [7, 14, 21, 30] as const;
           </div>
           <img
             id="activeRocketImg"
-            src="/challenges/30-days-no-paylater-assets/rocket-day-01.png"
+            src="/challenges/30-days-no-paylater-assets/rocket-day-01.webp"
             alt=""
             aria-hidden="true"
-            width="1536"
-            height="1024"
+            width="800"
+            height="533"
             loading="lazy"
             decoding="async"
             class="pointer-events-none absolute bottom-0 right-0 z-0 h-auto select-none"
@@ -206,16 +206,16 @@ const milestoneRow = [7, 14, 21, 30] as const;
 
           <div
             class="relative mt-4 overflow-hidden rounded-2xl bg-cover bg-center px-5 py-5 text-center"
-            style="background-image:url('/challenges/30-days-no-paylater-assets/yellow-aksen-banner.png')"
+            style="background-image:url('/challenges/30-days-no-paylater-assets/yellow-aksen-banner.webp')"
           >
             <p class="flex items-center justify-center gap-2 leading-none text-[#15345F]">
               <img
                 id="activeStreakImg"
-                src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.png"
+                src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.webp"
                 alt=""
                 aria-hidden="true"
-                width="280"
-                height="233"
+                width="340"
+                height="283"
                 class="h-11 w-auto shrink-0"
               />
               <span id="active-day-hero" class="text-5xl font-extrabold tracking-tight tabular-nums">1</span>
@@ -417,7 +417,7 @@ const milestoneRow = [7, 14, 21, 30] as const;
       <div class="rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
         <div class="flex justify-center">
           <img
-            src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.png"
+            src="/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.webp"
             alt=""
             width="420"
             height="350"
@@ -643,11 +643,11 @@ const milestoneRow = [7, 14, 21, 30] as const;
 
     // ---- renderers ----
     const ROCKET_IMAGES = {
-      1: '/challenges/30-days-no-paylater-assets/rocket-day-01.png',
-      7: '/challenges/30-days-no-paylater-assets/rocket-day-07.png',
-      14: '/challenges/30-days-no-paylater-assets/rocket-day-14.png',
-      21: '/challenges/30-days-no-paylater-assets/rocket-day-21.png',
-      30: '/challenges/30-days-no-paylater-assets/rocket-day-30.png',
+      1: '/challenges/30-days-no-paylater-assets/rocket-day-01.webp',
+      7: '/challenges/30-days-no-paylater-assets/rocket-day-07.webp',
+      14: '/challenges/30-days-no-paylater-assets/rocket-day-14.webp',
+      21: '/challenges/30-days-no-paylater-assets/rocket-day-21.webp',
+      30: '/challenges/30-days-no-paylater-assets/rocket-day-30.webp',
     } as const;
 
     const ROCKET_LAYOUT: Record<string, { width: number; right: number; bottom: number }> = {
@@ -676,8 +676,8 @@ const milestoneRow = [7, 14, 21, 30] as const;
       if (streakImg) {
         streakImg.src =
           day >= CHALLENGE_DAYS
-            ? '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.png'
-            : '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.png';
+            ? '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/trophy.webp'
+            : '/cekdulu-30-hari-tanpa-paylater-assets/illustrations/flame-streak.webp';
       }
       const isFinished = day >= CHALLENGE_DAYS;
       const headingDefault = document.getElementById('active-banner-heading');

@@ -13,7 +13,7 @@
   <path d="M0 370C190 300 300 420 470 370C670 310 760 405 1080 345V460H0Z" fill="#FFF" opacity=".09"/>
 
   <!-- Official CekDulu logo, recolored white for the blue hero -->
-  <image id="brandLogoHero" href="/images/logo-cekdulu.png" x="58" y="42" width="330" height="110" preserveAspectRatio="xMinYMid meet" filter="url(#whiteLogo)"/>
+  <image id="brandLogoHero" href="/images/logo-cekdulu.webp" x="58" y="42" width="330" height="110" preserveAspectRatio="xMinYMid meet" filter="url(#whiteLogo)"/>
   <text x="72" y="186" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" opacity=".92">Kalkulator Kemampuan Cicilan</text>
 
   <!-- The question itself -->
@@ -48,7 +48,7 @@
   <!-- Friendly footer landscape -->
   <path d="M0 1800C200 1720 360 1840 550 1810c210-41 315-160 530-80v160H0z" fill="url(#yellow)"/>
   <path d="M0 1880c250-100 420 100 670-20 145-60 270-60 410-20v80H0z" fill="#FFCD28" opacity=".9"/>
-  <image id="brandLogoFooter" href="/images/logo-cekdulu.png" x="55" y="1812" width="290" height="97" preserveAspectRatio="xMinYMid meet"/>
+  <image id="brandLogoFooter" href="/images/logo-cekdulu.webp" x="55" y="1812" width="290" height="97" preserveAspectRatio="xMinYMid meet"/>
   <text x="60" y="1910" font-family="Arial,sans-serif" font-size="26" font-weight="600" fill="#0B438F">Sebelum nyicil, cek dulu.</text>
   <g transform="rotate(-7 810 1860)" fill="#0B438F"><text x="700" y="1844" font-family="cursive" font-size="31" font-weight="700">Keputusan lebih baik</text><text x="742" y="1882" font-family="cursive" font-size="31" font-weight="700">dimulai dari sini.</text><path d="M774 1898q83 14 165-8" fill="none" stroke="#1464E8" stroke-width="7" stroke-linecap="round"/></g>
 </svg>
