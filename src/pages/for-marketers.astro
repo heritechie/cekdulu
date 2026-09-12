@@ -464,7 +464,7 @@ const arrowCols = ['md:col-start-2', 'md:col-start-4', 'md:col-start-6'];
       <!-- ============ 5. HOW IT WORKS — 4 STEPS ============ -->
 <section id="cara-kerja" class="w-full bg-muted/30">
   <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-    <div class="py-12 sm:py-14">
+    <div class="py-8 sm:py-14">
       <div class="text-center">
         <p class="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">Cara kerja</p>
         <h2 class="mt-3 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
@@ -472,26 +472,26 @@ const arrowCols = ['md:col-start-2', 'md:col-start-4', 'md:col-start-6'];
         </h2>
       </div>
 
-      <div class="workflow grid grid-cols-1 gap-x-3 gap-y-4 pt-8 md:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] md:gap-y-0 lg:gap-x-4">
+      <div class="workflow grid grid-cols-1 gap-x-3 pt-4 md:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] md:gap-y-0 lg:gap-x-4">
         {steps.flatMap((step, index) => [
           <span
-            class={`text-center text-sm font-bold tracking-wide text-primary md:row-start-1 ${stepCols[index]}`}
+            class={`text-center text-sm font-bold leading-6 tracking-wide text-primary md:row-start-1 md:mb-3 ${stepCols[index]}`}
           >
             {step.number}
           </span>,
           <div
-            class={`flex w-[140px] justify-center sm:w-[150px] md:row-start-2 md:mt-4 lg:w-[160px] ${stepCols[index]}`}
+            class={`mt-1.5 flex justify-center md:row-start-2 md:mt-0 ${stepCols[index]}`}
           >
-            <picture>
+            <picture class="block w-[96px] sm:w-[112px] lg:w-[136px]">
               <source
                 type="image/avif"
                 srcset={`${step.image}-560.avif 560w, ${step.image}-768.avif 768w`}
-                sizes="160px"
+                sizes="136px"
               />
               <source
                 type="image/webp"
                 srcset={`${step.image}-560.webp 560w, ${step.image}-768.webp 768w`}
-                sizes="160px"
+                sizes="136px"
               />
               <img
                 src={`${step.image}-768.webp`}
@@ -500,26 +500,26 @@ const arrowCols = ['md:col-start-2', 'md:col-start-4', 'md:col-start-6'];
                 height="1145"
                 loading="lazy"
                 decoding="async"
-                class="h-auto w-full object-contain"
+                class="aspect-[1374/1145] h-auto w-full object-contain"
               />
             </picture>
           </div>,
           <h3
-            class={`text-center text-base font-semibold leading-snug text-foreground md:row-start-3 md:mt-4 ${stepCols[index]}`}
+            class={`mt-2 text-center text-base font-semibold leading-snug text-foreground md:row-start-3 md:mt-3 ${stepCols[index]}`}
           >
             {step.title}
           </h3>,
           <p
-            class={`mx-auto max-w-[260px] text-center text-sm leading-relaxed text-muted-foreground md:row-start-4 md:mt-1.5 ${stepCols[index]}`}
+            class={`mx-auto mt-1.5 max-w-[260px] text-center text-sm leading-relaxed text-muted-foreground md:row-start-4 md:mt-1.5 ${stepCols[index]}`}
           >
             {step.description}
           </p>,
           index < steps.length - 1 ? (
             <span
-              class={`flex items-center justify-center py-1 text-primary md:row-start-2 md:justify-self-center md:self-center md:py-0 ${arrowCols[index]}`}
+              class={`mt-3 mb-3 flex items-center justify-center text-primary md:row-start-2 md:mt-0 md:mb-0 md:justify-self-center md:self-center md:py-0 ${arrowCols[index]}`}
               aria-hidden="true"
             >
-              <ArrowDown class="h-6 w-6 md:hidden" />
+              <ArrowDown class="h-4 w-4 md:hidden" />
               <ArrowRight class="hidden h-5 w-5 md:block" />
             </span>
           ) : null,
@@ -530,22 +530,22 @@ const arrowCols = ['md:col-start-2', 'md:col-start-4', 'md:col-start-6'];
 </section><!-- ============ 7. FINAL CTA ============ -->
       <section id="final-cta" class="w-full">
         <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div class="py-14 sm:py-16">
-            <div class="rounded-3xl border border-primary/10 bg-primary/5 px-6 py-12 sm:px-10 sm:py-14 lg:px-8 lg:py-12">
-              <div class="grid items-center gap-10 lg:grid-cols-[6fr_5fr_6fr] lg:gap-6">
+          <div class="py-10 sm:py-16">
+            <div class="rounded-3xl border border-primary/10 bg-primary/5 px-6 py-8 sm:px-10 sm:py-12 lg:px-8 lg:py-12">
+              <div class="grid items-center gap-6 lg:grid-cols-[6fr_5fr_6fr] lg:gap-6">
                 <!-- Marketer illustration -->
                 <div class="flex justify-center">
-                  <div class="w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[400px]">
+                  <div class="w-full max-w-[280px] sm:max-w-[360px] lg:max-w-[400px]">
                     <picture>
                       <source
                         type="image/avif"
                         srcset="/for-marketers/assets/cta/cta-composite-560.avif 560w, /for-marketers/assets/cta/cta-composite-768.avif 768w"
-                        sizes="(min-width: 1024px) 345px, (min-width: 640px) 380px, 340px"
+                        sizes="(min-width: 1024px) 380px, (min-width: 640px) 340px, 280px"
                       />
                       <source
                         type="image/webp"
                         srcset="/for-marketers/assets/cta/cta-composite-560.webp 560w, /for-marketers/assets/cta/cta-composite-768.webp 768w"
-                        sizes="(min-width: 1024px) 345px, (min-width: 640px) 380px, 340px"
+                        sizes="(min-width: 1024px) 380px, (min-width: 640px) 340px, 280px"
                       />
                       <img
                         src="/for-marketers/assets/cta/cta-composite-768.webp"
@@ -565,10 +565,10 @@ const arrowCols = ['md:col-start-2', 'md:col-start-4', 'md:col-start-6'];
                   <h2 class="text-balance text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-[2.5rem]">
                     Punya campaign yang sedang jalan?
                   </h2>
-                  <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
+                  <p class="mx-auto mt-3 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
                     Tambahkan CekDulu dan beri calon customer alasan untuk berinteraksi.
                   </p>
-                  <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                  <div class="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
                     <a
                       href={publicMarketerAppUrl}
                       class={cn(
@@ -580,21 +580,21 @@ const arrowCols = ['md:col-start-2', 'md:col-start-4', 'md:col-start-6'];
                       <ArrowRight class="h-5 w-5" aria-hidden="true" />
                     </a>
                   </div>
-                  <p class="mt-5 text-sm text-muted-foreground sm:text-base">Gratis. Tanpa perlu coding.</p>
+                  <p class="mt-4 text-sm text-muted-foreground sm:text-base">Gratis. Tanpa perlu coding.</p>
                 </div>
 
                 <!-- Checklist -->
-                <div class="w-full max-w-[340px] justify-self-center sm:max-w-[380px] lg:max-w-[400px]">
+                <div class="w-full max-w-[260px] justify-self-center sm:max-w-[320px] lg:max-w-[360px]">
                   <picture>
                     <source
                       type="image/avif"
                       srcset="/for-marketers/assets/cta/cta-benefits-560.avif 560w, /for-marketers/assets/cta/cta-benefits-768.avif 768w"
-                      sizes="(min-width: 1024px) 345px, (min-width: 640px) 380px, 340px"
+                      sizes="(min-width: 1024px) 360px, (min-width: 640px) 320px, 260px"
                     />
                     <source
                       type="image/webp"
                       srcset="/for-marketers/assets/cta/cta-benefits-560.webp 560w, /for-marketers/assets/cta/cta-benefits-768.webp 768w"
-                      sizes="(min-width: 1024px) 345px, (min-width: 640px) 380px, 340px"
+                      sizes="(min-width: 1024px) 360px, (min-width: 640px) 320px, 260px"
                     />
                     <img
                       src="/for-marketers/assets/cta/cta-benefits-768.webp"
