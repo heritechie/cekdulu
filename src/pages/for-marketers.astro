@@ -1,0 +1,687 @@
+---
+import '../styles/global.css';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import {
+  ArrowDown,
+  ArrowRight,
+  CircleCheck,
+} from 'lucide-astro';
+
+const canonical = new URL('for-marketers', Astro.site).href;
+const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
+
+const steps = [
+  {
+    number: '01',
+    image: '/for-marketers/assets/how-it-works/step-create-campaign',
+    title: 'Buat Campaign',
+    description: 'Isi informasi produk dan penawaran.',
+  },
+  {
+    number: '02',
+    image: '/for-marketers/assets/how-it-works/step-add-utility',
+    title: 'Tambah Utility',
+    description: 'Pilih kalkulator yang sesuai (rumah, mobil, motor, dll).',
+  },
+  {
+    number: '03',
+    image: '/for-marketers/assets/how-it-works/step-share-link',
+    title: 'Bagikan Link',
+    description: 'Gunakan untuk Meta Ads, Google Ads, atau channel lain.',
+  },
+  {
+    number: '04',
+    image: '/for-marketers/assets/how-it-works/step-analytics',
+    title: 'Lihat Hasilnya',
+    description: 'Pantau interaksi dan leads.',
+  },
+];
+
+const stepCols = ['md:col-start-1', 'md:col-start-3', 'md:col-start-5', 'md:col-start-7'];
+const arrowCols = ['md:col-start-2', 'md:col-start-4', 'md:col-start-6'];
+---
+
+<!doctype html>
+<!--
+  TEMPORARY ILLUSTRATION ASSETS — READ BEFORE EDITING VISUALS
+
+  The current illustration assets under public/for-marketers/assets/ are
+  EXPERIMENTAL PLACEHOLDERS. They do NOT match the approved visual direction and
+  must not be treated as final.
+
+  Authoritative design reference (PRIMARY SOURCE OF TRUTH, NEVER rendered as UI):
+    docs/design/campaign-partner-reference.png
+
+  Desired visual language (from the reference):
+    - clean, lightweight, modern
+    - soft 3D / semi-flat illustration style
+    - restrained blue palette
+    - minimal glossy effects
+    - simple shapes
+    - generous whitespace
+    - strong visual hierarchy
+    - illustrations integrated into the UI composition (not independent 3D objects)
+
+  Asset pipeline for the NEXT asset generation (do not replace modular assets with
+  a single forced composition, and do not ship the reference as the page UI):
+
+    REFERENCE
+      ↓
+    same visual language
+      ↓
+    modular asset
+      ↓
+    HTML/CSS composition
+-->
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Tempatkan kalkulator kemampuan cicilan CekDulu di kampanye Meta Ads atau Google Ads. Prospek menghitung sendiri, memahami kemampuannya, dan datang dengan ekspektasi yang realistis."
+    />
+    <title>CekDulu untuk Kampanye Iklan — Iklan Lebih Berguna dengan CekDulu</title>
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <meta property="og:title" content="CekDulu untuk Kampanye Iklan — Iklan Lebih Berguna dengan CekDulu" />
+    <meta
+      property="og:description"
+      content="Tempatkan kalkulator kemampuan cicilan CekDulu di kampanye Meta Ads atau Google Ads. Prospek menghitung sendiri, memahami kemampuannya, dan datang dengan ekspektasi yang realistis."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:site_name" content="CekDulu.co.id" />
+    <meta property="og:image" content="https://cekdulu.co.id/images/illustrations/hero-balance-v1.png" />
+    <meta property="og:image:alt" content="Ilustrasi timbangan keuangan CekDulu" />
+    <meta property="og:image:width" content="1536" />
+    <meta property="og:image:height" content="1024" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CekDulu untuk Kampanye Iklan — Iklan Lebih Berguna dengan CekDulu" />
+    <meta
+      name="twitter:description"
+      content="Tempatkan kalkulator kemampuan cicilan CekDulu di kampanye Meta Ads atau Google Ads. Prospek menghitung sendiri, memahami kemampuannya, dan datang dengan ekspektasi yang realistis."
+    />
+    {publicMeasurementId && (
+      <script is:inline define:vars={{ publicMeasurementId }}>
+        (() => {
+          const key = 'cekdulu_internal_analytics';
+          const params = new URLSearchParams(window.location.search);
+
+          try {
+            if (params.get('internal') === '1') {
+              window.localStorage.setItem(key, '1');
+            } else if (params.get('internal') === '0') {
+              window.localStorage.removeItem(key);
+            }
+          } catch {
+            // Ignore storage errors and continue without internal filtering.
+          }
+
+          let isInternal = false;
+          try {
+            isInternal = window.localStorage.getItem(key) === '1';
+          } catch {
+            // Keep analytics enabled when storage is unavailable.
+          }
+
+          if (isInternal) return;
+
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            window.dataLayer.push(arguments);
+          }
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', publicMeasurementId);
+
+          const loadGtag = () => {
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(publicMeasurementId)}`;
+            document.head.appendChild(script);
+          };
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadGtag, { timeout: 2500 });
+          } else {
+            setTimeout(loadGtag, 2000);
+          }
+        })();
+      </script>
+    )}
+  </head>
+  <body class="min-h-screen bg-background font-sans text-foreground antialiased">
+    <!-- ============ 1. HEADER ============ -->
+    <header class="sticky top-0 z-40 border-b border-border/60 bg-background">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-8">
+        <a
+          href="/for-marketers"
+          class="inline-flex items-center"
+        >
+          <img
+            src="/images/logo-cekdulu-for-marketers.png"
+            alt="CekDulu for Marketers"
+            width="2170"
+            height="725"
+            decoding="async"
+            class="h-9 w-auto object-contain sm:h-11"
+          />
+        </a>
+        <a
+          href={import.meta.env.PUBLIC_MARKETER_APP_URL}
+          class={cn(buttonVariants({ variant: 'default' }), 'gap-2 rounded-full px-5 py-2.5 text-sm font-semibold')}
+        >
+          Coba Buat Campaign Gratis
+        </a>
+      </div>
+    </header>
+
+    <main class="w-full overflow-x-clip">
+      <!-- ============ 2. HERO ============ -->
+      <section id="hero" class="w-full">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="grid items-center gap-12 py-14 sm:py-16 lg:grid-cols-2 lg:gap-16 lg:py-16">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">
+                UNTUK TIM YANG SUDAH BERIKLAN
+              </p>
+              <h1 class="mt-4 text-balance text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+                Iklan sudah jalan. <span class="text-primary">Jangan biarkan berhenti di klik.</span>
+              </h1>
+              <p class="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+                Tambahkan kalkulator dan utility ke campaign Anda, supaya calon customer bisa
+                cek dulu sebelum lanjut.
+              </p>
+              <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                <a
+                  href={import.meta.env.PUBLIC_MARKETER_APP_URL}
+                  class={cn(
+                    buttonVariants({ variant: 'default' }),
+                    'h-auto gap-2 rounded-full px-8 py-3.5 text-base font-semibold shadow-lg shadow-primary/25',
+                  )}
+                >
+                  Coba Buat Campaign Gratis
+                  <ArrowRight class="h-4 w-4" aria-hidden="true" />
+                </a>
+                <a
+                  href="#cara-kerja"
+                  class={cn(
+                    buttonVariants({ variant: 'outline' }),
+                    'h-auto gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-muted-foreground',
+                  )}
+                >
+                  Lihat cara kerjanya
+                </a>
+              </div>
+              <div class="hero-benefits" role="list">
+                <div class="hero-benefit" role="listitem">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <span>Mudah digunakan</span>
+                </div>
+                <div class="hero-benefit" role="listitem">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="m16 18 6-6-6-6" />
+                    <path d="m8 6-6 6 6 6" />
+                  </svg>
+                  <span>Tidak perlu coding</span>
+                </div>
+                <div class="hero-benefit" role="listitem">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M3 3v18h18" />
+                    <path d="M18 17V9" />
+                    <path d="M13 17V5" />
+                    <path d="M8 17v-3" />
+                  </svg>
+                  <span>Siap untuk iklan</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mx-auto w-full max-w-[420px] sm:max-w-[480px] lg:max-w-[520px] lg:justify-self-end">
+              <picture>
+                <source
+                  type="image/avif"
+                  srcset="/for-marketers/assets/hero/hero-composite-768.avif 768w, /for-marketers/assets/hero/hero-composite-1024.avif 1024w"
+                  sizes="(min-width: 1024px) 520px, (min-width: 640px) 480px, 420px"
+                />
+                <source
+                  type="image/webp"
+                  srcset="/for-marketers/assets/hero/hero-composite-768.webp 768w, /for-marketers/assets/hero/hero-composite-1024.webp 1024w"
+                  sizes="(min-width: 1024px) 520px, (min-width: 640px) 480px, 420px"
+                />
+                <img
+                  src="/for-marketers/assets/hero/hero-composite-1024.webp"
+                  alt="Ilustrasi digital marketer menyiapkan campaign dengan CekDulu: laptop, ponsel, iklan properti, Meta Ads, Google Ads, dan WhatsApp"
+                  width="1536"
+                  height="1024"
+                  decoding="async"
+                  fetchpriority="high"
+                  class="h-auto w-full"
+                />
+              </picture>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 3. MASALAH (pain point) ============ -->
+      <section id="masalah" class="w-full bg-primary/5">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="py-16 sm:py-20">
+            <!-- Masalah: headline + komposit (teks kiri, ilustrasi kanan) -->
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-12 lg:gap-16">
+              <div class="max-w-lg">
+                <p class="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">
+                  Masalahnya,
+                </p>
+                <h2 class="mt-4 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+                  Klik belum tentu berarti siap beli.
+                </h2>
+                <p class="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+                  Orang bisa tertarik dengan iklan, tapi masih punya banyak pertanyaan. Kalau
+                  belum yakin, mereka bisa pergi begitu saja.
+                </p>
+              </div>
+              <div class="mx-auto w-full max-w-[420px] sm:max-w-[480px] md:max-w-[520px]">
+                <picture>
+                  <source
+                    type="image/avif"
+                    srcset="/for-marketers/assets/pain-point/problem-composite-720.avif 720w, /for-marketers/assets/pain-point/problem-composite-1024.avif 1024w"
+                    sizes="(min-width: 768px) 520px, (min-width: 640px) 480px, 420px"
+                  />
+                  <source
+                    type="image/webp"
+                    srcset="/for-marketers/assets/pain-point/problem-composite-720.webp 720w, /for-marketers/assets/pain-point/problem-composite-1024.webp 1024w"
+                    sizes="(min-width: 768px) 520px, (min-width: 640px) 480px, 420px"
+                  />
+                  <img
+                    src="/for-marketers/assets/pain-point/problem-composite-1024.webp"
+                    alt="Ilustrasi calon customer yang masih bertanya-tanya setelah melihat iklan"
+                    width="1774"
+                    height="887"
+                    loading="lazy"
+                    decoding="async"
+                    class="h-auto w-full object-contain"
+                  />
+                </picture>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 4. PERBANDINGAN: SEBELUM VS DENGAN CEKDULU ============ -->
+      <section id="perbandingan" class="w-full bg-background">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="py-14 sm:py-16">
+            <p class="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">
+              Sebelum vs dengan CekDulu
+            </p>
+            <h3 class="mt-2 text-balance text-xl font-bold tracking-tight sm:text-2xl">
+              Apa bedanya iklan dengan dan tanpa CekDulu?
+            </h3>
+
+            <div class="mt-6 flex flex-col items-stretch gap-4 sm:flex-row sm:gap-5 lg:mt-8">
+                <!-- BIASANYA -->
+                <article class="flex-1 rounded-2xl border border-border bg-card p-5 sm:p-6">
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted">
+                      <span class="h-1.5 w-1.5 rounded-full bg-muted-foreground" aria-hidden="true"></span>
+                    </span>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-muted-foreground sm:text-sm">Biasanya</h4>
+                  </div>
+                  <div class="mt-4 flex items-center justify-center overflow-hidden rounded-xl sm:h-[180px]">
+                    <picture>
+                      <source
+                        type="image/avif"
+                        srcset="/for-marketers/assets/comparison/before-landing-page-480.avif 480w, /for-marketers/assets/comparison/before-landing-page-720.avif 720w"
+                        sizes="(min-width: 640px) 320px, 100vw"
+                      />
+                      <source
+                        type="image/webp"
+                        srcset="/for-marketers/assets/comparison/before-landing-page-480.webp 480w, /for-marketers/assets/comparison/before-landing-page-720.webp 720w"
+                        sizes="(min-width: 640px) 320px, 100vw"
+                      />
+                      <img
+                        src="/for-marketers/assets/comparison/before-landing-page-720.webp"
+                        alt="Ilustrasi landing page iklan biasa"
+                        width="720"
+                        height="480"
+                        loading="lazy"
+                        decoding="async"
+                        class="h-auto max-h-[180px] w-full object-contain sm:h-full sm:max-h-none sm:w-auto"
+                      />
+                    </picture>
+                  </div>
+                  <h5 class="mt-4 text-base font-semibold leading-snug text-foreground">
+                    Landing page hanya memberi informasi.
+                  </h5>
+                  <p class="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    Calon customer masih harus mencari tahu sendiri apakah produk ini cocok untuk mereka.
+                  </p>
+                </article>
+
+                <!-- Arrow -->
+                <div class="flex items-center justify-center py-0.5" aria-hidden="true">
+                  <span class="flex sm:hidden">
+                    <span class="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm">
+                      <ArrowDown class="h-5 w-5" />
+                    </span>
+                  </span>
+                  <span class="hidden sm:flex">
+                    <span class="flex h-9 w-9 items-center justify-center rounded-full border border-primary/30 bg-primary/5 text-primary shadow-sm">
+                      <ArrowRight class="h-6 w-6" />
+                    </span>
+                  </span>
+                </div>
+
+                <!-- DENGAN CEKDULU -->
+                <article class="flex-1 rounded-2xl border border-primary/30 bg-primary/5 p-5 ring-1 ring-primary/10 sm:p-6">
+                  <div class="flex items-center gap-2">
+                    <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <CircleCheck class="h-3 w-3" aria-hidden="true" />
+                    </span>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-primary sm:text-sm">Dengan CekDulu</h4>
+                  </div>
+                  <div class="mt-4 flex items-center justify-center overflow-hidden rounded-xl sm:h-[180px]">
+                    <picture>
+                      <source
+                        type="image/avif"
+                        srcset="/for-marketers/assets/comparison/after-cekdulu-480.avif 480w, /for-marketers/assets/comparison/after-cekdulu-800.avif 800w"
+                        sizes="(min-width: 640px) 320px, 100vw"
+                      />
+                      <source
+                        type="image/webp"
+                        srcset="/for-marketers/assets/comparison/after-cekdulu-480.webp 480w, /for-marketers/assets/comparison/after-cekdulu-800.webp 800w"
+                        sizes="(min-width: 640px) 320px, 100vw"
+                      />
+                      <img
+                        src="/for-marketers/assets/comparison/after-cekdulu-800.webp"
+                        alt="Ilustrasi landing page iklan dengan kalkulator CekDulu"
+                        width="800"
+                        height="533"
+                        loading="lazy"
+                        decoding="async"
+                        class="h-auto max-h-[180px] w-full object-contain sm:h-full sm:max-h-none sm:w-auto"
+                      />
+                    </picture>
+                  </div>
+                  <h5 class="mt-4 text-base font-semibold leading-snug text-foreground">
+                    Calon customer bisa cek dulu.
+                  </h5>
+                  <p class="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    Mereka bisa mencoba kalkulator atau utility sebelum menghubungi Anda.
+                  </p>
+                </article>
+              </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 5. HOW IT WORKS — 4 STEPS ============ -->
+<section id="cara-kerja" class="w-full bg-muted/30">
+  <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div class="py-12 sm:py-14">
+      <div class="text-center">
+        <p class="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">Cara kerja</p>
+        <h2 class="mt-3 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+          Empat langkah sederhana, dari klik ke keputusan.
+        </h2>
+      </div>
+
+      <div class="workflow grid grid-cols-1 gap-x-3 gap-y-4 pt-8 md:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] md:gap-y-0 lg:gap-x-4">
+        {steps.flatMap((step, index) => [
+          <span
+            class={`text-center text-sm font-bold tracking-wide text-primary md:row-start-1 ${stepCols[index]}`}
+          >
+            {step.number}
+          </span>,
+          <div
+            class={`flex w-[140px] justify-center sm:w-[150px] md:row-start-2 md:mt-4 lg:w-[160px] ${stepCols[index]}`}
+          >
+            <picture>
+              <source
+                type="image/avif"
+                srcset={`${step.image}-560.avif 560w, ${step.image}-768.avif 768w`}
+                sizes="160px"
+              />
+              <source
+                type="image/webp"
+                srcset={`${step.image}-560.webp 560w, ${step.image}-768.webp 768w`}
+                sizes="160px"
+              />
+              <img
+                src={`${step.image}-768.webp`}
+                alt={`Ilustrasi langkah ${step.title.toLowerCase()}`}
+                width="1374"
+                height="1145"
+                loading="lazy"
+                decoding="async"
+                class="h-auto w-full object-contain"
+              />
+            </picture>
+          </div>,
+          <h3
+            class={`text-center text-base font-semibold leading-snug text-foreground md:row-start-3 md:mt-4 ${stepCols[index]}`}
+          >
+            {step.title}
+          </h3>,
+          <p
+            class={`mx-auto max-w-[260px] text-center text-sm leading-relaxed text-muted-foreground md:row-start-4 md:mt-1.5 ${stepCols[index]}`}
+          >
+            {step.description}
+          </p>,
+          index < steps.length - 1 ? (
+            <span
+              class={`flex items-center justify-center py-1 text-primary md:row-start-2 md:justify-self-center md:self-center md:py-0 ${arrowCols[index]}`}
+              aria-hidden="true"
+            >
+              <ArrowDown class="h-6 w-6 md:hidden" />
+              <ArrowRight class="hidden h-5 w-5 md:block" />
+            </span>
+          ) : null,
+        ]).filter(Boolean)}
+      </div>
+    </div>
+  </div>
+</section><!-- ============ 7. FINAL CTA ============ -->
+      <section id="final-cta" class="w-full">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="py-14 sm:py-16">
+            <div class="rounded-3xl border border-primary/10 bg-primary/5 px-6 py-12 sm:px-10 sm:py-14 lg:px-8 lg:py-12">
+              <div class="grid items-center gap-10 lg:grid-cols-[6fr_5fr_6fr] lg:gap-6">
+                <!-- Marketer illustration -->
+                <div class="flex justify-center">
+                  <div class="w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[400px]">
+                    <picture>
+                      <source
+                        type="image/avif"
+                        srcset="/for-marketers/assets/cta/cta-composite-560.avif 560w, /for-marketers/assets/cta/cta-composite-768.avif 768w"
+                        sizes="(min-width: 1024px) 345px, (min-width: 640px) 380px, 340px"
+                      />
+                      <source
+                        type="image/webp"
+                        srcset="/for-marketers/assets/cta/cta-composite-560.webp 560w, /for-marketers/assets/cta/cta-composite-768.webp 768w"
+                        sizes="(min-width: 1024px) 345px, (min-width: 640px) 380px, 340px"
+                      />
+                      <img
+                        src="/for-marketers/assets/cta/cta-composite-768.webp"
+                        alt="Ilustrasi marketer dengan laptop yang sedang menyiapkan kampanye"
+                        width="768"
+                        height="512"
+                        loading="lazy"
+                        decoding="async"
+                        class="h-auto w-full"
+                      />
+                    </picture>
+                  </div>
+                </div>
+
+                <!-- CTA content -->
+                <div class="text-center lg:text-left">
+                  <h2 class="text-balance text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-[2.5rem]">
+                    Punya campaign yang sedang jalan?
+                  </h2>
+                  <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
+                    Tambahkan CekDulu dan beri calon customer alasan untuk berinteraksi.
+                  </p>
+                  <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                    <a
+                      href={import.meta.env.PUBLIC_MARKETER_APP_URL}
+                      class={cn(
+                        buttonVariants({ variant: 'default' }),
+                        'h-auto gap-2.5 rounded-full px-9 py-4 text-base font-semibold shadow-lg shadow-primary/25 sm:text-lg',
+                      )}
+                    >
+                      Coba Buat Campaign Gratis
+                      <ArrowRight class="h-5 w-5" aria-hidden="true" />
+                    </a>
+                  </div>
+                  <p class="mt-5 text-sm text-muted-foreground sm:text-base">Gratis. Tanpa perlu coding.</p>
+                </div>
+
+                <!-- Checklist -->
+                <div class="w-full max-w-[340px] justify-self-center sm:max-w-[380px] lg:max-w-[400px]">
+                  <picture>
+                    <source
+                      type="image/avif"
+                      srcset="/for-marketers/assets/cta/cta-benefits-560.avif 560w, /for-marketers/assets/cta/cta-benefits-768.avif 768w"
+                      sizes="(min-width: 1024px) 345px, (min-width: 640px) 380px, 340px"
+                    />
+                    <source
+                      type="image/webp"
+                      srcset="/for-marketers/assets/cta/cta-benefits-560.webp 560w, /for-marketers/assets/cta/cta-benefits-768.webp 768w"
+                      sizes="(min-width: 1024px) 345px, (min-width: 640px) 380px, 340px"
+                    />
+                    <img
+                      src="/for-marketers/assets/cta/cta-benefits-768.webp"
+                      alt="Keuntungan CekDulu: mudah digunakan, tidak perlu coding, dan siap untuk iklan"
+                      width="768"
+                      height="512"
+                      loading="lazy"
+                      decoding="async"
+                      class="h-auto w-full"
+                    />
+                  </picture>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ 8. FOOTER ============ -->
+    <footer class="border-t border-border/60">
+      <div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div class="text-left">
+            <p class="mt-1 text-sm font-medium text-foreground">CekDulu</p>
+            <p class="mt-1 text-sm text-muted-foreground">Siap bikin iklan Anda lebih berguna?</p>
+          </div>
+          <div class="text-right">
+            <nav aria-label="Legal links" class="flex gap-4">
+              <a href="/for-marketers/terms" class="text-primary hover:text-underline underline underline-offset-4 decoration-primary/30">
+                Syarat & Ketentuan
+              </a>
+              <a href="/for-marketers/privacy" class="text-primary hover:text-underline underline underline-offset-4 decoration-primary/30">
+                Kebijakan Privasi
+              </a>
+            </nav>
+          </div>
+          <div class="mt-4 sm:mt-0 text-center text-sm text-muted-foreground">
+            © 2026 CekDulu
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .hero-benefits {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    column-gap: 20px;
+    row-gap: 10px;
+    margin-top: 24px;
+  }
+
+  .hero-benefit {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+    font-size: 14px;
+    line-height: 20px;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .hero-benefit svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    flex: 0 0 16px;
+    color: hsl(var(--primary));
+  }
+
+  .hero-benefit span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 1024px) {
+    .hero-benefits {
+      justify-content: flex-start;
+      column-gap: 28px;
+      row-gap: 12px;
+    }
+  }
+</style>

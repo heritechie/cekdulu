@@ -1,0 +1,107 @@
+---
+import '../../styles/global.css';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+
+const canonical = new URL('/for-marketers/coming-soon', Astro.site).href;
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="CekDulu for Marketers. Kami sedang menyiapkan tools untuk membantu campaign Anda jadi lebih berguna."
+    />
+    <title>CekDulu for Marketers — Segera Hadir</title>
+    <meta name="robots" content="noindex, follow" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+    <meta property="og:title" content="CekDulu for Marketers — Segera Hadir" />
+    <meta
+      property="og:description"
+      content="Kami sedang menyiapkan tools untuk membantu campaign Anda jadi lebih berguna."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:site_name" content="CekDulu.co.id" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="CekDulu for Marketers — Segera Hadir" />
+    <meta name="twitter:description" content="Kami sedang menyiapkan tools untuk membantu campaign Anda jadi lebih berguna." />
+  </head>
+  <body class="flex min-h-screen flex-col bg-background font-sans text-foreground antialiased">
+    <header class="border-b border-border/60">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
+        <a href="/for-marketers" class="inline-flex items-center">
+          <img
+            src="/images/logo-cekdulu-for-marketers.png"
+            alt="CekDulu for Marketers"
+            width="2170"
+            height="725"
+            decoding="async"
+            class="h-9 w-auto object-contain sm:h-11"
+          />
+        </a>
+      </div>
+    </header>
+
+    <main class="flex flex-1 items-center justify-center overflow-x-clip">
+      <div class="mx-auto w-full max-w-lg px-4 py-14 text-center sm:px-6 sm:py-16 lg:px-8">
+        <p class="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">
+          CekDulu for Marketers
+        </p>
+        <h1 class="mt-4 text-balance text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl">
+          Segera Hadir.
+        </h1>
+        <p class="mx-auto mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+          Kami sedang menyiapkan tools untuk membantu campaign Anda jadi lebih berguna.
+        </p>
+        <div class="mt-8 flex justify-center">
+          <a
+            href="/for-marketers"
+            class={cn(
+              buttonVariants({ variant: 'default' }),
+              'h-auto rounded-full px-7 py-3.5 text-sm font-semibold shadow-lg shadow-primary/25 sm:px-8 sm:text-base',
+            )}
+          >
+            Kembali ke CekDulu for Marketers
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <footer class="border-t border-border/60">
+      <div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-center sm:gap-6 sm:text-left">
+          <a
+            href="/for-marketers"
+            class="text-sm font-medium text-foreground transition-colors hover:text-foreground/80"
+          >
+            CekDulu for Marketers
+          </a>
+          <nav aria-label="Dokumen legal" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm">
+            <a
+              href="/for-marketers/terms"
+              class="text-primary underline underline-offset-4 decoration-primary/30 transition-colors hover:decoration-primary"
+            >
+              Syarat &amp; Ketentuan
+            </a>
+            <a
+              href="/for-marketers/privacy"
+              class="text-primary underline underline-offset-4 decoration-primary/30 transition-colors hover:decoration-primary"
+            >
+              Kebijakan Privasi
+            </a>
+          </nav>
+          <p class="text-sm text-muted-foreground">&copy; 2026 CekDulu</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

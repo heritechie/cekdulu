@@ -1,0 +1,373 @@
+---
+import '../../../styles/global.css';
+import SiteLogo from '../../../components/site-logo.astro';
+import { buttonVariants } from '../../../components/ui/button';
+import { cn } from '../../../lib/utils';
+import { findCampaign, partners } from '../../../data/partners';
+import type { Partner } from '../../../data/partners';
+import {
+  ArrowRight,
+  BedDouble,
+  Check,
+  Droplets,
+  Home,
+  MapPin,
+  Maximize,
+  Ruler,
+  Tag,
+} from 'lucide-astro';
+
+export function getStaticPaths() {
+  return partners.flatMap((partner) =>
+    partner.campaigns.map((campaign) => ({
+      params: { partner: partner.slug, campaign: campaign.slug },
+      props: { partner, campaign },
+    })),
+  );
+}
+
+const { partner, campaign } = Astro.props as { partner: Partner; campaign: NonNullable<ReturnType<typeof findCampaign>>['campaign'] };
+
+const canonical = new URL(`p/${partner.slug}/${campaign.slug}`, Astro.site).href;
+const calculatorUrl = '/kalkulator-kemampuan-cicilan';
+const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
+const metaTitle = `${campaign.name} di ${partner.name} - CekDulu`;
+const metaDescription =
+  campaign.seoDescription ??
+  `Cek kemampuan KPR sebelum mengambil cicilan ${campaign.name} di ${partner.name}.`;
+const ogImage = campaign.image
+  ? new URL(campaign.image, Astro.site).href
+  : new URL('/images/illustrations/hero-balance-v1.png', Astro.site).href;
+const ogImageAlt = campaign.imageAlt ?? `Rumah ${campaign.name} di ${partner.name}`;
+
+const specs: { Icon: typeof Home; label: string; value: string }[] = [];
+if (campaign.type) specs.push({ Icon: Home, label: 'Tipe', value: campaign.type });
+if (campaign.buildingSize) specs.push({ Icon: Maximize, label: 'Bangunan', value: campaign.buildingSize });
+if (campaign.landSize) specs.push({ Icon: Ruler, label: 'Tanah', value: campaign.landSize });
+if (campaign.bedrooms) specs.push({ Icon: BedDouble, label: 'Kamar', value: campaign.bedrooms });
+if (campaign.bathrooms) specs.push({ Icon: Droplets, label: 'Kamar mandi', value: campaign.bathrooms });
+if (campaign.price) specs.push({ Icon: Tag, label: 'Harga', value: campaign.price });
+if (campaign.location) specs.push({ Icon: MapPin, label: 'Lokasi', value: campaign.location });
+
+const financialPoints = [
+  'Penghasilan bulanan',
+  'Cicilan yang sudah berjalan',
+  'Pengeluaran bulanan',
+  'Rencana cicilan KPR',
+  'Sisa uang setelah semua beban',
+];
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={metaDescription} />
+    <meta name="robots" content="noindex" />
+    <title>{metaTitle}</title>
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:site_name" content="CekDulu.co.id" />
+    <meta property="og:title" content={metaTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={metaTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+    {publicMeasurementId && (
+      <script is:inline define:vars={{ publicMeasurementId }}>
+        (() => {
+          const key = 'cekdulu_internal_analytics';
+          const params = new URLSearchParams(window.location.search);
+
+          try {
+            if (params.get('internal') === '1') {
+              window.localStorage.setItem(key, '1');
+            } else if (params.get('internal') === '0') {
+              window.localStorage.removeItem(key);
+            }
+          } catch {
+            // Ignore storage errors and continue without internal filtering.
+          }
+
+          let isInternal = false;
+          try {
+            isInternal = window.localStorage.getItem(key) === '1';
+          } catch {
+            // Keep analytics enabled when storage is unavailable.
+          }
+
+          if (isInternal) return;
+
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            window.dataLayer.push(arguments);
+          }
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', publicMeasurementId);
+
+          // Defer only the gtag.js network request until the browser is idle so
+          // analytics never competes with LCP/CLS for bandwidth. The config
+          // command above is already queued in dataLayer, so the initial
+          // page_view still fires once gtag.js loads. Tracking semantics unchanged.
+          const loadGtag = () => {
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(publicMeasurementId)}`;
+            document.head.appendChild(script);
+          };
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadGtag, { timeout: 2500 });
+          } else {
+            setTimeout(loadGtag, 2000);
+          }
+        })();
+      </script>
+    )}
+  </head>
+  <body
+    class="font-sans antialiased min-h-screen bg-background text-foreground"
+    data-partner-slug={partner.slug}
+    data-campaign-slug={campaign.slug}
+  >
+    <header class="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+        <SiteLogo />
+        <a
+          href={calculatorUrl}
+          data-partner-cta="calculator_header"
+          class={cn(
+            buttonVariants({ variant: 'default' }),
+            'gap-2 rounded-full px-5 py-2.5 text-sm font-semibold',
+          )}
+        >
+          Cek Kemampuan KPR
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="mx-auto w-full max-w-6xl px-4 pb-14 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+        <div class="lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+          <div>
+            <p class="text-sm font-medium text-primary/80">{partner.name}</p>
+            <h1 class="mt-2 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              {campaign.name} di {partner.name}
+            </h1>
+            <p class="mt-4 max-w-md text-base text-muted-foreground">
+              Temukan rumah yang sesuai dengan rencana keuanganmu.
+            </p>
+            <div class="mt-7">
+              <a
+                href={calculatorUrl}
+                data-partner-cta="calculator_hero"
+                class={cn(
+                  buttonVariants({ variant: 'default' }),
+                  'gap-2 rounded-full px-7 py-3 text-base font-semibold',
+                )}
+              >
+                Cek Kemampuan KPR
+                <ArrowRight class="h-5 w-5" aria-hidden="true" />
+              </a>
+            </div>
+          </div>
+          {campaign.image && (
+            <figure class="mt-8 overflow-hidden rounded-2xl border border-border bg-muted lg:mt-0">
+              <picture>
+                {campaign.image.endsWith('.png') && (
+                  <>
+                    <source type="image/avif" srcset={campaign.image.replace(/\.png$/, '.avif')} width="1536" height="1024" />
+                    <source type="image/webp" srcset={campaign.image.replace(/\.png$/, '.webp')} width="1536" height="1024" />
+                  </>
+                )}
+                <img
+                  src={campaign.image}
+                  alt={campaign.imageAlt ?? `${campaign.name} di ${partner.name}`}
+                  width="1536"
+                  height="1024"
+                  decoding="async"
+                  loading="eager"
+                  fetchpriority="high"
+                  class="aspect-[3/2] h-auto w-full object-cover"
+                />
+              </picture>
+            </figure>
+          )}
+        </div>
+      </section>
+
+      <section class="border-t border-border/60 bg-muted/40">
+        <div class="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+          <div class="max-w-3xl">
+            <p class="text-sm font-medium text-primary/80">{partner.name}</p>
+            <h2 class="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              {campaign.name}
+            </h2>
+          </div>
+          <dl class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {specs.map((spec) => (
+              <div class="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
+                  <spec.Icon class="h-5 w-5 text-foreground" aria-hidden="true" />
+                </span>
+                <div>
+                  <dt class="text-xs text-muted-foreground">{spec.label}</dt>
+                  <dd class="text-sm font-semibold text-foreground">{spec.value}</dd>
+                </div>
+              </div>
+            ))}
+          </dl>
+          {campaign.amenities && campaign.amenities.length > 0 && (
+            <ul class="mt-6 flex flex-wrap gap-2">
+              {campaign.amenities.map((amenity) => (
+                <li class="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+                  {amenity}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
+
+      <section class="border-t border-border/60">
+        <div class="mx-auto w-full max-w-3xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+          <p class="text-sm font-medium text-primary/80">CekDulu</p>
+          <h2 class="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Jangan cuma lihat harga rumah.
+          </h2>
+          <p class="mt-3 text-base text-muted-foreground">
+            Pastikan cicilannya masih sesuai dengan kemampuan keuanganmu.
+          </p>
+          <ul class="mt-8 space-y-3">
+            {financialPoints.map((point) => (
+              <li class="flex items-center gap-3 text-sm text-foreground sm:text-base">
+                <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                  <Check class="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                </span>
+                {point}
+              </li>
+            ))}
+          </ul>
+          <div class="mt-9">
+            <a
+              href={calculatorUrl}
+              data-partner-cta="calculator_financial"
+              class={cn(
+                buttonVariants({ variant: 'default' }),
+                'gap-2 rounded-full px-7 py-3 text-base font-semibold',
+              )}
+            >
+              Cek Kemampuan KPR
+              <ArrowRight class="h-5 w-5" aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-t border-border/60 bg-muted/40">
+        <div class="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+          <div class="rounded-2xl border border-border bg-card p-6 sm:p-8">
+            <p class="text-sm leading-relaxed text-foreground">
+              CekDulu membantu kamu memahami kemampuan keuangan sebelum mengambil keputusan terkait cicilan.
+            </p>
+            <p class="mt-3 text-sm leading-relaxed text-muted-foreground">
+              CekDulu bukan bank, lender, broker, atau penyedia pinjaman.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-t border-border/60">
+        <div class="mx-auto w-full max-w-3xl px-4 py-14 text-center sm:px-6 sm:py-16 lg:px-8">
+          <h2 class="text-balance text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Info lebih lanjut tentang {campaign.name}
+          </h2>
+          {campaign.partnerContactUrl ? (
+            <a
+              href={campaign.partnerContactUrl}
+              target="_blank"
+              rel="noopener"
+              data-partner-cta="partner"
+              class={cn(
+                buttonVariants({ variant: 'secondary' }),
+                'mt-7 gap-2 rounded-full px-7 py-3 text-base font-semibold',
+              )}
+            >
+              {campaign.partnerContactLabel ?? `Hubungi ${partner.name}`}
+            </a>
+          ) : (
+            <p class="mt-6 text-sm text-muted-foreground">
+              Kontak {partner.name} akan tersedia segera.
+            </p>
+          )}
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-border/60">
+      <div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <a
+              href="/"
+              class="text-lg font-semibold leading-tight tracking-tight text-foreground transition-colors hover:text-foreground/80"
+            >
+              CekDulu
+            </a>
+            <p class="mt-1 text-sm text-muted-foreground">Baru Ambil Keputusan.</p>
+          </div>
+          <div class="text-sm text-muted-foreground sm:text-right">
+            <nav aria-label="Tautan situs" class="mt-1">
+              <a href="/privacy-policy" class="transition-colors hover:text-foreground">
+                Kebijakan Privasi
+              </a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      import { trackEvent } from '../../../lib/analytics';
+
+      const body = document.body;
+      const partnerSlug = body.dataset.partnerSlug ?? '';
+      const campaignSlug = body.dataset.campaignSlug ?? '';
+
+      let viewFired = false;
+      function fireView() {
+        if (viewFired) return;
+        viewFired = true;
+        trackEvent('partner_campaign_view', {
+          partner_slug: partnerSlug,
+          campaign_slug: campaignSlug,
+        });
+      }
+      if (document.readyState === 'complete') {
+        fireView();
+      } else {
+        window.addEventListener('load', fireView);
+      }
+
+      document.addEventListener('click', (event) => {
+        const target = event.target as Element | null;
+        const el = target?.closest('[data-partner-cta]');
+        if (!el) return;
+        trackEvent('partner_campaign_cta_click', {
+          partner_slug: partnerSlug,
+          campaign_slug: campaignSlug,
+          cta: el.getAttribute('data-partner-cta') ?? 'calculator',
+        });
+      });
+    </script>
+  </body>
+</html>
