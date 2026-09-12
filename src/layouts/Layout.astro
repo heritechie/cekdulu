@@ -38,6 +38,7 @@ const {
 } = Astro.props;
 
 const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
+const publicGoogleAdsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID as string | undefined;
 ---
 
 <!doctype html>
@@ -69,7 +70,7 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
     <meta name="twitter:description" content={twitterDescription} />
     <slot name="head" />
     {publicMeasurementId && (
-      <script is:inline define:vars={{ publicMeasurementId }}>
+      <script is:inline define:vars={{ publicMeasurementId, publicGoogleAdsId }}>
         (() => {
           const key = 'cekdulu_internal_analytics';
           const params = new URLSearchParams(window.location.search);
@@ -100,6 +101,10 @@ const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string |
           window.gtag = gtag;
           gtag('js', new Date());
           gtag('config', publicMeasurementId);
+
+          if (publicGoogleAdsId) {
+            gtag('config', publicGoogleAdsId);
+          }
 
           // Defer only the gtag.js network request until the browser is idle so
           // analytics never competes with LCP/CLS for bandwidth. The config
