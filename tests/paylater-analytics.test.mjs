@@ -232,7 +232,7 @@ describe('paylater_challenge_view', () => {
     assert.equal(challengeEntrySource('https://cekdulu.co.id/', origin), 'homepage');
     assert.equal(challengeEntrySource('https://cekdulu.co.id', origin), 'homepage');
     assert.equal(challengeEntrySource('https://cekdulu.co.id/challenges', origin), 'challenges');
-    assert.equal(challengeEntrySource('https://cekdulu.co.id/challenges/30-hari-tanpa-paylater', origin), 'challenges');
+    assert.equal(challengeEntrySource('https://cekdulu.co.id/30SPL', origin), 'direct');
     assert.equal(challengeEntrySource('', origin), 'direct');
     assert.equal(challengeEntrySource('https://play.google.com/', origin), 'direct');
     assert.equal(challengeEntrySource('https://cekdulu.co.id/kalkulator-kemampuan-cicilan', origin), 'direct');

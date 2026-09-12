@@ -9,7 +9,7 @@ const canonical = new URL('challenges', Astro.site).href;
 
 const challenges = [
   {
-    slug: '30-hari-tanpa-paylater',
+    slug: '30SPL',
     title: '30 Hari Tanpa PayLater',
     description: 'Berani mencoba 30 hari tanpa menggunakan PayLater?',
     duration: '30 hari',
@@ -128,7 +128,7 @@ const calcUrl = '/kalkulator-kemampuan-cicilan';
                 </div>
                 <a
                   id="challenge-cta"
-                  href={`/challenges/${c.slug}`}
+                  href={`/${c.slug}`}
                   class={cn(
                     buttonVariants({ variant: 'default' }),
                     'mt-4 h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold'

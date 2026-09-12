@@ -7,7 +7,7 @@
  */
 import { avoidedExpenseCount, totalAvoidedExpense, type ChallengeState } from './paylater-challenge';
 
-export const CHALLENGE_SHARE_URL = 'https://cekdulu.co.id/challenges/30-hari-tanpa-paylater';
+export const CHALLENGE_SHARE_URL = 'https://cekdulu.co.id/30SPL';
 
 export type ChallengeShareContext = 'landing' | 'progress' | 'milestone' | 'completed';
 

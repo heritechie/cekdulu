@@ -1,6 +1,6 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { CHALLENGE_DAYS } from '../../lib/paylater-challenge';
+import Layout from '../layouts/Layout.astro';
+import { CHALLENGE_DAYS } from '../lib/paylater-challenge';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
@@ -14,7 +14,7 @@ import {
   X,
 } from 'lucide-astro';
 
-const canonical = new URL('challenges/30-hari-tanpa-paylater', Astro.site).href;
+const canonical = new URL('30SPL', Astro.site).href;
 const milestoneRow = [7, 14, 21, 30] as const;
 ---
 
@@ -479,7 +479,7 @@ const milestoneRow = [7, 14, 21, 30] as const;
           <p class="mt-1 text-sm text-muted-foreground">pengeluaran berhasil dihindari</p>
           <div class="mx-auto mt-4 h-px w-full bg-border"></div>
           <p class="mt-4 text-sm font-semibold text-foreground">Berani coba?</p>
-          <p class="mt-0.5 text-sm font-bold text-[#1769E0]">cekdulu.co.id/challenges/30-hari-tanpa-paylater</p>
+          <p class="mt-0.5 text-sm font-bold text-[#1769E0]">cekdulu.co.id/30SPL</p>
         </div>
       </div>
 
@@ -515,8 +515,8 @@ const milestoneRow = [7, 14, 21, 30] as const;
   </main>
 
   <script>
-    import { formatRupiah } from '../../lib/calculator/engine';
-    import { trackEvent } from '../../lib/analytics';
+    import { formatRupiah } from '../lib/calculator/engine';
+    import { trackEvent } from '../lib/analytics';
     import {
       challengeEntrySource,
       completeParamsFromState,
@@ -528,13 +528,13 @@ const milestoneRow = [7, 14, 21, 30] as const;
       fireChallengeStart,
       fireChallengeView,
       type ChallengeShareAnalyticsContext,
-    } from '../../lib/paylater-analytics';
+    } from '../lib/paylater-analytics';
     import {
       buildChallengeShareText,
       CHALLENGE_SHARE_URL,
       type ChallengeShareContext,
-    } from '../../lib/paylater-share';
-    import { renderChallengeShareImagePng } from '../../lib/paylater-share-image';
+    } from '../lib/paylater-share';
+    import { renderChallengeShareImagePng } from '../lib/paylater-share-image';
     import {
       CELEBRATION_MILESTONES,
       CHALLENGE_DAYS,
@@ -559,7 +559,7 @@ const milestoneRow = [7, 14, 21, 30] as const;
       writeChallengeStorage,
       type ChallengeState,
       type LogKind,
-    } from '../../lib/paylater-challenge';
+    } from '../lib/paylater-challenge';
 
     type ScreenName = 'landing' | 'active' | 'log' | 'complete';
 
