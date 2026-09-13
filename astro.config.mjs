@@ -26,11 +26,6 @@ vite: {
   ],
 
   redirects: {
-    '/stopl': '/30SPL',
-    '/30-hari-tanpa-paylater': '/30SPL',
-    '/challenges/30-hari-tanpa-paylater': '/30SPL',
-    '/campaign': '/for-marketers',
-    '/campaign/terms': '/for-marketers/terms',
-    '/campaign/privacy': '/for-marketers/privacy',
+    '/30-hari-tanpa-paylater': '/challenges/30-hari-tanpa-paylater',
   },
 });
