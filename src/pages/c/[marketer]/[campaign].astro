@@ -311,80 +311,6 @@ const moneyWrapCls =
             </button>
           </div>
         </section>
-
-        <section
-          id="campaign-info-below"
-          aria-label="Informasi properti"
-          class="px-4 py-3 sm:px-6 sm:py-5"
-        >
-          <p class="text-[13px] font-medium text-muted-foreground">{marketer.name}</p>
-          <h1 class="mt-1 text-[22px] font-bold leading-tight tracking-tight text-foreground sm:text-2xl">
-            {propertyTitle}
-          </h1>
-          {campaign.location && (
-            <p class="mt-1.5 flex items-center gap-1 text-sm text-foreground/80">
-              <MapPin class="h-3.5 w-3.5 shrink-0 text-primary/80" aria-hidden="true" />
-              {campaign.location}
-            </p>
-          )}
-
-          <div class="mt-2 text-sm">
-            {campaign.unitType && (
-              <p class="flex items-center gap-1.5 font-medium text-foreground">
-                <Home class="h-3.5 w-3.5 shrink-0 text-primary/80" aria-hidden="true" />
-                {campaign.unitType}
-              </p>
-            )}
-            {specs.length > 0 && (
-              <p class="mt-1 text-muted-foreground">{specs.join(' · ')}</p>
-            )}
-          </div>
-
-          <p class="mt-2.5 flex items-center gap-1.5 text-xl font-bold text-foreground">
-            <Tag class="h-4 w-4 shrink-0 text-primary/80" aria-hidden="true" />
-            Mulai <span class="whitespace-nowrap">{campaign.priceLabel}</span>
-          </p>
-
-          {campaign.highlights && campaign.highlights.length > 0 && (
-            <div class="mt-3">
-              <h2 class="text-[15px] font-semibold leading-snug text-foreground">
-                Kenapa pilih {propertyTitle || 'properti ini'}?
-              </h2>
-              <ul class="mt-1.5 space-y-1">
-                {campaign.highlights.slice(0, 5).map((item) => (
-                  <li class="flex items-start gap-2 text-sm text-foreground/90">
-                    <Check class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {campaign.promos && campaign.promos.length > 0 && (
-            <div class="mt-3">
-              <h2 class="text-[15px] font-semibold leading-snug text-foreground">Promo yang tersedia</h2>
-              <ul class="mt-1.5 space-y-1">
-                {campaign.promos.slice(0, 5).map((item) => (
-                  <li class="flex items-start gap-2 text-sm text-foreground/90">
-                    <BadgeCheck class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <button
-            type="button"
-            data-campaign-cta="kpr_check"
-            data-start-wizard
-            class="mt-3.5 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-base font-semibold text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50"
-          >
-            Cek Kemampuan Cicilan
-            <ArrowRight class="h-5 w-5" aria-hidden="true" />
-          </button>
-        </section>
         </div>
       </div>
 
@@ -1105,7 +1031,6 @@ const moneyWrapCls =
     <script>
       import { formatPercentage, formatRupiah } from '../../../lib/calculator/engine';
       import { buildWhatsappUrl, calculateCampaignScenario } from '../../../lib/campaign/campaign-scenario';
-      import { getPropertyImageMode } from '../../../lib/campaign/presentation';
       import {
         buildSimulationSnapshot,
         readSimulationSnapshots,
@@ -1324,7 +1249,6 @@ const moneyWrapCls =
         const dots = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-photo-dot]'));
         const prevBtn = document.getElementById('photo-prev') as HTMLButtonElement | null;
         const nextBtn = document.getElementById('photo-next') as HTMLButtonElement | null;
-        const infoBelow = document.getElementById('campaign-info-below') as HTMLElement | null;
         const slides = Array.from(track.children) as HTMLElement[];
         let current = 0;
 
@@ -1333,27 +1257,6 @@ const moneyWrapCls =
         const carousel: HTMLElement = track;
 
         const slideCount = slides.length;
-
-        function currentImg(): HTMLImageElement | null {
-          return slides[current]?.querySelector('img') ?? null;
-        }
-
-        
-
-        function updatePresentation(): void {
-          const img = currentImg();
-          const mode =
-            img && img.naturalWidth > 0 && img.naturalHeight > 0
-              ? getPropertyImageMode(img.naturalWidth, img.naturalHeight)
-              : 'normal';
-          if (mode === carousel.dataset.mode) return;
-          carousel.dataset.mode = mode;
-          if (mode === 'portrait-9-16') {
-            infoBelow?.classList.add('hidden');
-          } else {
-            infoBelow?.classList.remove('hidden');
-          }
-        }
 
         function syncDots(): void {
           carousel.dataset.slide = String(current);
@@ -1366,7 +1269,6 @@ const moneyWrapCls =
           });
           if (prevBtn) prevBtn.disabled = current === 0;
           if (nextBtn) nextBtn.disabled = current === slideCount - 1;
-          updatePresentation();
         }
 
         function goToSlide(index: number): void {
@@ -1389,11 +1291,6 @@ const moneyWrapCls =
         prevBtn?.addEventListener('click', () => goToSlide(current - 1));
         nextBtn?.addEventListener('click', () => goToSlide(current + 1));
 
-        slides.forEach((slide) => {
-          slide.querySelector('img')?.addEventListener('load', updatePresentation);
-        });
-
-        track.dataset.mode = 'normal';
         syncDots();
       }
 
