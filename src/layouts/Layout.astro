@@ -70,6 +70,12 @@ const publicGoogleAdsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID as string | undef
     <meta name="twitter:description" content={twitterDescription} />
     <slot name="head" />
     {publicMeasurementId && (
+      <>
+      <script
+        is:inline
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${publicMeasurementId}`}
+      ></script>
       <script is:inline define:vars={{ publicMeasurementId, publicGoogleAdsId }}>
         (() => {
           const key = 'cekdulu_internal_analytics';
@@ -106,23 +112,9 @@ const publicGoogleAdsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID as string | undef
             gtag('config', publicGoogleAdsId);
           }
 
-          // Defer only the gtag.js network request until the browser is idle so
-          // analytics never competes with LCP/CLS for bandwidth. The config
-          // command above is already queued in dataLayer, so the initial
-          // page_view still fires once gtag.js loads. Tracking semantics unchanged.
-          const loadGtag = () => {
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(publicMeasurementId)}`;
-            document.head.appendChild(script);
-          };
-          if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(loadGtag, { timeout: 2500 });
-          } else {
-            setTimeout(loadGtag, 2000);
-          }
-        })();
+          })();
       </script>
+      </>
     )}
     <script
       is:inline

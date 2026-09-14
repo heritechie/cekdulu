@@ -14,7 +14,7 @@ vite: {
     sitemap({
       filter: (page) => {
         const path = new URL(page).pathname;
-        return !path.startsWith('/p/') && !path.startsWith('/campaign') && !path.startsWith('/for-marketers/coming-soon');
+        return !path.startsWith('/p/') && !path.startsWith('/c/') && !path.startsWith('/campaign') && !path.startsWith('/for-marketers/coming-soon');
       },
       serialize: (item) => {
         if (item.url !== 'https://cekdulu.co.id/' && item.url.endsWith('/')) {

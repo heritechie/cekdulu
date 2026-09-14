@@ -1,0 +1,2580 @@
+---
+import '../../../styles/global.css';
+import { cn } from '../../../lib/utils';
+import { campaignMarketers } from '../../../data/campaigns';
+import type { Campaign, CampaignMarketer } from '../../../data/campaigns';
+import {
+  ArrowLeft,
+  ArrowRight,
+  BadgeCheck,
+  Bike,
+  Bookmark,
+  Bus,
+  Car,
+  Check,
+  CircleAlert,
+  CircleCheck,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  CreditCard,
+  Ellipsis,
+  File,
+  GraduationCap,
+  HeartPulse,
+  Home,
+  Lightbulb,
+  MapPin,
+  Maximize2,
+  Minus,
+  Plus,
+  Scale,
+  Shield,
+  SlidersHorizontal,
+  Tag,
+  Utensils,
+  X,
+} from 'lucide-astro';
+
+export function getStaticPaths() {
+  return campaignMarketers.flatMap((marketer) =>
+    marketer.campaigns
+      .filter((campaign) => campaign.template === 'kpr')
+      .map((campaign) => ({
+        params: { marketer: marketer.slug, campaign: campaign.slug },
+        props: { marketer, campaign },
+      })),
+  );
+}
+
+const { marketer, campaign } = Astro.props as { marketer: CampaignMarketer; campaign: Campaign };
+
+const canonical = new URL(`c/${marketer.slug}/${campaign.slug}`, Astro.site).href;
+const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
+const metaTitle = `${campaign.name} di ${campaign.developerName ?? marketer.name} - CekDulu`;
+const metaDescription = campaign.seoDescription;
+const ogImage = new URL('/images/illustrations/hero-balance-v1.png', Astro.site).href;
+
+const campaignConfig = {
+  price: campaign.params.price,
+  priceLabel: campaign.priceLabel,
+  annualInterestRate: campaign.params.annualInterestRate,
+  promoInterest: campaign.params.promoInterest,
+  promoPeriodYears: campaign.params.promoPeriodYears,
+  floatingInterest: campaign.params.floatingInterest,
+  syariahMargin: campaign.params.syariahMargin,
+  tenorPresetsMonths: campaign.tenorPresetsMonths,
+  defaultTenorMonths: campaign.defaultTenorMonths,
+  whatsapp: campaign.whatsapp,
+  whatsappMessage: campaign.whatsappMessage,
+  marketerSlug: marketer.slug,
+  marketerName: marketer.name,
+  campaignSlug: campaign.slug,
+  campaignName: campaign.name,
+  developerName: campaign.developerName,
+  template: campaign.template,
+};
+const campaignConfigJson = JSON.stringify(campaignConfig);
+
+const propertyTitle = campaign.developerName
+  ? `${campaign.developerName} - ${campaign.name}`
+  : campaign.name;
+
+const sheetPriceContext = `Rp${Math.round(campaign.params.price / 1_000_000)} jt`;
+
+const specShort = (label: string) =>
+  label === 'Tanah'
+    ? 'tanah'
+    : label === 'Bangunan'
+      ? 'bangunan'
+      : label === 'Kamar tidur'
+        ? 'KT'
+        : label === 'Kamar mandi'
+          ? 'KM'
+          : label;
+
+const specs = campaign.specs.map((spec) => `${spec.value} ${specShort(spec.label)}`);
+
+const gallery = campaign.images?.length ? campaign.images : [campaign.image];
+
+const interestLabel = campaign.params.annualInterestRate.toLocaleString('id-ID', {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+const moneyWrapCls =
+  'relative rounded-xl border border-input bg-background transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50';
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content" />
+    <meta name="description" content={metaDescription} />
+    <meta name="robots" content="noindex" />
+    <title>{metaTitle}</title>
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:site_name" content="CekDulu.co.id" />
+    <meta property="og:title" content={metaTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={metaTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+    {publicMeasurementId && (
+      <script is:inline define:vars={{ publicMeasurementId }}>
+        (() => {
+          const key = 'cekdulu_internal_analytics';
+          const params = new URLSearchParams(window.location.search);
+
+          try {
+            if (params.get('internal') === '1') {
+              window.localStorage.setItem(key, '1');
+            } else if (params.get('internal') === '0') {
+              window.localStorage.removeItem(key);
+            }
+          } catch {
+            // Ignore storage errors and continue without internal filtering.
+          }
+
+          let isInternal = false;
+          try {
+            isInternal = window.localStorage.getItem(key) === '1';
+          } catch {
+            // Keep analytics enabled when storage is unavailable.
+          }
+
+          if (isInternal) return;
+
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            window.dataLayer.push(arguments);
+          }
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', publicMeasurementId);
+
+          const loadGtag = () => {
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(publicMeasurementId)}`;
+            document.head.appendChild(script);
+          };
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadGtag, { timeout: 2500 });
+          } else {
+            setTimeout(loadGtag, 2000);
+          }
+        })();
+      </script>
+    )}
+  </head>
+  <body
+    class="font-sans antialiased min-h-screen bg-background text-foreground"
+    data-campaign-config={campaignConfigJson}
+  >
+    <main>
+      <div id="catalog-view">
+        <div class="campaign-container">
+        <section aria-label="Katalog properti" class="relative grid grid-cols-1 pb-36">
+          <div class="relative col-start-1 row-start-1 min-w-0 bg-muted/70">
+            <div
+              id="photo-carousel"
+              role="region"
+              aria-roledescription="carousel"
+              aria-label={`Foto ${campaign.name}`}
+              class="flex w-full snap-x snap-mandatory touch-pan-x overflow-x-auto scrollbar-hide"
+            >
+              {gallery.map((src, index) => (
+                <figure class="relative h-full w-full shrink-0 snap-start bg-muted/70">
+                  <img
+                    src={src}
+                    alt={index === 0 ? campaign.imageAlt : `${campaign.name} — foto ${index + 1}`}
+                    width="640"
+                    height="1138"
+                    decoding="async"
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    fetchpriority={index === 0 ? 'high' : 'auto'}
+                    class="block w-full h-auto object-contain"
+                  />
+                </figure>
+              ))}
+            </div>
+
+            {gallery.length > 1 && (
+              <>
+                <button
+                  id="photo-prev"
+                  type="button"
+                  aria-label="Foto sebelumnya"
+                  class="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur transition-colors hover:bg-black/60 disabled:opacity-40 disabled:hover:bg-black/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:inline-flex"
+                >
+                  <ChevronLeft class="h-5 w-5" aria-hidden="true" />
+                </button>
+                <button
+                  id="photo-next"
+                  type="button"
+                  aria-label="Foto berikutnya"
+                  class="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur transition-colors hover:bg-black/60 disabled:opacity-40 disabled:hover:bg-black/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:inline-flex"
+                >
+                  <ChevronRight class="h-5 w-5" aria-hidden="true" />
+                </button>
+              </>
+            )}
+
+            <button
+              id="photo-expand"
+              type="button"
+              aria-label="Lihat foto penuh"
+              class="absolute right-3 top-3 z-10 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white backdrop-blur transition-colors hover:bg-black/60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              <Maximize2 class="h-4 w-4" aria-hidden="true" />
+            </button>
+
+            {gallery.length > 1 && (
+              <div
+                id="photo-dots"
+                class="absolute inset-x-0 top-2 z-10 flex items-center justify-center gap-1.5"
+                aria-label="Indikator foto"
+              >
+                {gallery.map((_, index) => (
+                  <button
+                    type="button"
+                    data-photo-dot={index}
+                    aria-label={`Lihat foto ${index + 1}`}
+                    class={`h-1.5 rounded-full transition-all ${index === 0 ? 'w-4 bg-primary' : 'w-1.5 bg-foreground/25'}`}
+                  ></button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div
+            id="campaign-info-overlay"
+            class="absolute inset-x-4 bottom-6 z-10 rounded-2xl bg-black/75 p-4 shadow-lg sm:inset-x-6 sm:p-5"
+            aria-label="Informasi properti"
+          >
+            <p class="text-[13px] font-medium text-white/70">{marketer.name}</p>
+            <h2 class="mt-0.5 text-[20px] font-bold leading-tight text-white sm:text-[22px]">
+              {propertyTitle}
+            </h2>
+            {campaign.location && (
+              <p class="mt-1 flex items-center gap-1 text-[12px] text-white/60">
+                <MapPin class="h-3.5 w-3.5 shrink-0 text-white/50" aria-hidden="true" />
+                {campaign.location}
+              </p>
+            )}
+            <div class="mt-1 text-xs text-white/65">
+              {campaign.unitType && (
+                <p class="flex items-center gap-1.5 font-medium text-white/85">
+                  <Home class="h-3.5 w-3.5 shrink-0 text-white/60" aria-hidden="true" />
+                  {campaign.unitType}
+                </p>
+              )}
+              {specs.length > 0 && <p class="mt-0">{specs.join(' · ')}</p>}
+            </div>
+            <p class="mt-1 flex items-center gap-1.5 text-[17px] font-bold text-white">
+              <Tag class="h-4 w-4 shrink-0 text-white/60" aria-hidden="true" />
+              Mulai <span class="whitespace-nowrap">{campaign.priceLabel.replace(/^Rp\./, 'Rp')}</span>
+            </p>
+            {campaign.highlights && campaign.highlights.length > 0 && (
+              <div class="mt-1 border-t border-white/15 pt-1">
+                <p class="text-[11px] font-semibold leading-snug text-white/70">
+                  Kenapa pilih {propertyTitle || 'properti ini'}?
+                </p>
+                <ul class="mt-1 space-y-0.5">
+                  {campaign.highlights.slice(0, 5).map((item) => (
+                    <li class="flex items-start gap-1.5 text-xs text-white/85">
+                      <Check class="mt-0.5 h-3 w-3 shrink-0 text-white/80" aria-hidden="true" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <button
+              type="button"
+              data-campaign-cta="kpr_check"
+              data-start-wizard
+              class="mt-2 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              Cek Kemampuan Cicilan
+              <ArrowRight class="h-5 w-5" aria-hidden="true" />
+            </button>
+          </div>
+        </section>
+
+        <section
+          id="campaign-info-below"
+          aria-label="Informasi properti"
+          class="px-4 py-3 sm:px-6 sm:py-5"
+        >
+          <p class="text-[13px] font-medium text-muted-foreground">{marketer.name}</p>
+          <h1 class="mt-1 text-[22px] font-bold leading-tight tracking-tight text-foreground sm:text-2xl">
+            {propertyTitle}
+          </h1>
+          {campaign.location && (
+            <p class="mt-1.5 flex items-center gap-1 text-sm text-foreground/80">
+              <MapPin class="h-3.5 w-3.5 shrink-0 text-primary/80" aria-hidden="true" />
+              {campaign.location}
+            </p>
+          )}
+
+          <div class="mt-2 text-sm">
+            {campaign.unitType && (
+              <p class="flex items-center gap-1.5 font-medium text-foreground">
+                <Home class="h-3.5 w-3.5 shrink-0 text-primary/80" aria-hidden="true" />
+                {campaign.unitType}
+              </p>
+            )}
+            {specs.length > 0 && (
+              <p class="mt-1 text-muted-foreground">{specs.join(' · ')}</p>
+            )}
+          </div>
+
+          <p class="mt-2.5 flex items-center gap-1.5 text-xl font-bold text-foreground">
+            <Tag class="h-4 w-4 shrink-0 text-primary/80" aria-hidden="true" />
+            Mulai <span class="whitespace-nowrap">{campaign.priceLabel}</span>
+          </p>
+
+          {campaign.highlights && campaign.highlights.length > 0 && (
+            <div class="mt-3">
+              <h2 class="text-[15px] font-semibold leading-snug text-foreground">
+                Kenapa pilih {propertyTitle || 'properti ini'}?
+              </h2>
+              <ul class="mt-1.5 space-y-1">
+                {campaign.highlights.slice(0, 5).map((item) => (
+                  <li class="flex items-start gap-2 text-sm text-foreground/90">
+                    <Check class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {campaign.promos && campaign.promos.length > 0 && (
+            <div class="mt-3">
+              <h2 class="text-[15px] font-semibold leading-snug text-foreground">Promo yang tersedia</h2>
+              <ul class="mt-1.5 space-y-1">
+                {campaign.promos.slice(0, 5).map((item) => (
+                  <li class="flex items-start gap-2 text-sm text-foreground/90">
+                    <BadgeCheck class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <button
+            type="button"
+            data-campaign-cta="kpr_check"
+            data-start-wizard
+            class="mt-3.5 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-base font-semibold text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            Cek Kemampuan Cicilan
+            <ArrowRight class="h-5 w-5" aria-hidden="true" />
+          </button>
+        </section>
+        </div>
+      </div>
+
+      <div
+        id="photo-viewer"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Lihat foto penuh"
+        class="fixed inset-0 z-[60] hidden overflow-hidden bg-black"
+      >
+        <div class="relative h-full">
+          <div
+            id="photo-viewer-track"
+            class="absolute inset-0 flex snap-x snap-mandatory touch-pan-x overflow-x-auto overscroll-x-contain scrollbar-hide"
+          >
+            {gallery.map((src, index) => (
+              <div
+                data-viewer-slide
+                class="flex h-full w-full shrink-0 snap-start items-center justify-center bg-black"
+              >
+                <img
+                  src={src}
+                  alt={index === 0 ? campaign.imageAlt : `${campaign.name} — foto ${index + 1}`}
+                  width="640"
+                  height="1138"
+                  loading="lazy"
+                  decoding="async"
+                  class="block h-full w-full object-contain object-top"
+                />
+              </div>
+            ))}
+
+            {gallery.length > 1 && (
+              <>
+                <button
+                  id="photo-viewer-prev"
+                  type="button"
+                  aria-label="Foto sebelumnya"
+                  class="absolute left-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-white/40 sm:inline-flex disabled:opacity-40"
+                >
+                  <ChevronLeft class="h-6 w-6" aria-hidden="true" />
+                </button>
+                <button
+                  id="photo-viewer-next"
+                  type="button"
+                  aria-label="Foto berikutnya"
+                  class="absolute right-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-white/40 sm:inline-flex disabled:opacity-40"
+                >
+                  <ChevronRight class="h-6 w-6" aria-hidden="true" />
+                </button>
+              </>
+            )}
+          </div>
+
+          <p
+            id="photo-viewer-counter"
+            class="absolute left-4 top-[calc(env(safe-area-inset-top)+16px)] z-20 text-[13px] font-semibold text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]"
+          >
+            1 / {gallery.length}
+          </p>
+
+          <button
+            id="photo-viewer-close"
+            type="button"
+            aria-label="Tutup foto"
+            class="absolute right-3 top-[calc(env(safe-area-inset-top)+10px)] z-20 grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-black/20 text-white transition-colors hover:bg-black/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 outline-none"
+          >
+            <X class="h-6 w-6" aria-hidden="true" />
+          </button>
+
+          <div
+            class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-28 bg-gradient-to-t from-black/30 to-transparent"
+            aria-hidden="true"
+          ></div>
+
+          <button
+            id="photo-viewer-cta"
+            type="button"
+            data-campaign-cta="kpr_check"
+            data-start-wizard
+            class="absolute inset-x-4 bottom-[calc(env(safe-area-inset-bottom)+16px)] z-20 inline-flex h-[53px] cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground shadow-lg transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            Cek Kemampuan Cicilan
+            <ArrowRight class="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="sheet-backdrop"
+        class="pointer-events-none fixed inset-0 z-40 bg-background/70 opacity-0 transition-opacity duration-300"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        id="bottom-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sheet-context-title"
+        tabindex="-1"
+        class="fixed inset-x-0 bottom-0 z-50 h-[min(90dvh,760px)] max-h-[90dvh] translate-y-full rounded-t-3xl border border-b-0 border-border bg-background shadow-[0_-12px_40px_rgba(0,0,0,0.15)] transition-transform duration-300 ease-out"
+      >
+        <div id="wizard-shell" class="flex h-full flex-col">
+          <div id="sheet-handle" class="flex justify-center pt-2.5">
+            <span class="h-1.5 w-12 cursor-grab rounded-full bg-muted-foreground/30" aria-hidden="true"></span>
+          </div>
+          <div class="flex items-center justify-between gap-3 border-b border-border/60 px-5 pb-3 pt-1.5 sm:px-6">
+            <div class="min-w-0">
+              <p id="sheet-context-title" class="truncate text-sm font-bold text-foreground">{propertyTitle}</p>
+              <p class="truncate text-xs text-muted-foreground">
+                {sheetPriceContext} · {campaign.unitType}
+              </p>
+            </div>
+            <button
+              id="sheet-close"
+              type="button"
+              aria-label="Tutup simulasi"
+              class="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 outline-none"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div id="wizard" class="scroll-mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain" data-sheet-scroll>
+            <div class="px-5 pt-3 pb-1 flex items-center justify-between">
+              <button
+                id="wizard-back"
+                type="button"
+                data-back
+                hidden
+                class="-ml-2 inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              >
+                <ArrowLeft class="h-3.5 w-3.5" aria-hidden="true" />
+                Kembali
+              </button>
+              <p class="ml-auto flex items-center gap-1 text-[11px] text-muted-foreground">
+                <Shield class="h-3 w-3 text-primary/70" aria-hidden="true" />
+                Data tersimpan aman di perangkatmu
+              </p>
+            </div>
+
+            <div class="px-5 pb-6 pt-4 sm:px-7 sm:pt-6">
+              <p id="restore-notice" hidden role="status" class="mb-4 rounded-xl bg-primary/5 px-4 py-2.5 text-xs font-medium text-primary">
+                <Check class="mr-1.5 inline h-3.5 w-3.5" aria-hidden="true" />
+                Data terakhir dipulihkan.
+              </p>
+
+              <!-- step 1: kondisi keuangan -->
+              <div id="step-1" tabindex="-1" class="animate-in fade-in duration-150 outline-none">
+                <h2 class="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  Kondisi keuangan kamu
+                </h2>
+                <p class="mt-1 text-sm text-muted-foreground">
+                  Isi penghasilan, cicilan saat ini, dan pengeluaran bulanan.
+                </p>
+
+                <div class="mt-4">
+                  <div class="flex items-center justify-between gap-2">
+                    <label for="income" class="text-sm font-medium text-foreground">
+                      Penghasilan per bulan
+                    </label>
+                  </div>
+                  <div class={cn(moneyWrapCls, 'mt-2')}>
+                    <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-semibold text-muted-foreground" aria-hidden="true">Rp</span>
+                    <input
+                      id="income"
+                      type="text"
+                      inputmode="numeric"
+                      autocomplete="off"
+                      placeholder="0"
+                      data-money-input
+                      class="h-14 w-full rounded-xl bg-transparent pl-12 pr-4 text-2xl font-bold text-foreground outline-none placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <p id="error-income" hidden class="mt-2 text-sm font-medium text-[#ef4444]" aria-live="polite">
+                    Masukkan penghasilan bulananmu terlebih dahulu.
+                  </p>
+                </div>
+
+                <div class="mt-5">
+                  <div class="flex items-center justify-between gap-2">
+                    <label for="existing" class="text-sm font-medium text-foreground">
+                      Cicilan bulanan saat ini
+                    </label>
+                    <button
+                      type="button"
+                      id="toggle-existing-detail"
+                      aria-expanded="false"
+                      data-detail-toggle="existing-detail"
+                      class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    >
+                      <Plus class="h-3.5 w-3.5" aria-hidden="true" />
+                      <span id="toggle-existing-label">Isi lebih detail</span>
+                      <ChevronDown class="hidden h-3.5 w-3.5" aria-hidden="true" />
+                    </button>
+                  </div>
+                  <div class={cn(moneyWrapCls, 'mt-2')}>
+                    <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-semibold text-muted-foreground" aria-hidden="true">Rp</span>
+                    <input
+                      id="existing"
+                      type="text"
+                      inputmode="numeric"
+                      autocomplete="off"
+                      placeholder="0"
+                      data-money-input
+                      data-summary="existing-detail"
+                      class="h-14 w-full rounded-xl bg-transparent pl-12 pr-4 text-2xl font-bold text-foreground outline-none placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <div id="existing-detail" hidden class="mt-3 grid gap-2 sm:grid-cols-2">
+                    {[
+                      { id: 'existing-kpr', label: 'KPR / Rumah', icon: Home },
+                      { id: 'existing-mobil', label: 'Mobil', icon: Car },
+                      { id: 'existing-motor', label: 'Motor', icon: Bike },
+                      { id: 'existing-kartu', label: 'Kartu kredit', icon: CreditCard },
+                      { id: 'existing-lain', label: 'Pinjaman lain', icon: File },
+                    ].map((field) => {
+                      const Component = field.icon;
+                      return (
+                        <label class="block cursor-pointer rounded-xl border border-border bg-muted/40 px-3 py-1 transition-colors hover:border-primary/40 hover:bg-muted/60 focus-within:border-primary/60">
+                          <span class="flex items-center gap-2">
+                            <Component class="h-[18px] w-[18px] shrink-0 text-primary/70" aria-hidden="true" />
+                            <span class="min-w-0 flex-1 leading-tight text-[13px] font-medium text-foreground">{field.label}</span>
+                          </span>
+                          <span class="mt-1 flex items-center gap-1 pl-[26px]">
+                            <span class="shrink-0 text-sm font-medium text-muted-foreground" aria-hidden="true">Rp</span>
+                            <input
+                              id={field.id}
+                              type="text"
+                              inputmode="numeric"
+                              autocomplete="off"
+                              placeholder="0"
+                              data-money-input
+                              data-detail={field.id}
+                              data-detail-group="existing-detail"
+                              class="h-7 w-full min-w-0 flex-1 bg-transparent text-sm font-semibold text-foreground outline-none placeholder:text-muted-foreground"
+                            />
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div class="mt-5">
+                  <div class="flex items-center justify-between gap-2">
+                    <label for="expenses" class="text-sm font-medium text-foreground">
+                      Pengeluaran bulanan
+                    </label>
+                    <button
+                      type="button"
+                      data-detail-toggle="expenses-detail"
+                      aria-expanded="false"
+                      class="shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    >
+                      <Plus class="h-3.5 w-3.5" aria-hidden="true" />
+                      Rinci pengeluaran
+                    </button>
+                  </div>
+                  <div class={cn(moneyWrapCls, 'mt-2')}>
+                    <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-semibold text-muted-foreground" aria-hidden="true">Rp</span>
+                    <input
+                      id="expenses"
+                      type="text"
+                      inputmode="numeric"
+                      autocomplete="off"
+                      placeholder="0"
+                      data-money-input
+                      data-summary="expenses-detail"
+                      class="h-14 w-full rounded-xl bg-transparent pl-12 pr-4 text-2xl font-bold text-foreground outline-none placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <div id="expenses-detail" hidden class="mt-3 grid gap-2 sm:grid-cols-2">
+                    {[
+                      { id: 'exp-makan', label: 'Makan & rumah tangga', icon: Utensils },
+                      { id: 'exp-listrik', label: 'Listrik & internet', icon: Lightbulb },
+                      { id: 'exp-transport', label: 'Transportasi', icon: Bus },
+                      { id: 'exp-pendidikan', label: 'Pendidikan', icon: GraduationCap },
+                      { id: 'exp-kesehatan', label: 'Kesehatan', icon: HeartPulse },
+                      { id: 'exp-lain', label: 'Lainnya', icon: Ellipsis },
+                    ].map((field) => {
+                      const Component = field.icon;
+                      return (
+                        <label class="block cursor-pointer rounded-xl border border-border bg-muted/40 px-3 py-1 transition-colors hover:border-primary/40 hover:bg-muted/60 focus-within:border-primary/60">
+                          <span class="flex items-center gap-2">
+                            <Component class="h-[18px] w-[18px] shrink-0 text-primary/70" aria-hidden="true" />
+                            <span class="min-w-0 flex-1 leading-tight text-[13px] font-medium text-foreground">{field.label}</span>
+                          </span>
+                          <span class="mt-1 flex items-center gap-1 pl-[26px]">
+                            <span class="shrink-0 text-sm font-medium text-muted-foreground" aria-hidden="true">Rp</span>
+                            <input
+                              id={field.id}
+                              type="text"
+                              inputmode="numeric"
+                              autocomplete="off"
+                              placeholder="0"
+                              data-money-input
+                              data-detail={field.id}
+                              data-detail-group="expenses-detail"
+                              class="h-7 w-full min-w-0 flex-1 bg-transparent text-sm font-semibold text-foreground outline-none placeholder:text-muted-foreground"
+                            />
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <!-- step 2: hasil -->
+              <div id="step-2" tabindex="-1" class="animate-in fade-in duration-150 hidden outline-none" aria-live="polite">
+                <!-- 1. Estimasi cicilan & 2. Status kemampuan -->
+                <div class="sticky top-0 z-10 rounded-2xl bg-muted p-5 text-center shadow-[0_4px_6px_-4px_rgba(0,0,0,0.12)] sm:p-6">
+                  <p class="text-sm text-muted-foreground">Estimasi cicilan</p>
+                  <p id="est-installment" class="mt-1 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">—</p>
+                  <p id="est-tenor" class="mt-0.5 text-xs text-muted-foreground">Tenor 10 tahun</p>
+                  <span id="status-chip" hidden class="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold">
+                    <CircleCheck
+                      id="status-chip-icon-ok"
+                      class="h-3.5 w-3.5 shrink-0"
+                      aria-hidden="true"
+                      hidden
+                    />
+                    <CircleAlert
+                      id="status-chip-icon-warn"
+                      class="h-3.5 w-3.5 shrink-0"
+                      aria-hidden="true"
+                      hidden
+                    />
+                    <span id="status-chip-text">—</span>
+                  </span>
+                </div>
+
+                <!-- Breakdown ringkas -->
+                <div class="mx-auto mt-5 max-w-sm space-y-1.5 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-muted-foreground">Penghasilan</span>
+                    <span id="result-income" class="font-medium text-foreground">—</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-muted-foreground">Cicilan saat ini</span>
+                    <span id="result-existing" class="font-medium text-foreground">—</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-muted-foreground">Pengeluaran</span>
+                    <span id="result-expense" class="font-medium text-foreground">—</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="flex items-center gap-1.5 text-muted-foreground">
+                      Cicilan KPR
+                      <span class="inline-flex items-center rounded-full bg-muted px-1.5 py-px text-[10px] font-medium text-muted-foreground">Baru</span>
+                    </span>
+                    <span id="result-kpr" class="font-medium text-foreground">—</span>
+                  </div>
+                  <div class="flex justify-between border-t border-border/60 pt-1.5">
+                    <span class="font-medium text-foreground">Total beban</span>
+                    <span id="result-total-beban" class="font-medium text-foreground">—</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-muted-foreground">Sisa uang</span>
+                    <span id="result-sisa" class="font-bold text-foreground">—</span>
+                  </div>
+                </div>
+
+                <!-- 3. Rencana KPR kamu -->
+                <div class="mt-5 rounded-2xl border border-border bg-muted/40 p-4 sm:p-5">
+                  <div class="flex items-center justify-between gap-2">
+                    <h3 class="text-sm font-semibold text-foreground">Rencana KPR kamu</h3>
+                    <span class="text-xs text-muted-foreground">Harga {campaign.priceLabel}</span>
+                  </div>
+
+                  <!-- DP -->
+                  <div class="mt-4">
+                    <div class="flex items-center justify-between gap-2">
+                      <label for="dp-slider" class="text-xs font-medium text-muted-foreground">Uang muka (DP)</label>
+                      <div class="flex items-center gap-1.5">
+                        <span id="dp-value" class="text-sm font-bold text-foreground">Rp 0</span>
+                        <span id="dp-pct-label" class="rounded-md bg-muted px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground">10%</span>
+                      </div>
+                    </div>
+                    <div class="mt-2 flex items-center gap-2">
+                      <button
+                        type="button"
+                        id="dp-minus"
+                        aria-label="Kurangi uang muka"
+                        class="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      >
+                        <Minus class="h-4 w-4" aria-hidden="true" />
+                      </button>
+                      <input
+                        id="dp-slider"
+                        type="range"
+                        min="0"
+                        max={campaign.params.price}
+                        step="1000000"
+                        value={Math.round(campaign.params.price * 0.1)}
+                        class="w-full cursor-pointer appearance-none accent-primary"
+                        aria-label="Jumlah uang muka"
+                      />
+                      <button
+                        type="button"
+                        id="dp-plus"
+                        aria-label="Tambah uang muka"
+                        class="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      >
+                        <Plus class="h-4 w-4" aria-hidden="true" />
+                      </button>
+                    </div>
+                    <div class="mt-2.5 flex items-center gap-1.5" role="group" aria-label="Preset uang muka">
+                      {([0, 0.1, 0.15, 0.2, 0.3] as const).map((pct) => (
+                        <button
+                          type="button"
+                          data-dp-preset={pct}
+                          aria-pressed={pct === 0.1 ? 'true' : 'false'}
+                          class={`flex-1 h-8 rounded-lg border text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${pct === 0.1 ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:text-foreground'}`}
+                        >
+                          {pct === 0 ? '0%' : `${Math.round(pct * 100)}%`}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <!-- Tenor -->
+                  <div class="mt-5">
+                    <div class="flex items-center justify-between gap-2">
+                      <label class="text-xs font-medium text-muted-foreground">Tenor cicilan</label>
+                      <span id="tenor-value-label" class="text-xs font-bold text-foreground">10 tahun</span>
+                    </div>
+                    <div class="mt-2 grid grid-cols-3 gap-1.5 sm:grid-cols-6" role="radiogroup" aria-label="Tenor cicilan">
+                      {campaign.tenorPresetsMonths.map((months) => {
+                        const active = months === campaign.defaultTenorMonths;
+                        return (
+                          <button
+                            type="button"
+                            data-tenor-months={months}
+                            aria-pressed={active}
+                            class={`h-9 rounded-lg border text-[13px] font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${active ? 'border-transparent bg-primary text-primary-foreground' : 'border-border bg-card text-foreground hover:bg-muted'}`}
+                          >
+                            {months / 12} th
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p id="tenor-age-awareness" hidden class="mt-2.5 rounded-lg bg-primary/5 px-3 py-2 text-xs font-medium leading-relaxed text-primary">
+                      ⚠️ Tenor panjang perlu memperhatikan batas usia maksimal KPR.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- 4. Skema pembiayaan -->
+                <div class="mt-4 rounded-2xl border border-border bg-muted/40 p-4 sm:p-5">
+                  <h3 class="text-sm font-semibold text-foreground">Skema pembiayaan</h3>
+
+                  <div class="mt-3 grid grid-cols-3 gap-1.5" role="group" aria-label="Skema pembiayaan">
+                    <button
+                      type="button"
+                      data-funding-mode="promo"
+                      aria-pressed="true"
+                      class="inline-flex flex-col items-center justify-center rounded-xl border px-1.5 py-2 text-center transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50 border-primary bg-primary text-primary-foreground"
+                    >
+                      <span class="text-xs font-semibold leading-tight">Bunga fixed</span>
+                      <span class="mt-0.5 text-[11px] opacity-90">{interestLabel}% / th</span>
+                    </button>
+                    <button
+                      type="button"
+                      data-funding-mode="floating"
+                      aria-pressed="false"
+                      class="inline-flex flex-col items-center justify-center rounded-xl border px-1.5 py-2 text-center transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50 border-border bg-card text-muted-foreground"
+                    >
+                      <span class="text-xs font-semibold leading-tight">Floating</span>
+                      <span class="mt-0.5 text-[11px] opacity-90">{campaign.params.floatingInterest ?? 11}% / th</span>
+                    </button>
+                    <button
+                      type="button"
+                      data-funding-mode="syariah"
+                      aria-pressed="false"
+                      class="inline-flex flex-col items-center justify-center rounded-xl border px-1.5 py-2 text-center transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50 border-border bg-card text-muted-foreground"
+                    >
+                      <span class="text-xs font-semibold leading-tight">Syariah</span>
+                      <span class="mt-0.5 text-[11px] opacity-90">
+                        {campaign.params.syariahMargin != null ? `Margin ${campaign.params.syariahMargin}% / th` : 'Akad'}
+                      </span>
+                    </button>
+                  </div>
+
+                  <p id="funding-note" class="mt-2.5 text-xs leading-relaxed text-muted-foreground"></p>
+                </div>
+
+                <!-- 5. Keseimbangan bulanan -->
+                <div class="mt-4 rounded-xl border border-border bg-muted/40 p-3.5">
+                  <div class="flex items-center gap-1.5 text-xs font-medium text-foreground">
+                    <Scale class="h-4 w-4 shrink-0 text-primary/70" aria-hidden="true" />
+                    <span class="leading-snug">Keseimbangan bulanan</span>
+                  </div>
+                  <div class="mt-2 flex h-3 w-full overflow-hidden rounded-full bg-background" role="img" aria-label="Perbandingan beban dan sisa uang dari penghasilan">
+                    <div id="balance-beban" class="h-full rounded-l-full bg-destructive transition-all duration-500"></div>
+                    <div id="balance-sisa" class="h-full rounded-r-full bg-emerald-400 transition-all duration-500"></div>
+                  </div>
+                  <div class="mt-1.5 flex items-start justify-between gap-3">
+                    <div class="flex min-w-0 flex-1 flex-col items-start">
+                      <span id="balance-beban-value" class="min-w-0 break-words text-sm font-bold leading-snug text-foreground">—</span>
+                      <span class="mt-0.5 text-xs text-muted-foreground">Beban</span>
+                    </div>
+                    <div class="flex min-w-0 flex-1 flex-col items-end">
+                      <span id="balance-sisa-value" class="min-w-0 break-words text-right text-sm font-bold leading-snug text-foreground">—</span>
+                      <span class="mt-0.5 text-xs text-muted-foreground">Sisa uang</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 6. Penjelasan & disclaimer -->
+                <p id="result-explanation" hidden class="mt-4 rounded-xl bg-primary/5 p-4 text-sm leading-relaxed text-foreground"></p>
+
+                <p class="mt-4 text-xs leading-relaxed text-muted-foreground">
+                  Hasil ini adalah simulasi, bukan persetujuan kredit. Kondisi aktual dapat berbeda
+                  tergantung bank, bunga, tenor, dan profil peminjam.
+                </p>
+
+                <!-- 8. Yang perlu diperhitungkan -->
+                <div id="awareness-costs" class="mt-4 rounded-xl border border-border bg-muted/40 p-4">
+                  <div class="flex items-center gap-2">
+                    <Lightbulb class="h-4 w-4 text-primary/70" aria-hidden="true" />
+                    <h3 class="text-sm font-semibold text-foreground">Yang perlu diperhitungkan</h3>
+                  </div>
+                  <p class="mt-2 text-xs leading-relaxed text-muted-foreground">
+                    Selain cicilan, siapkan juga ruang untuk kebutuhan rumah lainnya:
+                  </p>
+                  <ul class="mt-3 space-y-1.5">
+                    <li class="flex items-start gap-2 text-muted-foreground">
+                      <Check class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/60" aria-hidden="true" />
+                      <span class="text-xs leading-relaxed">Biaya selama proses KPR</span>
+                    </li>
+                    <li class="flex items-start gap-2 text-muted-foreground">
+                      <Check class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/60" aria-hidden="true" />
+                      <span class="text-xs leading-relaxed">Maintenance rumah</span>
+                    </li>
+                    <li class="flex items-start gap-2 text-muted-foreground">
+                      <Check class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/60" aria-hidden="true" />
+                      <span class="text-xs leading-relaxed">Perabotan & interior</span>
+                    </li>
+                    <li class="flex items-start gap-2 text-muted-foreground">
+                      <Check class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/60" aria-hidden="true" />
+                      <span class="text-xs leading-relaxed">Pajak dan biaya rutin tahunan</span>
+                    </li>
+                    <li class="flex items-start gap-2 text-muted-foreground">
+                      <Check class="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/60" aria-hidden="true" />
+                      <span class="text-xs leading-relaxed">Pengeluaran tak terduga</span>
+                    </li>
+                  </ul>
+                  <p class="mt-3 rounded-lg bg-background/60 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+                    Jangan habiskan seluruh sisa uang untuk cicilan. Sisakan ruang untuk kebutuhan rumah dan pengeluaran tak terduga.
+                  </p>
+                  <p class="mt-3 text-xs leading-relaxed text-muted-foreground">
+                    Tanyakan rincian biaya kepada tim sales sebelum mengambil keputusan.
+                  </p>
+                </div>
+
+                <!-- 9. Actions -->
+                <div class="mt-6 flex flex-col gap-2">
+                  <button
+                    id="save-simulation-btn"
+                    type="button"
+                    disabled
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-3.5 text-base font-semibold text-foreground transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 outline-none disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <Bookmark class="h-5 w-5" aria-hidden="true" />
+                    Simpan simulasi
+                  </button>
+                  <p id="saved-note" hidden class="flex items-center gap-2 text-sm font-medium text-primary">
+                    <Check class="h-4 w-4" aria-hidden="true" />
+                    Simulasi tersimpan di perangkatmu.
+                  </p>
+                </div>
+
+                <div id="saved-section" hidden class="mt-6 border-t border-border/60 pt-5">
+                  <p class="text-sm font-semibold text-foreground">Simulasi tersimpan di perangkat ini</p>
+                  <ul id="saved-simulations" class="mt-3 grid gap-3"></ul>
+                </div>
+
+                <div class="mt-4 text-center">
+                  <button
+                    type="button"
+                    data-back
+                    id="ubah-data"
+                    class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 focus-visible:ring-3 focus-visible:ring-ring/50 outline-none"
+                  >
+                    <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+                    Ubah kondisi keuangan
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="wizard-primary-footer"
+            class="shrink-0 border-t border-border/60 bg-background px-5 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 sm:px-7"
+          >
+              <button
+                id="step1-next"
+                type="button"
+                disabled
+                class="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-transparent bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Cek Kemampuan Cicilan
+                <ArrowRight class="h-5 w-5" aria-hidden="true" />
+              </button>
+              <a
+                id="wa-cta"
+                href="https://wa.me/6285224416325"
+                target="_blank"
+                rel="noopener"
+                hidden
+                data-campaign-cta="whatsapp"
+                class="inline-flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-full bg-[#25D366] px-7 py-3.5 text-base font-semibold text-white transition-colors hover:bg-[#1fb959] focus-visible:ring-3 focus-visible:ring-[#25D366]/40 outline-none"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg>
+                Tanya via WhatsApp
+              </a>
+            </div>
+        </div>
+      </div>
+    </main>
+
+    <style>
+      .campaign-container {
+        width: 100%;
+        max-width: 640px;
+        margin-inline: auto;
+      }
+      @media (max-width: 767px) {
+        .campaign-container {
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 767px) {
+        #photo-carousel {
+          height: auto;
+          transition: none;
+        }
+      }
+      @media (min-width: 768px) {
+        #photo-carousel {
+          height: auto;
+          transition: none;
+          align-items: stretch;
+        }
+        #photo-carousel figure {
+          height: auto;
+        }
+        #photo-carousel img {
+          display: block;
+          width: 100%;
+          height: auto;
+          object-fit: contain;
+        }
+      }
+      @media (max-width: 352px) {
+        [data-detail-toggle] {
+          padding-inline: 0.375rem;
+          gap: 0.125rem;
+        }
+      }
+
+      @media (min-width: 768px) {
+        #bottom-sheet {
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px 16px;
+          height: auto;
+          max-height: none;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          transition:
+            opacity 250ms ease,
+            transform 250ms ease;
+        }
+        #bottom-sheet.translate-y-full {
+          opacity: 0;
+          transform: translateY(16px) scale(0.98);
+        }
+        #bottom-sheet.translate-y-0 {
+          opacity: 1;
+          transform: none;
+        }
+        #wizard-shell {
+          width: 100%;
+          height: auto;
+          max-width: 520px;
+          max-height: min(720px, calc(100dvh - 48px));
+          overflow: hidden;
+          border: 1px solid var(--color-border);
+          border-radius: 20px;
+          background: var(--color-background);
+          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+        }
+        #sheet-handle {
+          display: none;
+        }
+        #sheet-backdrop {
+          background: rgba(0, 0, 0, 0.35);
+          -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+        }
+      }
+    </style>
+
+    <script>
+      import { formatPercentage, formatRupiah } from '../../../lib/calculator/engine';
+      import { buildWhatsappUrl, calculateCampaignScenario } from '../../../lib/campaign/campaign-scenario';
+      import { getPropertyImageMode } from '../../../lib/campaign/presentation';
+      import {
+        buildSimulationSnapshot,
+        readSimulationSnapshots,
+        removeSimulationSnapshot,
+        saveSimulationSnapshot,
+      } from '../../../lib/campaign/simulation-snapshot';
+      import type { CampaignSimulationSnapshot } from '../../../lib/campaign/simulation-snapshot';
+      import {
+        debtRatioRange,
+        expenseRange,
+        incomeRange,
+        installmentRange,
+        remainingIncomeRange,
+        resultCategory,
+        trackEvent,
+      } from '../../../lib/analytics';
+      import type { FinancialCalculationResult } from '../../../lib/calculator/engine';
+
+      type ResultCategory = 'healthy' | 'warning' | 'critical' | 'negative_balance';
+
+      type FundingMode = 'promo' | 'floating' | 'syariah';
+
+      interface CampaignConfig {
+        price: number;
+        priceLabel: string;
+        annualInterestRate: number;
+        promoInterest?: number;
+        promoPeriodYears?: number;
+        floatingInterest?: number;
+        syariahMargin?: number;
+        tenorPresetsMonths: number[];
+        defaultTenorMonths: number;
+        whatsapp: string;
+        whatsappMessage: string;
+        marketerSlug: string;
+        marketerName: string;
+        campaignSlug: string;
+        campaignName: string;
+        developerName?: string;
+        template: string;
+      }
+
+      interface WizardState {
+        step: number;
+        income: number;
+        existing: number;
+        expenses: number;
+        interest: number;
+        hasDp: boolean;
+        dp: number;
+        tenorMonths: number;
+        fundingMode?: FundingMode;
+        installmentDetails?: Record<string, number>;
+        expenseDetails?: Record<string, number>;
+      }
+
+      const rawConfig = document.body.dataset.campaignConfig;
+      const config = (rawConfig ? JSON.parse(rawConfig) : {}) as unknown as CampaignConfig;
+
+      const numberFormat = new Intl.NumberFormat('id-ID');
+      const dateTimeFormat = new Intl.DateTimeFormat('id-ID', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      });
+      const interestFormat = new Intl.NumberFormat('id-ID', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      });
+      const STORAGE_VERSION = 1;
+      const INTEREST_STEP = 0.5;
+      const INTEREST_MIN = 0;
+      const INTEREST_MAX = 20;
+      const DP_STEP = 1_000_000;
+      const chipStyles: Record<
+        ResultCategory,
+        { label: string; className: string }
+      > = {
+        healthy: { label: 'Masih cukup seimbang', className: 'bg-emerald-100 text-emerald-800' },
+        warning: { label: 'Perlu dipertimbangkan lagi', className: 'bg-amber-100 text-amber-800' },
+        critical: { label: 'Beban bulanan cukup berat', className: 'bg-red-100 text-red-700' },
+        negative_balance: { label: 'Beban melebihi penghasilan', className: 'bg-red-100 text-red-700' },
+      };
+
+      const totalSteps = 2;
+      let currentStep = 1;
+      let selectedTenor = config.defaultTenorMonths;
+      let fundingMode: FundingMode = 'promo';
+      const modeRates: Record<FundingMode, number | null> = {
+        promo: config.promoInterest ?? config.annualInterestRate,
+        floating: config.floatingInterest ?? config.annualInterestRate,
+        syariah: config.syariahMargin ?? null,
+      };
+      let interestRate = modeRates.promo ?? config.annualInterestRate;
+      let hasDp = true;
+      let dpValue = Math.min(config.price, Math.round(config.price * 0.1 / 1_000_000) * 1_000_000);
+      let lastStatus: ResultCategory | 'none' = 'none';
+      let saveTimer: number | undefined;
+      let calculatorStarted = false;
+      let calculatorCompleted = false;
+      let viewFired = false;
+
+      const wizardBack = document.getElementById('wizard-back') as HTMLButtonElement | null;
+      const restoreNotice = document.getElementById('restore-notice') as HTMLElement | null;
+      const stepEls: Record<number, HTMLElement> = {
+        1: document.getElementById('step-1') as HTMLElement,
+        2: document.getElementById('step-2') as HTMLElement,
+      };
+      const step1Next = document.getElementById('step1-next') as HTMLButtonElement | null;
+      const incomeError = document.getElementById('error-income') as HTMLElement | null;
+      const dpSlider = document.getElementById('dp-slider') as HTMLInputElement | null;
+      const dpValueEl = document.getElementById('dp-value') as HTMLElement | null;
+      const dp4ValueEl = document.getElementById('dp4-value') as HTMLElement | null;
+      const dp4Slider = document.getElementById('dp4-slider') as HTMLInputElement | null;
+      const dp4Region = document.getElementById('dp4-region') as HTMLElement | null;
+      const dp4Toggle = document.getElementById('dp4-toggle') as HTMLButtonElement | null;
+      const dpRegion = document.getElementById('dp-region') as HTMLElement | null;
+      const waCta = document.getElementById('wa-cta') as HTMLAnchorElement | null;
+      const saveSimulationBtn = document.getElementById('save-simulation-btn') as HTMLButtonElement | null;
+
+      const bottomSheet = document.getElementById('bottom-sheet') as HTMLElement | null;
+      const sheetBackdrop = document.getElementById('sheet-backdrop') as HTMLElement | null;
+      const sheetScroll = document.getElementById('wizard') as HTMLElement | null;
+      const sheetHandle = document.getElementById('sheet-handle') as HTMLElement | null;
+      const photoExpand = document.getElementById('photo-expand') as HTMLButtonElement | null;
+      let sheetOpen = false;
+      let lastTrigger: HTMLElement | null = null;
+
+      function openSheet(): void {
+        sheetOpen = true;
+        if (photoExpand) photoExpand.hidden = true;
+        if (bottomSheet) {
+          bottomSheet.style.transform = '';
+          bottomSheet.classList.remove('translate-y-full');
+          bottomSheet.classList.add('translate-y-0');
+        }
+        if (sheetBackdrop) {
+          sheetBackdrop.classList.remove('pointer-events-none', 'opacity-0');
+          sheetBackdrop.classList.add('opacity-100');
+        }
+        document.body.style.overflow = 'hidden';
+        if (sheetScroll) sheetScroll.scrollTop = 0;
+        const incomeInput = document.getElementById('income') as HTMLElement | null;
+        (incomeInput ?? bottomSheet)?.focus({ preventScroll: true });
+      }
+
+      function closeSheet(): void {
+        sheetOpen = false;
+        if (photoExpand) photoExpand.hidden = false;
+        if (bottomSheet) {
+          bottomSheet.style.transform = '';
+          bottomSheet.classList.remove('translate-y-0');
+          bottomSheet.classList.add('translate-y-full');
+        }
+        if (sheetBackdrop) {
+          sheetBackdrop.classList.add('pointer-events-none', 'opacity-0');
+          sheetBackdrop.classList.remove('opacity-100');
+        }
+        document.body.style.overflow = '';
+        if (lastTrigger?.isConnected) lastTrigger.focus({ preventScroll: true });
+      }
+
+      // ---- bottom sheet gestures / a11y ----
+
+      let dragPointer: number | null = null;
+      let dragStartY = 0;
+      let dragDy = 0;
+
+      function onSheetDragMove(event: PointerEvent): void {
+        if (dragPointer === null || !bottomSheet) return;
+        dragDy = Math.max(0, event.clientY - dragStartY);
+        bottomSheet.style.transform = `translateY(${dragDy}px)`;
+      }
+
+      function onSheetDragEnd(): void {
+        if (dragPointer === null || !bottomSheet) return;
+        dragPointer = null;
+        if (dragDy > 96) {
+          closeSheet();
+        } else {
+          bottomSheet.style.transform = '';
+        }
+        dragDy = 0;
+      }
+
+      sheetHandle?.addEventListener('pointerdown', (event) => {
+        dragPointer = event.pointerId;
+        dragStartY = event.clientY;
+        dragDy = 0;
+        sheetHandle.setPointerCapture(event.pointerId);
+      });
+      sheetHandle?.addEventListener('pointermove', onSheetDragMove);
+      sheetHandle?.addEventListener('pointerup', onSheetDragEnd);
+      sheetHandle?.addEventListener('pointercancel', onSheetDragEnd);
+
+      sheetBackdrop?.addEventListener('click', closeSheet);
+
+      bottomSheet?.addEventListener('click', (event) => {
+        if (event.target === bottomSheet) closeSheet();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && sheetOpen) {
+          event.preventDefault();
+          closeSheet();
+        }
+      });
+
+      document.getElementById('sheet-close')?.addEventListener('click', closeSheet);
+
+      // ---- property photo carousel ----
+
+      function initCarousel(): void {
+        const track = document.getElementById('photo-carousel') as HTMLElement | null;
+        if (!track) return;
+
+        const dots = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-photo-dot]'));
+        const prevBtn = document.getElementById('photo-prev') as HTMLButtonElement | null;
+        const nextBtn = document.getElementById('photo-next') as HTMLButtonElement | null;
+        const infoBelow = document.getElementById('campaign-info-below') as HTMLElement | null;
+        const slides = Array.from(track.children) as HTMLElement[];
+        let current = 0;
+
+        const { scrollWidth, clientWidth } = track;
+        if (scrollWidth <= clientWidth) return;
+        const carousel: HTMLElement = track;
+
+        const slideCount = slides.length;
+
+        function currentImg(): HTMLImageElement | null {
+          return slides[current]?.querySelector('img') ?? null;
+        }
+
+        
+
+        function updatePresentation(): void {
+          const img = currentImg();
+          const mode =
+            img && img.naturalWidth > 0 && img.naturalHeight > 0
+              ? getPropertyImageMode(img.naturalWidth, img.naturalHeight)
+              : 'normal';
+          if (mode === carousel.dataset.mode) return;
+          carousel.dataset.mode = mode;
+          if (mode === 'portrait-9-16') {
+            infoBelow?.classList.add('hidden');
+          } else {
+            infoBelow?.classList.remove('hidden');
+          }
+        }
+
+        function syncDots(): void {
+          carousel.dataset.slide = String(current);
+          dots.forEach((dot, index) => {
+            const active = index === current;
+            dot.classList.toggle('bg-primary', active);
+            dot.classList.toggle('bg-foreground/25', !active);
+            dot.classList.toggle('w-4', active);
+            dot.classList.toggle('w-1.5', !active);
+          });
+          if (prevBtn) prevBtn.disabled = current === 0;
+          if (nextBtn) nextBtn.disabled = current === slideCount - 1;
+          updatePresentation();
+        }
+
+        function goToSlide(index: number): void {
+          current = Math.min(slideCount - 1, Math.max(0, index));
+          track?.scrollTo({ left: current * clientWidth, behavior: 'smooth' });
+          syncDots();
+        }
+
+        track.addEventListener('scroll', () => {
+          const index = Math.round(track.scrollLeft / clientWidth);
+          if (index !== current) {
+            current = index;
+            syncDots();
+          }
+        });
+
+        dots.forEach((dot) => {
+          dot.addEventListener('click', () => goToSlide(Number(dot.dataset.photoDot) || 0));
+        });
+        prevBtn?.addEventListener('click', () => goToSlide(current - 1));
+        nextBtn?.addEventListener('click', () => goToSlide(current + 1));
+
+        slides.forEach((slide) => {
+          slide.querySelector('img')?.addEventListener('load', updatePresentation);
+        });
+
+        track.dataset.mode = 'normal';
+        syncDots();
+      }
+
+      initCarousel();
+
+      // ---- fullscreen photo viewer ("Lihat foto penuh") ----
+
+      function initImageViewer(): void {
+        const viewer = document.getElementById('photo-viewer') as HTMLElement | null;
+        const track = document.getElementById('photo-viewer-track') as HTMLElement | null;
+        const openBtn = document.getElementById('photo-expand') as HTMLButtonElement | null;
+        const closeBtn = document.getElementById('photo-viewer-close') as HTMLButtonElement | null;
+        const prevBtn = document.getElementById('photo-viewer-prev') as HTMLButtonElement | null;
+        const nextBtn = document.getElementById('photo-viewer-next') as HTMLButtonElement | null;
+        const cta = document.getElementById('photo-viewer-cta') as HTMLButtonElement | null;
+        const counter = document.getElementById('photo-viewer-counter') as HTMLElement | null;
+        const slides = track
+          ? Array.from(track.querySelectorAll<HTMLElement>('[data-viewer-slide]'))
+          : [];
+        const slideCount = slides.length;
+        if (!viewer || !track || !openBtn || !closeBtn || slideCount === 0) return;
+        const viewerEl: HTMLElement = viewer;
+        const trackEl: HTMLElement = track;
+        const openBtnEl: HTMLButtonElement = openBtn;
+        const closeBtnEl: HTMLButtonElement = closeBtn;
+
+        let current = 0;
+
+        function goToSlide(index: number): void {
+          current = Math.min(slideCount - 1, Math.max(0, index));
+          trackEl.scrollTo({ left: current * trackEl.clientWidth, behavior: 'smooth' });
+          sync();
+        }
+
+        function sync(): void {
+          if (counter) counter.textContent = `${current + 1} / ${slideCount}`;
+          if (prevBtn) prevBtn.disabled = current === 0;
+          if (nextBtn) nextBtn.disabled = current === slideCount - 1;
+        }
+
+        function open(): void {
+          const mainTrack = document.getElementById('photo-carousel') as HTMLElement | null;
+          current = Math.min(
+            slideCount - 1,
+            Math.max(0, Number(mainTrack?.dataset.slide ?? 0) || 0),
+          );
+          viewerEl.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+          trackEl.scrollLeft = current * trackEl.clientWidth;
+          sync();
+          closeBtnEl.focus();
+        }
+
+        function close(): void {
+          viewerEl.classList.add('hidden');
+          document.body.style.overflow = '';
+          openBtnEl.focus();
+        }
+
+        openBtnEl.addEventListener('click', open);
+        closeBtnEl.addEventListener('click', close);
+        cta?.addEventListener('click', close);
+        prevBtn?.addEventListener('click', () => goToSlide(current - 1));
+        nextBtn?.addEventListener('click', () => goToSlide(current + 1));
+
+        document.addEventListener('keydown', (event) => {
+          if (viewerEl.classList.contains('hidden')) return;
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            close();
+          }
+        });
+
+        trackEl.addEventListener('scroll', () => {
+          if (trackEl.clientWidth === 0) return;
+          const index = Math.round(trackEl.scrollLeft / trackEl.clientWidth);
+          if (index !== current) {
+            current = index;
+            sync();
+          }
+        });
+      }
+
+      initImageViewer();
+
+      // ---- money formatting (reuses CalculatorWizard approach) ----
+
+      function formatMoneyInput(input: HTMLInputElement): void {
+        const caretDigits = input.value.slice(0, input.selectionStart ?? 0).replace(/\D/g, '').length;
+        const raw = input.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+        const formatted = raw ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+        input.dataset.value = raw;
+        input.value = formatted;
+        let digits = 0;
+        let pos = 0;
+        while (pos < formatted.length && digits < caretDigits) {
+          if (/\d/.test(formatted[pos])) digits += 1;
+          pos += 1;
+        }
+        input.setSelectionRange(pos, pos);
+      }
+
+      function readNumber(id: string): number {
+        const el = document.getElementById(id) as HTMLInputElement | null;
+        if (!el) return 0;
+        const raw = el.dataset.value ?? '';
+        return raw ? parseFloat(raw) || 0 : 0;
+      }
+
+      function setRupiahInput(id: string, value: number): void {
+        const el = document.getElementById(id) as HTMLInputElement | null;
+        if (!el || value < 0) return;
+        el.value = value ? numberFormat.format(value) : '';
+        el.dataset.value = String(Math.round(value));
+      }
+
+      // ---- storage ----
+
+      function storageKey(): string {
+        return `cekdulu:campaign:${config.campaignSlug}:wizard:v${STORAGE_VERSION}`;
+      }
+
+      function readStored(): WizardState | null {
+        try {
+          const raw = window.localStorage.getItem(storageKey());
+          if (!raw) return null;
+          const envelope = JSON.parse(raw) as { version?: number; data?: Partial<WizardState> };
+          if (envelope?.version !== STORAGE_VERSION || !envelope.data) return null;
+          return {
+            step: Math.min(totalSteps, Math.max(1, Number(envelope.data.step) || 1)),
+            income: Number(envelope.data.income) || 0,
+            existing: Number(envelope.data.existing) || 0,
+            expenses: Number(envelope.data.expenses) || 0,
+            interest: Number(envelope.data.interest) || config.annualInterestRate,
+            hasDp: Boolean(envelope.data.hasDp),
+            dp: Number(envelope.data.dp) || 0,
+            tenorMonths:
+              Number(envelope.data.tenorMonths) || config.defaultTenorMonths,
+            fundingMode:
+              envelope.data.fundingMode === 'floating' || envelope.data.fundingMode === 'syariah'
+                ? envelope.data.fundingMode
+                : 'promo',
+            installmentDetails: readDetailMap(envelope.data.installmentDetails as Record<string, number> | undefined),
+            expenseDetails: readDetailMap(envelope.data.expenseDetails as Record<string, number> | undefined),
+          };
+        } catch {
+          return null;
+        }
+      }
+
+      function writeStored(step = currentStep): void {
+        try {
+          const state: WizardState = {
+            step,
+            income: readNumber('income'),
+            existing: readNumber('existing'),
+            expenses: readNumber('expenses'),
+            interest: interestRate,
+            hasDp,
+            dp: dpValue,
+            tenorMonths: selectedTenor,
+            fundingMode,
+            installmentDetails: readDetailGroup('existing-detail'),
+            expenseDetails: readDetailGroup('expenses-detail'),
+          };
+          window.localStorage.setItem(
+            storageKey(),
+            JSON.stringify({ version: STORAGE_VERSION, updatedAt: new Date().toISOString(), data: state }),
+          );
+        } catch {
+          // Storage penuh / tidak tersedia: simulasi tetap berjalan tanpa autosave.
+        }
+      }
+
+      function scheduleSave(step?: number): void {
+        if (saveTimer) window.clearTimeout(saveTimer);
+        saveTimer = window.setTimeout(() => writeStored(step), 300);
+      }
+
+      // ---- wizard navigation ----
+
+      function updateProgress(): void {
+        if (wizardBack) {
+          wizardBack.hidden = currentStep === 1;
+        }
+      }
+
+      function render(focusStep: boolean): void {
+        for (let s = 1; s <= totalSteps; s++) {
+          stepEls[s].classList.toggle('hidden', s !== currentStep);
+        }
+        if (step1Next) step1Next.hidden = currentStep !== 1;
+        if (waCta) waCta.hidden = currentStep !== 2;
+        updateProgress();
+        if (currentStep === 2) resetWaScrollGate();
+        if (focusStep) stepEls[currentStep].focus({ preventScroll: true });
+      }
+
+      function goTo(step: number): void {
+        currentStep = Math.min(totalSteps, Math.max(1, step));
+        if (sheetScroll) sheetScroll.scrollTop = 0;
+        render(true);
+        scheduleSave();
+      }
+
+      function showRestoreNotice(): void {
+        if (!restoreNotice) return;
+        restoreNotice.hidden = false;
+        window.setTimeout(() => {
+          restoreNotice.hidden = true;
+        }, 5000);
+      }
+
+      // ---- calculation ----
+
+      function computeScenario() {
+        return calculateCampaignScenario({
+          price: config.price,
+          annualInterestRate: interestRate,
+          downPayment: hasDp ? dpValue : 0,
+          tenorMonths: selectedTenor,
+          monthlyIncome: readNumber('income'),
+          existingInstallments: readNumber('existing'),
+          monthlyExpenses: readNumber('expenses'),
+        });
+      }
+
+      function setText(id: string, value: string): void {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      }
+
+      function explanationFor(result: FinancialCalculationResult): string {
+        const category = resultCategory(result) as ResultCategory;
+        if (category === 'negative_balance') {
+          return `Total beban per bulan sudah melebihi penghasilanmu (sisa ${formatRupiah(result.remainingAfterDebtAndExpenses)}/bulan). Sebaiknya pikirkan kembali sebelum lanjut mengambil cicilan ini.`;
+        }
+        const ratio = formatPercentage(result.debtRatio);
+        if (category === 'critical') {
+          return `Rasio cicilan bulananmu ${ratio} dari penghasilan — jauh lebih tinggi dari acuan umum. Coba tambah DP atau perpanjang tenor agar cicilan turun.`;
+        }
+        if (category === 'warning') {
+          return `Rasio cicilan ${ratio} masih dalam batas yang bisa dipertimbangkan, tapi pastikan sisa uang ${formatRupiah(result.remainingAfterDebtAndExpenses)}/bulan cukup untuk kebutuhan tak terduga.`;
+        }
+        return `Rasio cicilan ${ratio} dan sisa uang ${formatRupiah(result.remainingAfterDebtAndExpenses)}/bulan setelah semua beban. Kondisi keuanganmu masih cukup seimbang.`;
+      }
+
+      function renderResult(): void {
+        const scenario = computeScenario();
+        const income = readNumber('income');
+        const existing = readNumber('existing');
+        const expenses = readNumber('expenses');
+        const hasBalance = income > 0;
+        const syariahPlaceholder = fundingMode === 'syariah' && modeRates.syariah == null;
+
+        if (syariahPlaceholder) {
+          setText('est-installment', 'Belum tersedia');
+          setText('result-income', hasBalance ? formatRupiah(income) : '—');
+          setText('result-existing', existing > 0 ? formatRupiah(existing) : '—');
+          setText('result-expense', expenses > 0 ? formatRupiah(expenses) : '—');
+          setText('result-kpr', '—');
+          setText('result-total-beban', '—');
+          setText('result-sisa', '—');
+          const chip = document.getElementById('status-chip');
+          if (chip) chip.hidden = true;
+          const explanation = document.getElementById('result-explanation');
+          if (explanation) {
+            explanation.hidden = !hasBalance;
+            explanation.textContent = hasBalance
+              ? 'Kampanye ini belum punya asumsi margin syariah untuk disimulasikan. Tanyakan rincian margin dan akad syariah kepada tim sales sebelum mengambil keputusan.'
+              : '';
+          }
+          renderBalance();
+          renderSimHelper();
+          if (saveSimulationBtn) saveSimulationBtn.disabled = true;
+          updateWhatsapp();
+          return;
+        }
+
+        const awarenessEl = document.getElementById('awareness-costs');
+        if (awarenessEl) awarenessEl.hidden = scenario.remainingAfterDebtAndExpenses < 0;
+
+        setText('est-installment', scenario.principal > 0 ? `${formatRupiah(scenario.monthlyInstallment)}/bulan` : '—');
+        setText('result-income', hasBalance ? formatRupiah(income) : '—');
+        setText('result-existing', existing > 0 ? formatRupiah(existing) : '—');
+        setText('result-kpr', scenario.principal > 0 ? formatRupiah(scenario.monthlyInstallment) : '—');
+        setText('result-expense', expenses > 0 ? formatRupiah(expenses) : '—');
+        setText('result-total-beban', hasBalance ? `${formatRupiah(existing + scenario.monthlyInstallment + expenses)}/bln` : '—');
+        setText('result-sisa', hasBalance ? `${formatRupiah(scenario.remainingAfterDebtAndExpenses)}/bln` : '—');
+
+        const chip = document.getElementById('status-chip');
+        if (chip) {
+          if (hasBalance) {
+            const category = resultCategory(scenario) as ResultCategory;
+            const style = chipStyles[category];
+            chip.hidden = false;
+            chip.className = `mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${style.className}`;
+            const textEl = document.getElementById('status-chip-text');
+            if (textEl) textEl.textContent = style.label;
+            const okIcon = document.getElementById('status-chip-icon-ok');
+            const warnIcon = document.getElementById('status-chip-icon-warn');
+            const positive = category === 'healthy';
+            if (okIcon) okIcon.toggleAttribute('hidden', !positive);
+            if (warnIcon) warnIcon.toggleAttribute('hidden', positive);
+            lastStatus = category;
+            if (calculatorStarted) markCalculatorComplete(category);
+          } else {
+            chip.hidden = true;
+          }
+        }
+
+        const explanation = document.getElementById('result-explanation');
+        if (explanation) {
+          explanation.hidden = !hasBalance;
+          explanation.textContent = hasBalance ? explanationFor(scenario) : '';
+        }
+
+        renderBalance();
+        renderSimHelper();
+
+        if (saveSimulationBtn) saveSimulationBtn.disabled = !hasBalance;
+        updateWhatsapp();
+      }
+
+      function renderSimHelper(): void {
+        const el = document.getElementById('sim-helper');
+        if (!el) return;
+        const income = readNumber('income');
+        if (income <= 0) {
+          el.textContent = '';
+          return;
+        }
+        const scenario = computeScenario();
+        const category = resultCategory(scenario) as ResultCategory;
+        if (scenario.remainingAfterDebtAndExpenses < 0) {
+          el.textContent =
+            'Beban bulanan masih berat. Kalau mau, coba sesuaikan DP, tenor, atau bunga untuk melihat skenario lain.';
+          return;
+        }
+        if (category === 'healthy' || category === 'warning') {
+          el.textContent = 'Masih ingin melihat skenario lain?';
+        } else {
+          el.textContent =
+            'Beban bulanan masih berat. Kalau mau, coba sesuaikan DP, tenor, atau bunga untuk melihat skenario lain.';
+        }
+      }
+
+      function renderBalance(): void {
+        const income = readNumber('income');
+        const existing = readNumber('existing');
+        const expenses = readNumber('expenses');
+        const scenario = computeScenario();
+        const beban = existing + scenario.monthlyInstallment + expenses;
+        const sisa = scenario.remainingAfterDebtAndExpenses;
+        const bebanEl = document.getElementById('balance-beban') as HTMLElement | null;
+        const sisaEl = document.getElementById('balance-sisa') as HTMLElement | null;
+        const bebanValue = document.getElementById('balance-beban-value') as HTMLElement | null;
+        const sisaValue = document.getElementById('balance-sisa-value') as HTMLElement | null;
+        if (!bebanEl || !sisaEl || !bebanValue || !sisaValue) return;
+
+        if (income <= 0) {
+          bebanEl.style.width = '0%';
+          sisaEl.style.width = '0%';
+          bebanValue.textContent = '—';
+          sisaValue.textContent = '—';
+          return;
+        }
+
+        if (fundingMode === 'syariah' && modeRates.syariah == null) {
+          bebanEl.style.width = '0%';
+          sisaEl.style.width = '0%';
+          bebanValue.textContent = '—';
+          sisaValue.textContent = '—';
+          return;
+        }
+
+        const bebanPct = Math.min(100, Math.max(2, (beban / income) * 100));
+        const sisaPct = sisa >= 0 ? 100 - Math.min(100, (beban / income) * 100) : 0;
+        bebanEl.style.width = `${Math.min(100, bebanPct)}%`;
+        sisaEl.style.width = `${Math.max(0, Math.min(100, sisaPct))}%`;
+        bebanValue.textContent = formatRupiah(beban);
+        sisaValue.textContent = formatRupiah(sisa);
+      }
+
+      function updateWhatsapp(): void {
+        if (!waCta) return;
+        const href = buildWhatsappUrl({
+          number: config.whatsapp,
+          baseMessage: config.whatsappMessage,
+          url: window.location.href,
+        });
+        waCta.href = href;
+      }
+
+      // ---- WhatsApp CTA scroll gate ----
+
+      let hasReachedBottom = false;
+
+      function setWaEnabled(enabled: boolean): void {
+        if (!waCta) return;
+        const disabled = !enabled;
+        waCta.setAttribute('aria-disabled', String(disabled));
+        waCta.tabIndex = disabled ? -1 : 0;
+        waCta.classList.toggle('opacity-40', disabled);
+        waCta.classList.toggle('cursor-not-allowed', disabled);
+        waCta.classList.toggle('cursor-pointer', enabled);
+      }
+
+      function resetWaScrollGate(): void {
+        hasReachedBottom = false;
+        setWaEnabled(false);
+      }
+
+      function initWaScrollGate(): void {
+        if (!sheetScroll) return;
+        sheetScroll.addEventListener('scroll', () => {
+          if (hasReachedBottom) return;
+          const { scrollTop, scrollHeight, clientHeight } = sheetScroll;
+          if (scrollTop + clientHeight >= scrollHeight - 12) {
+            hasReachedBottom = true;
+            setWaEnabled(true);
+          }
+        });
+      }
+
+      // ---- analytics ----
+
+      function markCalculatorStart(): void {
+        if (calculatorStarted) return;
+        calculatorStarted = true;
+        trackEvent('calculator_start', {
+          calculator_type: 'affordability',
+          marketer_slug: config.marketerSlug,
+          campaign_slug: config.campaignSlug,
+          template: config.template,
+        });
+      }
+
+      function markCalculatorComplete(category: ResultCategory): void {
+        if (calculatorCompleted) return;
+        calculatorCompleted = true;
+        const result = computeScenario();
+        const params: Record<string, string> = {
+          calculator_type: 'affordability',
+          marketer_slug: config.marketerSlug,
+          campaign_slug: config.campaignSlug,
+          template: config.template,
+          result_status: category,
+          income_range: incomeRange(readNumber('income')),
+          existing_debt_range: installmentRange(readNumber('existing')),
+          monthly_expense_range: expenseRange(readNumber('expenses')),
+          debt_ratio_range: debtRatioRange(result.debtRatio),
+          remaining_income_range: remainingIncomeRange(result.remainingAfterDebtAndExpenses),
+        };
+        trackEvent('calculator_complete', params);
+      }
+
+      function fireView(): void {
+        if (viewFired) return;
+        viewFired = true;
+        trackEvent('campaign_view', {
+          marketer_slug: config.marketerSlug,
+          campaign_slug: config.campaignSlug,
+          template: config.template,
+        });
+      }
+
+      // ---- save / restore simulation ----
+
+      function saveSimulation(): void {
+        const scenario = computeScenario();
+        if (readNumber('income') <= 0) return;
+        const snapshot = buildSimulationSnapshot({
+          campaign: {
+            marketerSlug: config.marketerSlug,
+            marketerName: config.marketerName,
+            campaignSlug: config.campaignSlug,
+            campaignName: config.campaignName,
+            developerName: config.developerName,
+            template: config.template,
+          },
+          params: {
+            price: config.price,
+            priceLabel: config.priceLabel,
+            annualInterestRate: config.annualInterestRate,
+          },
+          inputs: {
+            downPayment: dpValue,
+            tenorMonths: selectedTenor,
+            monthlyIncome: readNumber('income'),
+            existingInstallments: readNumber('existing'),
+            monthlyExpenses: readNumber('expenses'),
+            simulationInterestRate: interestRate,
+          },
+          result: {
+            monthlyInstallment: scenario.monthlyInstallment,
+            totalMonthlyDebt: scenario.totalMonthlyDebt,
+            debtRatio: scenario.debtRatio,
+            remainingAfterDebtAndExpenses: scenario.remainingAfterDebtAndExpenses,
+          },
+        });
+        const ok = saveSimulationSnapshot(config.marketerSlug, config.campaignSlug, snapshot);
+        if (!ok) return;
+        const note = document.getElementById('saved-note');
+        if (note) {
+          note.hidden = false;
+          window.setTimeout(() => {
+            note.hidden = true;
+          }, 4000);
+        }
+        renderSavedList();
+        trackEvent('simulation_saved', {
+          marketer_slug: config.marketerSlug,
+          campaign_slug: config.campaignSlug,
+          template: config.template,
+          result_status: lastStatus,
+        });
+      }
+
+      function restoreSimulation(snapshot: CampaignSimulationSnapshot): void {
+        setRupiahInput('income', snapshot.inputs.monthlyIncome);
+        setRupiahInput('existing', snapshot.inputs.existingInstallments);
+        setRupiahInput('expenses', snapshot.inputs.monthlyExpenses);
+        clearDetailGroup('existing-detail');
+        clearDetailGroup('expenses-detail');
+        interestRate = snapshot.inputs.simulationInterestRate || config.annualInterestRate;
+        hasDp = snapshot.inputs.downPayment > 0;
+        dpValue = snapshot.inputs.downPayment;
+        selectedTenor =
+          config.tenorPresetsMonths.includes(snapshot.inputs.tenorMonths)
+            ? snapshot.inputs.tenorMonths
+            : config.defaultTenorMonths;
+        syncDpUI();
+        syncInterestUI();
+        syncTenorUI();
+        fundingMode = 'promo';
+        modeRates.promo = interestRate;
+        syncFundingUI();
+        renderResult();
+        writeStored(2);
+        openSheet();
+        goTo(2);
+      }
+
+      function renderSavedList(): void {
+        const list = readSimulationSnapshots(config.marketerSlug, config.campaignSlug);
+        const section = document.getElementById('saved-section');
+        const container = document.getElementById('saved-simulations');
+        if (!section || !container) return;
+
+        section.hidden = list.length === 0;
+        container.textContent = '';
+
+        for (const snapshot of list) {
+          const item = document.createElement('li');
+          item.className =
+            'flex flex-col gap-3 rounded-xl border border-border bg-muted/40 p-4 sm:flex-row sm:items-center sm:justify-between';
+
+          const info = document.createElement('div');
+          const title = document.createElement('p');
+          title.className = 'text-sm font-semibold text-foreground';
+          title.textContent = [snapshot.campaign.campaignName, snapshot.campaign.developerName]
+            .filter((part): part is string => Boolean(part))
+            .join(' · ');
+          const meta = document.createElement('p');
+          meta.className = 'mt-0.5 text-xs text-muted-foreground';
+          meta.textContent = `Bunga ${interestFormat.format(snapshot.inputs.simulationInterestRate || config.annualInterestRate)}% · DP ${formatRupiah(snapshot.inputs.downPayment)} · ${snapshot.inputs.tenorMonths / 12} tahun · Cicilan ${formatRupiah(snapshot.result.monthlyInstallment)}/bln`;
+          const savedAt = document.createElement('p');
+          savedAt.className = 'mt-1 text-xs text-muted-foreground';
+          savedAt.textContent = `Disimpan ${dateTimeFormat.format(new Date(snapshot.savedAt))}`;
+          info.append(title, meta, savedAt);
+
+          const actions = document.createElement('div');
+          actions.className = 'flex gap-2';
+
+          const restoreBtn = document.createElement('button');
+          restoreBtn.type = 'button';
+          restoreBtn.textContent = 'Muat';
+          restoreBtn.className =
+            'inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted outline-none focus-visible:ring-3 focus-visible:ring-ring/50';
+          restoreBtn.addEventListener('click', () => restoreSimulation(snapshot));
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.type = 'button';
+          deleteBtn.textContent = 'Hapus';
+          deleteBtn.className =
+            'inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted outline-none focus-visible:ring-3 focus-visible:ring-ring/50';
+          deleteBtn.addEventListener('click', () => {
+            removeSimulationSnapshot(config.marketerSlug, config.campaignSlug, snapshot.id);
+            renderSavedList();
+          });
+
+          actions.append(restoreBtn, deleteBtn);
+          item.append(info, actions);
+          container.appendChild(item);
+        }
+      }
+
+      // ---- step 3 & step 4 parameter controls ----
+
+      function renderIfResult(): void {
+        if (currentStep === 2) renderResult();
+      }
+
+      function fundingNote(mode: FundingMode): string {
+        if (mode === 'promo') {
+          if (config.promoInterest != null && config.promoPeriodYears) {
+            return `Bunga promo ${interestFormat.format(config.promoInterest)}% selama ${config.promoPeriodYears} tahun.`;
+          }
+          return 'Bunga promo ditetapkan bank dan dapat berlaku untuk periode tertentu sesuai kebijakan bank.';
+        }
+        if (mode === 'floating') {
+          return 'Bunga floating dapat berubah selama masa pembiayaan, sehingga cicilan bisa berubah.';
+        }
+        if (modeRates.syariah != null) {
+          return `Simulasi syariah memakai asumsi margin ${interestFormat.format(modeRates.syariah)}% per tahun.`;
+        }
+        return 'Simulasi syariah membutuhkan parameter margin/asumsi pembiayaan dari marketer.';
+      }
+
+      function estTenorLabel(): string {
+        const years = selectedTenor / 12;
+        if (fundingMode === 'promo') {
+          if (config.promoInterest == null) {
+            return `Tenor ${years} tahun`;
+          }
+          if (config.promoPeriodYears != null) {
+            return `selama ${Math.min(Math.max(1, config.promoPeriodYears), years)} tahun`;
+          }
+          return 'selama jangka waktu terbatas yang ditetapkan bank';
+        }
+        return `Tenor ${years} tahun`;
+      }
+
+      function updateEstTenorLabel(): void {
+        const estTenor = document.getElementById('est-tenor');
+        if (estTenor) estTenor.textContent = estTenorLabel();
+      }
+
+      function syncFundingUI(): void {
+        document
+          .querySelectorAll<HTMLButtonElement>('[data-funding-mode]')
+          .forEach((btn) => {
+            const active = btn.dataset.fundingMode === fundingMode;
+            btn.setAttribute('aria-pressed', String(active));
+            btn.classList.toggle('border-primary', active);
+            btn.classList.toggle('bg-primary', active);
+            btn.classList.toggle('text-primary-foreground', active);
+            btn.classList.toggle('border-border', !active);
+            btn.classList.toggle('bg-card', !active);
+            btn.classList.toggle('text-muted-foreground', !active);
+          });
+        const noteEl = document.getElementById('funding-note');
+        if (noteEl) noteEl.textContent = fundingNote(fundingMode);
+        const syariahPlaceholder = fundingMode === 'syariah' && modeRates.syariah == null;
+        for (const id of ['interest-group', 'interest4-group']) {
+          const group = document.getElementById(id);
+          if (group) group.hidden = syariahPlaceholder;
+        }
+        updateEstTenorLabel();
+      }
+
+      function selectFundingMode(mode: FundingMode): void {
+        if (mode === fundingMode) return;
+        fundingMode = mode;
+        if (mode !== 'syariah' || modeRates.syariah != null) {
+          interestRate = modeRates[mode] ?? config.annualInterestRate;
+        }
+        syncInterestUI();
+        syncFundingUI();
+        scheduleSave();
+        renderIfResult();
+      }
+
+      function syncInterestUI(): void {
+        const text = `${interestFormat.format(interestRate)}%`;
+        for (const id of ['interest-value', 'interest4-value']) {
+          const btn = document.getElementById(id) as HTMLButtonElement | null;
+          if (btn) btn.textContent = text;
+        }
+        const input = document.getElementById('interest-input') as HTMLInputElement | null;
+        if (input) input.value = String(interestRate).replace('.', ',');
+        const input4 = document.getElementById('interest4-input') as HTMLInputElement | null;
+        if (input4) input4.value = String(interestRate).replace('.', ',');
+      }
+
+      function commitInterest(value: number): void {
+        if (fundingMode === 'syariah' && modeRates.syariah == null) return;
+        interestRate = Math.round(Math.min(INTEREST_MAX, Math.max(INTEREST_MIN, value)) * 100) / 100;
+        modeRates[fundingMode] = interestRate;
+        syncInterestUI();
+        syncFundingUI();
+        scheduleSave();
+        renderIfResult();
+      }
+
+      function changeInterest(delta: number): void {
+        commitInterest(interestRate + delta);
+      }
+
+      function syncDpValues(): void {
+        const text = dpValue > 0 ? formatRupiah(dpValue) : 'Rp 0';
+        if (dpValueEl) dpValueEl.textContent = text;
+        if (dp4ValueEl) dp4ValueEl.textContent = text;
+      }
+
+      function syncDpSliders(): void {
+        const val = String(Math.min(dpValue, config.price));
+        if (dpSlider) dpSlider.value = val;
+        if (dp4Slider && hasDp) dp4Slider.value = val;
+      }
+
+      function syncDpPresets(): void {
+        document.querySelectorAll<HTMLButtonElement>('[data-dp-preset]').forEach((button) => {
+          const pct = Number(button.dataset.dpPreset);
+          const presetValue = Math.min(config.price, Math.round(config.price * pct / 1_000_000) * 1_000_000);
+          const active = hasDp && dpValue === presetValue;
+          button.setAttribute('aria-pressed', String(active));
+          button.classList.toggle('border-primary', active);
+          button.classList.toggle('bg-primary/10', active);
+          button.classList.toggle('text-primary', active);
+          button.classList.toggle('border-border', !active);
+          button.classList.toggle('bg-card', !active);
+          button.classList.toggle('text-muted-foreground', !active);
+        });
+      }
+
+      function syncDpUI(): void {
+        const noneBtn = document.querySelector('[data-dp-choice="none"]') as HTMLButtonElement | null;
+        const setBtn = document.querySelector('[data-dp-choice="set"]') as HTMLButtonElement | null;
+        const active = hasDp ? setBtn : noneBtn;
+        const inactive = hasDp ? noneBtn : setBtn;
+        for (const [btn, isActive] of [
+          [active, true],
+          [inactive, false],
+        ] as [HTMLButtonElement | null, boolean][]) {
+          if (!btn) continue;
+          btn.setAttribute('aria-pressed', String(isActive));
+          btn.classList.toggle('border-primary', isActive);
+          btn.classList.toggle('bg-primary/10', isActive);
+          btn.classList.toggle('text-primary', isActive);
+          btn.classList.toggle('border-border', !isActive);
+          btn.classList.toggle('bg-card', !isActive);
+          btn.classList.toggle('text-muted-foreground', !isActive);
+        }
+        if (dpRegion) dpRegion.hidden = !hasDp;
+        syncDpSliders();
+        syncDpValues();
+        syncDpPresets();
+        if (dp4Region) dp4Region.hidden = !hasDp;
+        if (dp4Toggle) {
+          dp4Toggle.setAttribute('aria-pressed', String(hasDp));
+          dp4Toggle.textContent = hasDp ? 'Belum ada DP' : 'Ada DP';
+        }
+      }
+
+      function changeDp(delta: number): void {
+        const next = Math.min(config.price, Math.max(0, dpValue + delta));
+        dpValue = next;
+        syncDpSliders();
+        syncDpValues();
+        syncDpPresets();
+        scheduleSave();
+        renderIfResult();
+      }
+
+      function syncTenorUI(): void {
+        document.querySelectorAll<HTMLButtonElement>('[data-tenor-months]').forEach((button) => {
+          const active = Number(button.dataset.tenorMonths) === selectedTenor;
+          button.setAttribute('aria-pressed', String(active));
+          button.classList.toggle('border-transparent', active);
+          button.classList.toggle('bg-primary', active);
+          button.classList.toggle('text-primary-foreground', active);
+          button.classList.toggle('hover:bg-muted', !active);
+          button.classList.toggle('bg-background', !active);
+          button.classList.toggle('text-foreground', !active);
+          button.classList.toggle('border-border', !active);
+        });
+        const ageAwareness = document.getElementById('tenor-age-awareness');
+        if (ageAwareness) ageAwareness.hidden = selectedTenor < 240;
+        updateEstTenorLabel();
+      }
+
+      function selectTenor(months: number): void {
+        selectedTenor = months;
+        syncTenorUI();
+        scheduleSave();
+      }
+
+      // ---- step 2 detail breakdown sync ----
+      // Detail rows are authoritative once non-empty. A summary field is the
+      // live total of its detail group; editing the summary directly clears
+      // that group's rows to avoid double counting.
+
+      function clearDetailGroup(detailGroup: string): void {
+        for (const el of document.querySelectorAll<HTMLInputElement>(`[data-detail-group="${detailGroup}"]`)) {
+          delete el.dataset.value;
+          el.value = '';
+        }
+      }
+
+      function syncDetailSummary(detailGroup: string): void {
+        const summary = document.querySelector<HTMLInputElement>(`[data-summary="${detailGroup}"]`);
+        if (!summary) return;
+        const values = Array.from(
+          document.querySelectorAll<HTMLInputElement>(`[data-detail-group="${detailGroup}"]`),
+        ).map((el) => readNumber(el.id));
+        const total = values.reduce((sum, n) => sum + n, 0);
+        summary.dataset.value = String(total);
+        summary.value = total ? numberFormat.format(total) : '';
+      }
+
+      function readDetailGroup(groupId: string): Record<string, number> {
+        const out: Record<string, number> = {};
+        for (const el of document.querySelectorAll<HTMLInputElement>(`[data-detail-group="${groupId}"]`)) {
+          const v = readNumber(el.id);
+          if (v > 0) out[el.id] = v;
+        }
+        return out;
+      }
+
+      function applyDetailGroup(groupId: string, values: Record<string, number> | undefined): void {
+        if (!values) return;
+        let applied = false;
+        for (const el of document.querySelectorAll<HTMLInputElement>(`[data-detail-group="${groupId}"]`)) {
+          const v = values[el.id] ?? 0;
+          if (v > 0) {
+            setRupiahInput(el.id, v);
+            applied = true;
+          }
+        }
+        if (applied) syncDetailSummary(groupId);
+      }
+
+      function readDetailMap(patch: Record<string, number> | undefined): Record<string, number> {
+        const out: Record<string, number> = {};
+        if (!patch) return out;
+        for (const [k, v] of Object.entries(patch)) {
+          const n = Number(v);
+          if (Number.isFinite(n) && n > 0) out[k] = Math.round(n);
+        }
+        return out;
+      }
+
+      // ---- initialization ----
+
+      function fireViewOnLoad(): void {
+        if (document.readyState === 'complete') {
+          fireView();
+        } else {
+          window.addEventListener('load', fireView);
+        }
+      }
+
+      fireViewOnLoad();
+
+      step1Next?.addEventListener('click', () => {
+        markCalculatorStart();
+        const income = readNumber('income');
+        if (income <= 0) {
+          if (incomeError) incomeError.hidden = false;
+          document.getElementById('income')?.focus();
+          return;
+        }
+        if (incomeError) incomeError.hidden = true;
+        renderResult();
+        writeStored(2);
+        goTo(2);
+      });
+
+      document.getElementById('income')?.addEventListener('input', () => {
+        markCalculatorStart();
+        if (incomeError) incomeError.hidden = true;
+        if (step1Next) step1Next.disabled = readNumber('income') <= 0;
+        scheduleSave();
+      });
+
+      const simToggle = document.getElementById('sim-toggle');
+      const simPanel = document.getElementById('sim-panel');
+      const simChevron = document.getElementById('sim-chevron');
+      const simHint = document.getElementById('sim-hint');
+      if (simToggle && simPanel) {
+        simToggle.addEventListener('click', () => {
+          const expanding = simPanel.hidden === true;
+          simPanel.hidden = !expanding;
+          simToggle.setAttribute('aria-expanded', String(expanding));
+          simChevron?.classList.toggle('rotate-180', expanding);
+          if (simHint) simHint.hidden = expanding;
+        });
+      }
+
+      document.addEventListener('click', (event) => {
+        const el = (event.target as Element | null)?.closest('[data-back]');
+        if (el) {
+          if (currentStep === 1) {
+            closeSheet();
+            return;
+          }
+          goTo(currentStep - 1);
+          return;
+        }
+        const toggle = (event.target as Element | null)?.closest('[data-detail-toggle]');
+        if (toggle) {
+          const wrapper = toggle.getAttribute('data-detail-toggle');
+          const panel = wrapper ? document.getElementById(wrapper) : null;
+          if (!panel) return;
+          panel.hidden = !panel.hidden;
+          toggle.setAttribute('aria-expanded', String(!panel.hidden));
+          if (!panel.hidden && panel.id === 'existing-detail') {
+            const label = document.getElementById('toggle-existing-label');
+            if (label) label.textContent = 'Sembunyikan detail';
+          } else {
+            const label = document.getElementById('toggle-existing-label');
+            if (label) label.textContent = 'Isi lebih detail';
+          }
+        }
+      });
+
+      document.querySelectorAll<HTMLInputElement>('[data-money-input]').forEach((input) => {
+        input.addEventListener('input', () => {
+          formatMoneyInput(input);
+          const summaryGet = input.dataset.summary;
+          const detailGroup = input.dataset.detailGroup;
+          if (summaryGet) {
+            // Editing the summary directly resets that detail group.
+            const hasDetail =
+              Array.from(
+                document.querySelectorAll<HTMLInputElement>(`[data-detail-group="${summaryGet}"]`),
+              ).some((el) => readNumber(el.id) > 0);
+            if (hasDetail) {
+              clearDetailGroup(summaryGet);
+            }
+          }
+          if (detailGroup) {
+            syncDetailSummary(detailGroup);
+          }
+          const isIncome = input.id === 'income';
+          if (step1Next && isIncome) step1Next.disabled = readNumber('income') <= 0;
+          if (isIncome && incomeError) incomeError.hidden = true;
+          scheduleSave();
+        });
+        input.addEventListener('keydown', (event) => {
+          if (event.ctrlKey || event.metaKey || event.altKey) return;
+          if (event.key.length > 1 || /[0-9]/.test(event.key)) return;
+          event.preventDefault();
+        });
+      });
+
+      document.querySelectorAll<HTMLButtonElement>('[data-tenor-months]').forEach((button) => {
+        button.addEventListener('click', () => {
+          markCalculatorStart();
+          selectTenor(Number(button.dataset.tenorMonths));
+          renderIfResult();
+        });
+      });
+
+      document.querySelectorAll<HTMLButtonElement>('[data-dp-choice]').forEach((button) => {
+        button.addEventListener('click', () => {
+          hasDp = button.dataset.dpChoice === 'set';
+          if (hasDp && dpSlider && dpValue === 0) {
+            dpValue = Math.min(Math.round(config.price * 0.2 / 1_000_000) * 1_000_000, config.price);
+          }
+          syncDpUI();
+          scheduleSave();
+          renderIfResult();
+        });
+      });
+
+      document.querySelectorAll<HTMLButtonElement>('[data-dp-preset]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const pct = Number(button.dataset.dpPreset);
+          hasDp = true;
+          dpValue = Math.min(config.price, Math.round(config.price * pct / 1_000_000) * 1_000_000);
+          syncDpUI();
+          scheduleSave();
+          renderIfResult();
+        });
+      });
+
+      dpSlider?.addEventListener('input', () => {
+        dpValue = Math.min(config.price, Math.round((Number(dpSlider.value) || 0) / 1_000_000) * 1_000_000);
+        syncDpSliders();
+        syncDpValues();
+        syncDpPresets();
+        scheduleSave();
+        renderIfResult();
+      });
+
+      document.getElementById('dp-minus')?.addEventListener('click', () => changeDp(-DP_STEP));
+      document.getElementById('dp-plus')?.addEventListener('click', () => changeDp(DP_STEP));
+
+      dp4Toggle?.addEventListener('click', () => {
+        hasDp = !hasDp;
+        if (hasDp && dpValue === 0) {
+          dpValue = Math.min(Math.round(config.price * 0.2 / 1_000_000) * 1_000_000, config.price);
+        }
+        syncDpUI();
+        scheduleSave();
+        renderIfResult();
+      });
+
+      dp4Slider?.addEventListener('input', () => {
+        dpValue = Math.min(config.price, Math.round((Number(dp4Slider.value) || 0) / 1_000_000) * 1_000_000);
+        syncDpSliders();
+        syncDpValues();
+        syncDpPresets();
+        scheduleSave();
+        renderIfResult();
+      });
+
+      document.getElementById('dp4-minus')?.addEventListener('click', () => changeDp(-DP_STEP));
+      document.getElementById('dp4-plus')?.addEventListener('click', () => changeDp(DP_STEP));
+
+      document.querySelectorAll<HTMLButtonElement>('[data-funding-mode]').forEach((button) => {
+        button.addEventListener('click', () => {
+          selectFundingMode(button.dataset.fundingMode as FundingMode);
+        });
+      });
+
+      document.getElementById('interest-minus')?.addEventListener('click', () => changeInterest(-INTEREST_STEP));
+      document.getElementById('interest-plus')?.addEventListener('click', () => changeInterest(INTEREST_STEP));
+
+      const interestValueBtn = document.getElementById('interest-value') as HTMLButtonElement | null;
+      const interestEditor = document.getElementById('interest-editor') as HTMLElement | null;
+      const interestInput = document.getElementById('interest-input') as HTMLInputElement | null;
+      const interestApply = document.getElementById('interest-apply') as HTMLButtonElement | null;
+
+      interestValueBtn?.addEventListener('click', () => {
+        if (!interestEditor || !interestInput) return;
+        interestEditor.hidden = !interestEditor.hidden;
+        if (!interestEditor.hidden) {
+          interestInput.value = String(interestRate).replace('.', ',');
+          interestInput.focus();
+          interestInput.select();
+        }
+      });
+
+      function applyInterestInput(): void {
+        const parsed = parseFloat((interestInput?.value ?? '').replace(',', '.'));
+        if (Number.isFinite(parsed)) {
+          commitInterest(parsed);
+        }
+        syncInterestUI();
+        if (interestEditor) interestEditor.hidden = true;
+      }
+
+      interestApply?.addEventListener('click', applyInterestInput);
+      interestInput?.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          applyInterestInput();
+        }
+      });
+      interestInput?.addEventListener('blur', applyInterestInput);
+
+      document.getElementById('interest4-minus')?.addEventListener('click', () => changeInterest(-INTEREST_STEP));
+      document.getElementById('interest4-plus')?.addEventListener('click', () => changeInterest(INTEREST_STEP));
+
+      const interest4ValueBtn = document.getElementById('interest4-value') as HTMLButtonElement | null;
+      const interest4Editor = document.getElementById('interest4-editor') as HTMLElement | null;
+      const interest4Input = document.getElementById('interest4-input') as HTMLInputElement | null;
+      const interest4Apply = document.getElementById('interest4-apply') as HTMLButtonElement | null;
+
+      interest4ValueBtn?.addEventListener('click', () => {
+        if (!interest4Editor || !interest4Input) return;
+        interest4Editor.hidden = !interest4Editor.hidden;
+        if (!interest4Editor.hidden) {
+          interest4Input.value = String(interestRate).replace('.', ',');
+          interest4Input.focus();
+          interest4Input.select();
+        }
+      });
+
+      function applyInterest4Input(): void {
+        const parsed = parseFloat((interest4Input?.value ?? '').replace(',', '.'));
+        if (Number.isFinite(parsed)) {
+          commitInterest(parsed);
+        }
+        syncInterestUI();
+        if (interest4Editor) interest4Editor.hidden = true;
+      }
+
+      interest4Apply?.addEventListener('click', applyInterest4Input);
+      interest4Input?.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          applyInterest4Input();
+        }
+      });
+      interest4Input?.addEventListener('blur', applyInterest4Input);
+
+      saveSimulationBtn?.addEventListener('click', saveSimulation);
+
+      document.addEventListener('click', (event) => {
+        const el = (event.target as Element | null)?.closest('[data-start-wizard]') as HTMLElement | null;
+        if (el) {
+          event.preventDefault();
+          lastTrigger = el;
+          openSheet();
+          if (document.getElementById('income') && readNumber('income') <= 0) {
+            goTo(1);
+          }
+          return;
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        const el = (event.target as Element | null)?.closest('[data-campaign-cta]') as HTMLElement | null;
+        if (!el) return;
+        const cta = el.getAttribute('data-campaign-cta') ?? 'default';
+        const context = {
+          marketer_slug: config.marketerSlug,
+          campaign_slug: config.campaignSlug,
+          template: config.template,
+          cta,
+          result_status: lastStatus,
+        };
+        trackEvent('campaign_cta_click', context);
+        if (cta === 'kpr_check') {
+          markCalculatorStart();
+        }
+        if (cta === 'whatsapp') {
+          if (waCta && waCta.getAttribute('aria-disabled') === 'true') {
+            event.preventDefault();
+            return;
+          }
+          trackEvent('whatsapp_click', {
+            marketer_slug: config.marketerSlug,
+            campaign_slug: config.campaignSlug,
+            template: config.template,
+            result_status: lastStatus,
+          });
+        }
+      });
+
+      // restore autosaved wizard state
+      const stored = readStored();
+      if (stored) {
+        setRupiahInput('income', stored.income);
+        setRupiahInput('existing', stored.existing);
+        setRupiahInput('expenses', stored.expenses);
+        applyDetailGroup('existing-detail', stored.installmentDetails);
+        applyDetailGroup('expenses-detail', stored.expenseDetails);
+        interestRate = stored.interest;
+        fundingMode =
+          stored.fundingMode === 'syariah' && modeRates.syariah == null
+            ? 'promo'
+            : stored.fundingMode || 'promo';
+        if (fundingMode === 'syariah' && modeRates.syariah == null) {
+          modeRates.promo = stored.interest;
+        } else {
+          modeRates[fundingMode] = stored.interest;
+        }
+        hasDp = stored.hasDp;
+        dpValue = stored.dp;
+        selectedTenor = config.tenorPresetsMonths.includes(stored.tenorMonths)
+          ? stored.tenorMonths
+          : config.defaultTenorMonths;
+        syncInterestUI();
+        syncDpUI();
+        syncTenorUI();
+        syncFundingUI();
+        if (stored.income > 0) {
+          openSheet();
+          if (stored.step === 2) {
+            renderResult();
+            currentStep = 2;
+            render(true);
+          } else {
+            currentStep = 1;
+            render(true);
+          }
+          showRestoreNotice();
+        }
+      }
+
+      if (step1Next) step1Next.disabled = readNumber('income') <= 0;
+      syncFundingUI();
+      renderSavedList();
+      initWaScrollGate();
+      render(false);
+    </script>
+  </body>
+</html>

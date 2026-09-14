@@ -40,12 +40,12 @@ const cfg = resolveContext(slug);
   {showTitle && <h1 class="text-balance text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>}
   <p id="wizard-type" class="mt-1 text-sm text-muted-foreground">Kredit yang dicek: {cfg.label}</p>
 
-  <p id="step-label" class="mt-5 text-sm font-medium text-muted-foreground" aria-live="polite">1 dari 5</p>
+  <p id="step-label" class="mt-5 text-sm font-medium text-muted-foreground" aria-live="polite">1 dari 3</p>
   <div
     id="wizard-progress"
     role="progressbar"
     aria-valuemin="1"
-    aria-valuemax="5"
+    aria-valuemax="3"
     aria-valuenow="1"
     aria-label="Progres kalkulator"
     class="mx-auto mt-2 flex w-full max-w-[240px] items-center gap-1.5"
@@ -53,8 +53,6 @@ const cfg = resolveContext(slug);
     <span data-seg="1" class="h-1.5 flex-1 rounded-full bg-primary"></span>
     <span data-seg="2" class="h-1.5 flex-1 rounded-full bg-border"></span>
     <span data-seg="3" class="h-1.5 flex-1 rounded-full bg-border"></span>
-    <span data-seg="4" class="h-1.5 flex-1 rounded-full bg-border"></span>
-    <span data-seg="5" class="h-1.5 flex-1 rounded-full bg-border"></span>
   </div>
 
   <div id="wizard-illustration-wrap" class="mt-4 flex items-center justify-center">
@@ -77,9 +75,11 @@ const cfg = resolveContext(slug);
     className="animate-in fade-in duration-150 rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
   >
     <CardContent className="p-5 sm:p-6">
-      <h2 class="text-lg font-semibold text-foreground sm:text-xl">Penghasilan Bersih</h2>
-      <p class="mt-1 text-sm text-muted-foreground">Masukkan total penghasilan bersih yang kamu terima setiap bulan.</p>
+      <h2 class="text-lg font-semibold text-foreground sm:text-xl">Kondisi keuangan kamu</h2>
+      <p class="mt-1 text-sm text-muted-foreground">Isi penghasilan, cicilan saat ini, dan pengeluaran bulanan.</p>
+      
       <div class="mt-4">
+        <h3 class="text-sm font-semibold text-foreground mb-2">Penghasilan</h3>
         <NumberField id="monthlyIncome" label="Penghasilan per bulan" required />
         <p id="error-monthlyIncome" class="mt-2 hidden text-sm font-medium text-[#ef4444]" aria-live="polite"></p>
         <div class="mt-3 flex items-start gap-2.5 rounded-xl bg-muted/50 p-3 text-sm text-muted-foreground">
@@ -87,6 +87,46 @@ const cfg = resolveContext(slug);
           <span>Masukkan jumlah setelah dipotong pajak dan potongan lainnya.</span>
         </div>
       </div>
+      
+      <Separator className="my-6" />
+
+      <h2 class="text-lg font-semibold text-foreground sm:text-xl">Kondisi cicilan & pengeluaran</h2>
+      <p class="mt-1 text-sm text-muted-foreground">Isi yang ada saja. Kosong = tidak ada.</p>
+
+
+      <div class="mt-4 space-y-3">
+        <h3 class="text-sm font-semibold text-foreground">Cicilan saat ini</h3>
+        <MoneyRow id="kpr" label="KPR / Rumah" icon="home" />
+        <MoneyRow id="mobil" label="Mobil" icon="car" />
+        <MoneyRow id="motor" label="Motor" icon="bike" />
+        <MoneyRow id="kartuKredit" label="Kartu Kredit" icon="card" />
+        <MoneyRow id="pinjamanLain" label="Pinjaman Lain" icon="briefcase" />
+        
+        <div class="mt-2 rounded-xl bg-muted/50 p-3 text-center">
+          <p class="text-sm text-muted-foreground">Total cicilan saat ini</p>
+          <p id="step2-total" class="mt-0.5 text-lg font-bold text-foreground">Rp 0</p>
+          <p class="text-xs text-muted-foreground">per bulan</p>
+        </div>
+      </div>
+
+      <div class="mt-6 space-y-3">
+        <h3 class="text-sm font-semibold text-foreground">Pengeluaran bulanan</h3>
+        <MoneyRow id="foodHousing" label="Makan & kebutuhan rumah" icon="utensils" />
+        <MoneyRow id="rent" label="Sewa / tempat tinggal" icon="building" />
+        <MoneyRow id="electricity" label="Listrik & internet" icon="zap" />
+        <MoneyRow id="transport" label="Transportasi" icon="bus" />
+        <MoneyRow id="education" label="Pendidikan" icon="graduation" />
+        <MoneyRow id="health" label="Kesehatan" icon="heart" />
+        <MoneyRow id="entertainment" label="Hiburan & gaya hidup" icon="clapperboard" />
+        <MoneyRow id="otherExpenses" label="Lainnya" icon="ellipsis" />
+        
+        <div class="mt-2 rounded-xl bg-muted/50 p-3 text-center">
+          <p class="text-sm text-muted-foreground">Total pengeluaran</p>
+          <p id="step4-total" class="mt-0.5 text-lg font-bold text-foreground">Rp 0</p>
+          <p class="text-xs text-muted-foreground">per bulan</p>
+        </div>
+      </div>
+
       <div class="mt-6 flex justify-end">
         <Button type="submit" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold sm:w-auto sm:px-8">
           Lanjutkan
@@ -98,39 +138,6 @@ const cfg = resolveContext(slug);
 
   <Card
     id="step-2"
-    tabIndex={-1}
-    className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
-  >
-    <CardContent className="p-5 sm:p-6">
-      <h2 class="text-lg font-semibold text-foreground sm:text-xl">Cicilan yang Sudah Ada</h2>
-      <p class="mt-1 text-sm text-muted-foreground">Masukkan semua cicilan atau kewajiban bulanan yang sudah kamu miliki.</p>
-      <div class="mt-4 space-y-3">
-        <MoneyRow id="kpr" label="KPR / Rumah" icon="home" />
-        <MoneyRow id="mobil" label="Mobil" icon="car" />
-        <MoneyRow id="motor" label="Motor" icon="bike" />
-        <MoneyRow id="kartuKredit" label="Kartu Kredit" icon="card" />
-        <MoneyRow id="pinjamanLain" label="Pinjaman Lain" icon="briefcase" />
-      </div>
-      <div class="mt-4 rounded-xl bg-muted/50 p-3 text-center">
-        <p class="text-sm text-muted-foreground">Total cicilan saat ini</p>
-        <p id="step2-total" class="mt-0.5 text-lg font-bold text-foreground">Rp 0</p>
-        <p class="text-xs text-muted-foreground">per bulan</p>
-      </div>
-      <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
-        <Button type="button" data-back variant="outline" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base sm:w-auto">
-          <ArrowLeft class="h-4 w-4" aria-hidden="true" />
-          Kembali
-        </Button>
-        <Button type="submit" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold sm:w-auto sm:px-8">
-          Lanjutkan
-          <ArrowRight class="h-4 w-4" aria-hidden="true" />
-        </Button>
-      </div>
-    </CardContent>
-  </Card>
-
-  <Card
-    id="step-3"
     tabIndex={-1}
     className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
   >
@@ -250,48 +257,13 @@ const cfg = resolveContext(slug);
   </Card>
 
   <Card
-    id="step-4"
-    tabIndex={-1}
-    className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
-  >
-    <CardContent className="p-5 sm:p-6">
-      <h2 class="text-lg font-semibold text-foreground sm:text-xl">Pengeluaran Bulanan</h2>
-      <p class="mt-1 text-sm text-muted-foreground">Breakdown pengeluaran rutin kamu setiap bulan (opsional).</p>
-      <div class="mt-4 space-y-3">
-        <MoneyRow id="foodHousing" label="Makan & kebutuhan rumah" icon="utensils" />
-        <MoneyRow id="rent" label="Sewa / tempat tinggal" icon="building" />
-        <MoneyRow id="electricity" label="Listrik & internet" icon="zap" />
-        <MoneyRow id="transport" label="Transportasi" icon="bus" />
-        <MoneyRow id="education" label="Pendidikan" icon="graduation" />
-        <MoneyRow id="health" label="Kesehatan" icon="heart" />
-        <MoneyRow id="entertainment" label="Hiburan & gaya hidup" icon="clapperboard" />
-        <MoneyRow id="otherExpenses" label="Lainnya" icon="ellipsis" />
-      </div>
-      <div class="mt-4 rounded-xl bg-muted/50 p-3 text-center">
-        <p class="text-sm text-muted-foreground">Total pengeluaran</p>
-        <p id="step4-total" class="mt-0.5 text-lg font-bold text-foreground">Rp 0</p>
-        <p class="text-xs text-muted-foreground">per bulan</p>
-      </div>
-      <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3">
-        <Button type="button" data-back variant="outline" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base sm:w-auto">
-          <ArrowLeft class="h-4 w-4" aria-hidden="true" />
-          Kembali
-        </Button>
-        <Button type="submit" className="h-auto w-full gap-2 rounded-full px-6 py-3.5 text-base font-semibold sm:w-auto sm:px-8">
-          Lihat Hasil
-          <ArrowRight class="h-4 w-4" aria-hidden="true" />
-        </Button>
-      </div>
-    </CardContent>
-  </Card>
-
-  <Card
-    id="step-5"
+    id="step-3"
     tabIndex={-1}
     className="animate-in fade-in duration-150 hidden rounded-2xl border border-border py-0 shadow-sm ring-0 focus:outline-none"
   >
     <CardContent className="p-5 sm:p-6" aria-live="polite">
       <h2 class="text-center text-lg font-semibold text-foreground sm:text-xl">Hasil Cek</h2>
+      <!-- Result Content (from old Step 5) -->
 
       <div class="mt-4 flex justify-center">
         <img
@@ -422,6 +394,18 @@ const cfg = resolveContext(slug);
   </Card>
 </form>
 
+<div id="calculator-persist-bar" hidden class="mt-3 flex flex-col items-center justify-center gap-1.5">
+  <p id="restore-notice" hidden role="status" class="text-xs text-muted-foreground">Data terakhir dipulihkan</p>
+  <button
+    id="clearSavedDataBtn"
+    type="button"
+    hidden
+    class="rounded-md px-2 py-1 text-xs font-medium text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+  >
+    Hapus data tersimpan
+  </button>
+</div>
+
 <!-- Ad slots: around the utility, outside the input flow -->
 <AdSlotBetween />
 <AdSlotAfterResult />
@@ -431,6 +415,11 @@ const cfg = resolveContext(slug);
   import { generateShareFile } from '../../lib/share-image';
   import { renderCalculatorShareImagePng } from '../../lib/calculator-share-image';
   import { resolveContext } from '../../lib/calculator/contexts';
+  import {
+    clearCalculatorState,
+    readCalculatorState,
+    writeCalculatorState,
+  } from '../../lib/calculator/persistence';
   import {
     trackEvent,
     incomeRange,
@@ -485,7 +474,7 @@ const cfg = resolveContext(slug);
   }
 
   // ---- wizard state ----
-  const totalSteps = 5;
+  const totalSteps = 3;
   let currentStep = 1;
   let started = false;
   let completed = false;
@@ -498,16 +487,12 @@ const cfg = resolveContext(slug);
     1: document.getElementById('step-1') as HTMLElement,
     2: document.getElementById('step-2') as HTMLElement,
     3: document.getElementById('step-3') as HTMLElement,
-    4: document.getElementById('step-4') as HTMLElement,
-    5: document.getElementById('step-5') as HTMLElement,
   };
 
   const illustrations: Record<number, { src: string; alt: string }> = {
-    1: { src: '/images/wizard/income.webp', alt: 'Ilustrasi penghasilan bersih' },
-    2: { src: '/images/wizard/existing-installments.webp', alt: 'Ilustrasi cicilan yang sudah ada' },
-    3: { src: '/images/wizard/new-installment.webp', alt: 'Ilustrasi rencana cicilan baru' },
-    4: { src: '/images/wizard/monthly-expenses.webp', alt: 'Ilustrasi pengeluaran bulanan' },
-    5: { src: '/images/wizard/result.webp', alt: 'Ilustrasi hasil perhitungan' },
+    1: { src: '/images/wizard/income.webp', alt: 'Ilustrasi penghasilan dan pengeluaran' },
+    2: { src: '/images/wizard/new-installment.webp', alt: 'Ilustrasi rencana cicilan baru' },
+    3: { src: '/images/wizard/result.webp', alt: 'Ilustrasi hasil perhitungan' },
   };
 
   // financing type selected on the homepage (?type=...). The query must be read
@@ -726,7 +711,7 @@ const cfg = resolveContext(slug);
         return false;
       }
     }
-    if (step === 3 && isSimPath()) {
+    if (step === 2 && isSimPath()) {
       const price = readMoney('financingPrice');
       const dp = cfg.showDp ? readMoney('downPayment') : 0;
       const principal = calculateLoanPrincipal(price, dp);
@@ -778,13 +763,13 @@ const cfg = resolveContext(slug);
 
   function updateIllustration() {
     const wrap = document.getElementById('wizard-illustration-wrap');
-    if (currentStep === 5) {
+    if (currentStep === 3) {
       wrap?.classList.add('hidden');
       return;
     }
     wrap?.classList.remove('hidden');
-    const ill = currentStep === 3
-      ? (step3ContextIllustrations[typeSlug] ?? illustrations[3])
+    const ill = currentStep === 2
+      ? (step3ContextIllustrations[typeSlug] ?? illustrations[2])
       : illustrations[currentStep];
     if (wizardIllustration && ill) {
       wizardIllustration.setAttribute('src', ill.src);
@@ -830,17 +815,17 @@ const cfg = resolveContext(slug);
   document.getElementById('wizardForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!validateStep(currentStep)) return;
-    const stepName = ['income', 'existing_debt', 'new_installment', 'expenses'][currentStep - 1];
+    const stepName = ['income_and_expenses', 'new_installment', 'result'][currentStep - 1];
     if (currentStep === 1 && !started) {
       trackEvent('calculator_start', { calculator_type: 'affordability', financing_type: typeSlug });
       started = true;
     }
     trackEvent('calculator_step_complete', { calculator_type: 'affordability', step: stepName, financing_type: typeSlug });
-    if (currentStep < 4) {
+    if (currentStep < 2) {
       goTo(currentStep + 1);
     } else {
       fillResult();
-      goTo(5);
+      goTo(3);
       trackCompleteAndView();
     }
   });
@@ -1299,8 +1284,186 @@ function fillResult() {
       return true;
     })();
 
+    // ---- local persistence: auto-save inputs, restore on return, reset ----
+    // The DOM inputs are the source of truth. A flat numeric snapshot is saved
+    // per financing context (KPR / Mobil / Motor / Pinjaman / ...) so different
+    // calculators never collide. All storage I/O goes through the SSR-safe
+    // helpers; a failure to store never breaks the calculator.
+    const persistSlug = resolveContext(typeSlug).slug;
+    const persistBar = document.getElementById('calculator-persist-bar') as HTMLElement | null;
+    const restoreNotice = document.getElementById('restore-notice') as HTMLElement | null;
+    const clearBtn = document.getElementById('clearSavedDataBtn') as HTMLButtonElement | null;
+
+    function refreshPersistBar() {
+      if (!persistBar) return;
+      const noticeUp = restoreNotice ? !restoreNotice.hidden : false;
+      const resetUp = clearBtn ? !clearBtn.hidden : false;
+      persistBar.hidden = !(noticeUp || resetUp);
+    }
+
+    function showRestoreNotice() {
+      if (restoreNotice) {
+        restoreNotice.hidden = false;
+        refreshPersistBar();
+      }
+    }
+
+    function hideRestoreNotice() {
+      if (restoreNotice) {
+        restoreNotice.hidden = true;
+        refreshPersistBar();
+      }
+    }
+
+    let resetArmed = false;
+    let resetArmTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function disarmReset() {
+      resetArmed = false;
+      if (resetArmTimer) {
+        clearTimeout(resetArmTimer);
+        resetArmTimer = null;
+      }
+      if (clearBtn) clearBtn.textContent = 'Hapus data tersimpan';
+    }
+
+    function showResetControl() {
+      disarmReset();
+      if (clearBtn) clearBtn.hidden = false;
+      refreshPersistBar();
+    }
+
+    function hideResetControl() {
+      disarmReset();
+      if (clearBtn) clearBtn.hidden = true;
+      refreshPersistBar();
+    }
+
+    clearBtn?.addEventListener('click', () => {
+      // Lightweight in-place confirm: first click arms, second click clears.
+      if (!resetArmed) {
+        resetArmed = true;
+        clearBtn.textContent = 'Klik lagi untuk hapus';
+        resetArmTimer = setTimeout(disarmReset, 3000);
+        return;
+      }
+      disarmReset();
+      resetSavedInput();
+    });
+
+    function clearField(id: string) {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (el) {
+        el.value = '';
+        delete el.dataset.value;
+      }
+    }
+
+    function collectPersistedInput(): { values: Record<string, number>; stepPath: 'manual' | 'sim' } {
+      const values = {} as Record<string, number>;
+      ['monthlyIncome', ...step2Ids, 'newInstallment', 'financingPrice', 'downPayment', ...step4Ids].forEach((id) => {
+        values[id] = readNumber(id);
+      });
+      values.interestRate = readNumberInput('interestRate');
+      values.tenureMonths = readTenure();
+      return { values, stepPath };
+    }
+
+    function restoreField(id: string, value: number) {
+      if (id === 'interestRate') {
+        const el = document.getElementById('interestRate') as HTMLInputElement | null;
+        if (el) el.value = value > 0 ? String(value) : '';
+        return;
+      }
+      if (id === 'tenureMonths') {
+        const sel = document.getElementById('tenureMonthsSelect') as HTMLSelectElement | null;
+        const selWrap = document.getElementById('tenure-select-wrap');
+        if (sel && selWrap && !selWrap.classList.contains('hidden')) {
+          if (value > 0) {
+            const match = Array.from(sel.options).find((o) => Number(o.value) === value);
+            sel.value = match ? match.value : '';
+          } else {
+            sel.value = '';
+          }
+          return;
+        }
+        const num = document.getElementById('tenureMonths') as HTMLInputElement | null;
+        if (num) num.value = value > 0 ? String(value) : '';
+        return;
+      }
+      if (value > 0) setRupiahInput(id, value);
+      else clearField(id);
+    }
+
+    function restoreSavedInput(saved: { values: Record<string, number>; stepPath: 'manual' | 'sim' }): boolean {
+      const { values, stepPath: savedPath } = saved;
+      ['monthlyIncome', ...step2Ids, 'newInstallment', 'financingPrice', 'downPayment', ...step4Ids, 'interestRate', 'tenureMonths'].forEach((id) => {
+        restoreField(id, values[id] ?? 0);
+      });
+      stepPath = savedPath === 'sim' ? 'sim' : 'manual';
+      updatePathUI();
+      updateTotal(step2Ids, 'step2-total');
+      updateTotal(step4Ids, 'step4-total');
+      showRestoreNotice();
+      showResetControl();
+      return true;
+    }
+
+    let saveTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function scheduleSave() {
+      hideRestoreNotice();
+      if (saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        saveTimer = null;
+        if (writeCalculatorState(persistSlug, collectPersistedInput())) {
+          showResetControl();
+        }
+      }, 300);
+    }
+
+    function resetSavedInput() {
+      clearCalculatorState(persistSlug);
+      hideResetControl();
+      hideRestoreNotice();
+      if (saveTimer) {
+        clearTimeout(saveTimer);
+        saveTimer = null;
+      }
+      ['monthlyIncome', ...step2Ids, 'newInstallment', 'financingPrice', 'downPayment', ...step4Ids, 'interestRate', 'tenureMonths'].forEach(clearField);
+      const sel = document.getElementById('tenureMonthsSelect') as HTMLSelectElement | null;
+      if (sel) sel.value = '';
+      stepPath = 'manual';
+      updatePathUI();
+      updateTotal(step2Ids, 'step2-total');
+      updateTotal(step4Ids, 'step4-total');
+      goTo(1);
+    }
+
+    const persistInputIds = [
+      'monthlyIncome',
+      ...step2Ids,
+      'newInstallment',
+      'financingPrice',
+      'downPayment',
+      'interestRate',
+      'tenureMonths',
+      ...step4Ids,
+    ];
+    persistInputIds.forEach((id) => {
+      document.getElementById(id)?.addEventListener('input', scheduleSave);
+    });
+    document.getElementById('tenureMonthsSelect')?.addEventListener('change', scheduleSave);
+    // Step 3 input path toggle also persists (manual vs simulator).
+    pathManualBtn?.addEventListener('click', scheduleSave);
+    pathSimBtn?.addEventListener('click', scheduleSave);
+
     // ---- initial render ----
     applySimTypeContext();
+    const persisted = readCalculatorState(persistSlug);
+    const restored = !hadSharedParams && persisted !== null && restoreSavedInput(persisted.data);
     updatePathUI();
+    if (persisted) showResetControl();
+    if (restored && isSimPath()) syncEstimate();
     if (!hadSharedParams) render(false);
   </script>
