@@ -2,8 +2,11 @@
 import '../../styles/global.css';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ArrowLeft } from 'lucide-astro';
 
 const canonical = new URL('/for-marketers/coming-soon', Astro.site).href;
+const publicWeb3formsKey =
+  (import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined) || 'f31d499c-90f8-4ee8-80fd-2bda8c444daf';
 ---
 
 <!doctype html>
@@ -13,29 +16,30 @@ const canonical = new URL('/for-marketers/coming-soon', Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="CekDulu for Marketers. Kami sedang menyiapkan tools untuk membantu campaign Anda jadi lebih berguna."
+      content="CekDulu for Marketers lagi kami siapkan. Tertarik buat coba lebih dulu? Tinggal masukin email."
     />
-    <title>CekDulu for Marketers — Segera Hadir</title>
+    <title>CekDulu for Marketers — Ikut Early Access</title>
     <meta name="robots" content="noindex, follow" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
     <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
-    <meta property="og:title" content="CekDulu for Marketers — Segera Hadir" />
+    <meta property="og:title" content="CekDulu for Marketers — Ikut Early Access" />
     <meta
       property="og:description"
-      content="Kami sedang menyiapkan tools untuk membantu campaign Anda jadi lebih berguna."
+      content="CekDulu for Marketers lagi kami siapkan. Tertarik buat coba lebih dulu? Tinggal masukin email."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="id_ID" />
     <meta property="og:site_name" content="CekDulu.co.id" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="CekDulu for Marketers — Segera Hadir" />
-    <meta name="twitter:description" content="Kami sedang menyiapkan tools untuk membantu campaign Anda jadi lebih berguna." />
+    <meta name="twitter:title" content="CekDulu for Marketers — Ikut Early Access" />
+    <meta name="twitter:description" content="CekDulu for Marketers lagi kami siapkan. Tertarik buat coba lebih dulu? Tinggal masukin email." />
   </head>
   <body class="flex min-h-screen flex-col bg-background font-sans text-foreground antialiased">
+    <!-- ============ HEADER ============ -->
     <header class="border-b border-border/60">
       <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
         <a href="/for-marketers" class="inline-flex items-center">
@@ -51,31 +55,82 @@ const canonical = new URL('/for-marketers/coming-soon', Astro.site).href;
       </div>
     </header>
 
+    <!-- ============ MAIN ============ -->
     <main class="flex flex-1 items-center justify-center overflow-x-clip">
       <div class="mx-auto w-full max-w-lg px-4 py-14 text-center sm:px-6 sm:py-16 lg:px-8">
-        <p class="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">
-          CekDulu for Marketers
-        </p>
-        <h1 class="mt-4 text-balance text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl">
-          Segera Hadir.
-        </h1>
-        <p class="mx-auto mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-          Kami sedang menyiapkan tools untuk membantu campaign Anda jadi lebih berguna.
-        </p>
-        <div class="mt-8 flex justify-center">
-          <a
-            href="/for-marketers"
-            class={cn(
-              buttonVariants({ variant: 'default' }),
-              'h-auto rounded-full px-7 py-3.5 text-sm font-semibold shadow-lg shadow-primary/25 sm:px-8 sm:text-base',
-            )}
-          >
-            Kembali ke CekDulu for Marketers
-          </a>
+
+        <!-- FORM STATE -->
+        <div id="form-state">
+          <p class="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">
+            CEKDULU FOR MARKETERS
+          </p>
+          <h1 class="mt-4 text-balance text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl">
+            Mau coba lebih dulu?
+          </h1>
+          <p class="mx-auto mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+            CekDulu for Marketers lagi kami siapkan. Tertarik buat coba lebih dulu? Tinggal masukin email.
+          </p>
+
+          <form id="early-access-form" class="mt-8 space-y-3" novalidate>
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <input
+                id="email-input"
+                type="email"
+                required
+                placeholder="Email kamu"
+                autocomplete="email"
+                class="min-h-12 flex-1 rounded-xl border border-border bg-background px-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-3 focus:ring-ring/40"
+              />
+              <button
+                id="submit-btn"
+                type="submit"
+                class={cn(
+                  buttonVariants({ variant: 'default' }),
+                  'h-12 min-w-[160px] gap-2 rounded-xl px-6 text-sm font-semibold',
+                )}
+              >
+                <span id="btn-label">Ikut Early Access →</span>
+                <span id="btn-loading" class="hidden">
+                  <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Mengirim…
+                </span>
+              </button>
+            </div>
+            <p id="form-error" class="hidden rounded-xl bg-destructive/10 px-4 py-3 text-left text-sm font-medium text-destructive" role="alert"></p>
+          </form>
+
+          <p class="mt-4 text-sm text-muted-foreground">Nanti kami kabari saat sudah siap.</p>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div id="success-state" class="hidden">
+          <p class="text-5xl" aria-hidden="true">🎉</p>
+          <h1 class="mt-4 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
+            Siap, sudah tercatat!
+          </h1>
+          <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Nanti kami kabari saat CekDulu for Marketers siap.
+          </p>
+          <div class="mt-8">
+            <a
+              href="/"
+              class={cn(
+                buttonVariants({ variant: 'outline' }),
+                'h-auto gap-2 rounded-full px-7 py-3.5 text-sm font-semibold sm:px-8 sm:text-base',
+              )}
+            >
+              <ArrowLeft class="h-4 w-4" aria-hidden="true" />
+              Kembali ke CekDulu
+            </a>
+          </div>
         </div>
       </div>
     </main>
 
+    <!-- ============ FOOTER ============ -->
     <footer class="border-t border-border/60">
       <div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-center sm:gap-6 sm:text-left">
@@ -103,5 +158,99 @@ const canonical = new URL('/for-marketers/coming-soon', Astro.site).href;
         </div>
       </div>
     </footer>
+
+    <script is:inline define:vars={{ publicWeb3formsKey }}>
+      (() => {
+        var ACCESS_KEY = publicWeb3formsKey;
+        var form = document.getElementById('early-access-form');
+        var emailInput = document.getElementById('email-input');
+        var submitBtn = document.getElementById('submit-btn');
+        var btnLabel = document.getElementById('btn-label');
+        var btnLoading = document.getElementById('btn-loading');
+        var errorEl = document.getElementById('form-error');
+        var formState = document.getElementById('form-state');
+        var successState = document.getElementById('success-state');
+
+        if (!form || !emailInput || !submitBtn || !btnLabel || !btnLoading || !errorEl || !formState || !successState) return;
+
+        function isValidEmail(value) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
+        function showError(message) {
+          errorEl.textContent = message;
+          errorEl.classList.remove('hidden');
+        }
+
+        function clearError() {
+          errorEl.textContent = '';
+          errorEl.classList.add('hidden');
+        }
+
+        function setLoading(loading) {
+          submitBtn.disabled = loading;
+          btnLabel.classList.toggle('hidden', loading);
+          btnLoading.classList.toggle('hidden', !loading);
+        }
+
+        function showSuccess() {
+          formState.classList.add('hidden');
+          successState.classList.remove('hidden');
+        }
+
+        emailInput.addEventListener('input', clearError);
+
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          clearError();
+
+          var email = emailInput.value.trim();
+
+          if (!email) {
+            showError('Masukkan email kamu dulu.');
+            emailInput.focus();
+            return;
+          }
+
+          if (!isValidEmail(email)) {
+            showError('Format email tidak valid. Cek lagi ya.');
+            emailInput.focus();
+            return;
+          }
+
+          if (!ACCESS_KEY) {
+            showError('Terjadi kesalahan. Coba lagi nanti.');
+            return;
+          }
+
+          setLoading(true);
+
+          try {
+            var response = await fetch('https://api.web3forms.com/submit', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify({
+                access_key: ACCESS_KEY,
+                email: email,
+                subject: 'CekDulu for Marketers — Early Access',
+                from_name: 'CekDulu Early Access',
+              }),
+            });
+
+            var result = await response.json();
+
+            if (result.success) {
+              showSuccess();
+            } else {
+              showError('Gagal mengirim. Coba lagi nanti.');
+            }
+          } catch {
+            showError('Terjadi kesalahan. Periksa koneksi internetmu lalu coba lagi.');
+          } finally {
+            setLoading(false);
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
