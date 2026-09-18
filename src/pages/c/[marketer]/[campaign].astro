@@ -184,8 +184,8 @@ const moneyWrapCls =
     <main>
       <div id="catalog-view">
         <div class="campaign-container">
-        <section aria-label="Katalog properti" class="relative grid grid-cols-1 pb-36">
-          <div class="relative col-start-1 row-start-1 min-w-0 bg-muted/70">
+        <section aria-label="Katalog properti" class="relative">
+          <div class="relative bg-muted/70 h-full" id="photo-gallery">
             <div
               id="photo-carousel"
               role="region"
@@ -259,20 +259,20 @@ const moneyWrapCls =
 
           <div
             id="campaign-info-overlay"
-            class="absolute inset-x-4 bottom-6 z-10 rounded-2xl bg-black/75 p-4 shadow-lg sm:inset-x-6 sm:p-5"
+            class="rounded-2xl bg-black/75 p-3.5 shadow-lg sm:p-5 max-sm:p-3"
             aria-label="Informasi properti"
           >
-            <p class="text-[13px] font-medium text-white/70">{marketer.name}</p>
-            <h2 class="mt-0.5 text-[20px] font-bold leading-tight text-white sm:text-[22px]">
+            <p class="text-[13px] font-medium text-white/70 max-sm:text-[12px]">{marketer.name}</p>
+            <h2 class="mt-0.5 text-[20px] font-bold leading-tight text-white sm:text-[22px] max-sm:text-[18px]">
               {propertyTitle}
             </h2>
             {campaign.location && (
-              <p class="mt-1 flex items-center gap-1 text-[12px] text-white/60">
+              <p class="mt-1 flex items-center gap-1 text-[12px] text-white/60 max-sm:mt-0.5 max-sm:text-[11px]">
                 <MapPin class="h-3.5 w-3.5 shrink-0 text-white/50" aria-hidden="true" />
                 {campaign.location}
               </p>
             )}
-            <div class="mt-1 text-xs text-white/65">
+            <div class="mt-1 text-xs text-white/65 max-sm:mt-0.5 max-sm:text-[11px]">
               {campaign.unitType && (
                 <p class="flex items-center gap-1.5 font-medium text-white/85">
                   <Home class="h-3.5 w-3.5 shrink-0 text-white/60" aria-hidden="true" />
@@ -281,18 +281,18 @@ const moneyWrapCls =
               )}
               {specs.length > 0 && <p class="mt-0">{specs.join(' · ')}</p>}
             </div>
-            <p class="mt-1 flex items-center gap-1.5 text-[17px] font-bold text-white">
+            <p class="mt-1 flex items-center gap-1.5 text-[17px] font-bold text-white max-sm:mt-0.5 max-sm:text-[16px]">
               <Tag class="h-4 w-4 shrink-0 text-white/60" aria-hidden="true" />
               Mulai <span class="whitespace-nowrap">{campaign.priceLabel.replace(/^Rp\./, 'Rp')}</span>
             </p>
             {campaign.highlights && campaign.highlights.length > 0 && (
-              <div class="mt-1 border-t border-white/15 pt-1">
+              <div class="mt-1 border-t border-white/15 pt-1 max-sm:mt-0.5 max-sm:pt-0.5">
                 <p class="text-[11px] font-semibold leading-snug text-white/70">
                   Kenapa pilih {propertyTitle || 'properti ini'}?
                 </p>
-                <ul class="mt-1 space-y-0.5">
-                  {campaign.highlights.slice(0, 5).map((item) => (
-                    <li class="flex items-start gap-1.5 text-xs text-white/85">
+                <ul class="mt-1 space-y-0.5 max-sm:mt-0.5 max-sm:space-y-0">
+                  {campaign.highlights.slice(0, 2).map((item) => (
+                    <li class="flex items-start gap-1.5 text-xs text-white/85 max-sm:text-[11px] max-sm:leading-snug">
                       <Check class="mt-0.5 h-3 w-3 shrink-0 text-white/80" aria-hidden="true" />
                       <span>{item}</span>
                     </li>
@@ -304,7 +304,7 @@ const moneyWrapCls =
               type="button"
               data-campaign-cta="kpr_check"
               data-start-wizard
-              class="mt-2 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50"
+              class="mt-2 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50 max-sm:mt-1.5 max-sm:py-1.5"
             >
               Cek Kemampuan Cicilan
               <ArrowRight class="h-5 w-5" aria-hidden="true" />
@@ -621,6 +621,16 @@ const moneyWrapCls =
                     })}
                   </div>
                 </div>
+
+                <button
+                  id="step1-next"
+                  type="button"
+                  disabled
+                  class="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-transparent bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Cek Kemampuan Cicilan
+                  <ArrowRight class="h-5 w-5" aria-hidden="true" />
+                </button>
               </div>
 
               <!-- step 2: hasil -->
@@ -912,15 +922,6 @@ const moneyWrapCls =
             id="wizard-primary-footer"
             class="shrink-0 border-t border-border/60 bg-background px-5 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 sm:px-7"
           >
-              <button
-                id="step1-next"
-                type="button"
-                disabled
-                class="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-transparent bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground transition-colors outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Cek Kemampuan Cicilan
-                <ArrowRight class="h-5 w-5" aria-hidden="true" />
-              </button>
               <a
                 id="wa-cta"
                 href="https://wa.me/6285224416325"
@@ -952,26 +953,116 @@ const moneyWrapCls =
         }
       }
 
-      @media (max-width: 767px) {
-        #photo-carousel {
-          height: auto;
-          transition: none;
-        }
+      section[aria-label="Katalog properti"] {
+        position: relative;
+        width: 100%;
+        height: 100dvh;
+        overflow: hidden;
+      }
+      #photo-gallery {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+      }
+      #photo-carousel {
+        width: 100%;
+        height: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        align-items: stretch;
+        touch-action: pan-x;
+      }
+      #photo-carousel figure {
+        width: 100%;
+        height: 100%;
+      }
+      #photo-carousel img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center top;
+      }
+      #campaign-info-overlay {
+        position: absolute;
+        z-index: 10;
+        left: 1rem;
+        right: 1rem;
+        bottom: max(1rem, env(safe-area-inset-bottom));
+        width: auto;
+        max-width: 512px;
+        max-height: calc(100dvh - max(1rem, env(safe-area-inset-bottom)));
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-inline: auto;
       }
       @media (min-width: 768px) {
-        #photo-carousel {
+        section[aria-label="Katalog properti"] {
           height: auto;
-          transition: none;
-          align-items: stretch;
+          overflow: visible;
+        }
+        #photo-gallery {
+          position: relative;
+          inset: auto;
+          width: 100%;
+          height: min(70vh, 700px);
+        }
+        #photo-carousel {
+          height: 100%;
         }
         #photo-carousel figure {
-          height: auto;
+          height: 100%;
         }
         #photo-carousel img {
-          display: block;
+          height: 100%;
+          object-position: center center;
+        }
+        #campaign-info-overlay {
+          position: relative;
+          left: auto;
+          right: auto;
+          bottom: auto;
+          width: calc(100% - 2rem);
+          margin-inline: auto;
+          margin-top: -28px;
+          margin-bottom: 8px;
+        }
+      }
+      @media (min-width: 768px) and (max-height: 480px) {
+        section[aria-label="Katalog properti"] {
+          height: 100dvh;
+          overflow: hidden;
+        }
+        #photo-gallery {
+          position: absolute;
+          inset: 0;
           width: 100%;
-          height: auto;
-          object-fit: contain;
+          height: 100%;
+          z-index: 0;
+        }
+        #photo-carousel {
+          height: 100%;
+        }
+        #photo-carousel figure {
+          height: 100%;
+        }
+        #photo-carousel img {
+          height: 100%;
+          object-position: center top;
+        }
+        #campaign-info-overlay {
+          position: absolute;
+          left: 1rem;
+          right: 1rem;
+          bottom: max(1rem, env(safe-area-inset-bottom));
+          width: auto;
+          max-width: 512px;
+          margin-top: 0;
+          margin-bottom: 0;
+          margin-inline: auto;
         }
       }
       @media (max-width: 352px) {
@@ -1139,6 +1230,7 @@ const moneyWrapCls =
         2: document.getElementById('step-2') as HTMLElement,
       };
       const step1Next = document.getElementById('step1-next') as HTMLButtonElement | null;
+      const wizardPrimaryFooter = document.getElementById('wizard-primary-footer') as HTMLElement | null;
       const incomeError = document.getElementById('error-income') as HTMLElement | null;
       const dpSlider = document.getElementById('dp-slider') as HTMLInputElement | null;
       const dpValueEl = document.getElementById('dp-value') as HTMLElement | null;
@@ -1484,6 +1576,7 @@ const moneyWrapCls =
         }
         if (step1Next) step1Next.hidden = currentStep !== 1;
         if (waCta) waCta.hidden = currentStep !== 2;
+        if (wizardPrimaryFooter) wizardPrimaryFooter.hidden = currentStep !== 2;
         updateProgress();
         if (currentStep === 2) resetWaScrollGate();
         if (focusStep) stepEls[currentStep].focus({ preventScroll: true });
@@ -1502,6 +1595,15 @@ const moneyWrapCls =
         window.setTimeout(() => {
           restoreNotice.hidden = true;
         }, 5000);
+      }
+
+      function updateWaCtaState(): void {
+        if (!waCta || !sheetScroll) return;
+        const scrollBottom = sheetScroll.scrollHeight - sheetScroll.clientHeight - sheetScroll.scrollTop;
+        const isAtBottom = scrollBottom < 10;
+        (waCta as unknown as HTMLButtonElement).disabled = !isAtBottom;
+        waCta.style.opacity = isAtBottom ? '1' : '0.5';
+        waCta.style.cursor = isAtBottom ? 'pointer' : 'default';
       }
 
       // ---- calculation ----
@@ -1713,6 +1815,7 @@ const moneyWrapCls =
             hasReachedBottom = true;
             setWaEnabled(true);
           }
+          updateWaCtaState();
         });
       }
 
@@ -2471,6 +2574,7 @@ const moneyWrapCls =
       syncFundingUI();
       renderSavedList();
       initWaScrollGate();
+      updateWaCtaState();
       render(false);
     </script>
   </body>
