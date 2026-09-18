@@ -2,7 +2,7 @@
 import '../../../styles/global.css';
 import { cn } from '../../../lib/utils';
 import { campaignMarketers } from '../../../data/campaigns';
-import type { Campaign, CampaignMarketer } from '../../../data/campaigns';
+import type { Campaign, CampaignMarketer, CampaignTemplateId } from '../../../data/campaigns';
 import {
   ArrowLeft,
   ArrowRight,
@@ -55,6 +55,13 @@ const metaTitle = `${campaign.name} di ${campaign.developerName ?? marketer.name
 const metaDescription = campaign.seoDescription;
 const ogImage = new URL('/images/illustrations/hero-balance-v1.png', Astro.site).href;
 
+const campaignTypeByTemplate: Partial<Record<CampaignTemplateId, { campaignType: string; propertyType: string }>> = {
+  kpr: { campaignType: 'property', propertyType: 'rumah' },
+};
+const campaignTypeInfo = campaignTypeByTemplate[campaign.template];
+const campaignType = campaignTypeInfo?.campaignType ?? campaign.template;
+const propertyType = campaignTypeInfo?.propertyType ?? campaign.template;
+
 const campaignConfig = {
   price: campaign.params.price,
   priceLabel: campaign.priceLabel,
@@ -73,6 +80,8 @@ const campaignConfig = {
   campaignName: campaign.name,
   developerName: campaign.developerName,
   template: campaign.template,
+  campaignType,
+  propertyType,
 };
 const campaignConfigJson = JSON.stringify(campaignConfig);
 
@@ -411,7 +420,7 @@ const moneyWrapCls =
         aria-modal="true"
         aria-labelledby="sheet-context-title"
         tabindex="-1"
-        class="fixed inset-x-0 bottom-0 z-50 h-[min(90dvh,760px)] max-h-[90dvh] translate-y-full rounded-t-3xl border border-b-0 border-border bg-background shadow-[0_-12px_40px_rgba(0,0,0,0.15)] transition-transform duration-300 ease-out"
+        class="fixed inset-x-0 bottom-0 z-50 translate-y-full rounded-t-3xl border border-b-0 border-border bg-background shadow-[0_-12px_40px_rgba(0,0,0,0.15)] transition-transform duration-300 ease-out"
       >
         <div id="wizard-shell" class="flex h-full flex-col">
           <div id="sheet-handle" class="flex justify-center pt-2.5">
@@ -956,6 +965,7 @@ const moneyWrapCls =
       section[aria-label="Katalog properti"] {
         position: relative;
         width: 100%;
+        height: 100vh;
         height: 100dvh;
         overflow: hidden;
       }
@@ -994,6 +1004,7 @@ const moneyWrapCls =
         bottom: max(1rem, env(safe-area-inset-bottom));
         width: auto;
         max-width: 512px;
+        max-height: calc(100vh - max(1rem, env(safe-area-inset-bottom)));
         max-height: calc(100dvh - max(1rem, env(safe-area-inset-bottom)));
         margin-top: 0;
         margin-bottom: 0;
@@ -1033,6 +1044,7 @@ const moneyWrapCls =
       }
       @media (min-width: 768px) and (max-height: 480px) {
         section[aria-label="Katalog properti"] {
+          height: 100vh;
           height: 100dvh;
           overflow: hidden;
         }
@@ -1072,6 +1084,13 @@ const moneyWrapCls =
         }
       }
 
+      #bottom-sheet {
+        height: min(90vh, 760px);
+        height: min(90dvh, 760px);
+        max-height: 90vh;
+        max-height: 90dvh;
+      }
+
       @media (min-width: 768px) {
         #bottom-sheet {
           inset: 0;
@@ -1101,6 +1120,7 @@ const moneyWrapCls =
           width: 100%;
           height: auto;
           max-width: 520px;
+          max-height: min(720px, calc(100vh - 48px));
           max-height: min(720px, calc(100dvh - 48px));
           overflow: hidden;
           border: 1px solid var(--color-border);
@@ -1162,6 +1182,8 @@ const moneyWrapCls =
         campaignName: string;
         developerName?: string;
         template: string;
+        campaignType: string;
+        propertyType: string;
       }
 
       interface WizardState {
@@ -1779,10 +1801,11 @@ const moneyWrapCls =
 
       function updateWhatsapp(): void {
         if (!waCta) return;
+        const cleanUrl = `${window.location.origin}/c/${config.marketerSlug}/${config.campaignSlug}`;
         const href = buildWhatsappUrl({
           number: config.whatsapp,
           baseMessage: config.whatsappMessage,
-          url: window.location.href,
+          url: cleanUrl,
         });
         waCta.href = href;
       }
@@ -1821,14 +1844,22 @@ const moneyWrapCls =
 
       // ---- analytics ----
 
+      function campaignContext(): Record<string, string> {
+        return {
+          marketer_slug: config.marketerSlug,
+          campaign_slug: config.campaignSlug,
+          campaign_type: config.campaignType,
+          property_type: config.propertyType,
+        };
+      }
+
       function markCalculatorStart(): void {
         if (calculatorStarted) return;
         calculatorStarted = true;
         trackEvent('calculator_start', {
-          calculator_type: 'affordability',
-          marketer_slug: config.marketerSlug,
-          campaign_slug: config.campaignSlug,
+          ...campaignContext(),
           template: config.template,
+          calculator_type: 'affordability',
         });
       }
 
@@ -1837,10 +1868,9 @@ const moneyWrapCls =
         calculatorCompleted = true;
         const result = computeScenario();
         const params: Record<string, string> = {
-          calculator_type: 'affordability',
-          marketer_slug: config.marketerSlug,
-          campaign_slug: config.campaignSlug,
+          ...campaignContext(),
           template: config.template,
+          calculator_type: 'affordability',
           result_status: category,
           income_range: incomeRange(readNumber('income')),
           existing_debt_range: installmentRange(readNumber('existing')),
@@ -1855,8 +1885,7 @@ const moneyWrapCls =
         if (viewFired) return;
         viewFired = true;
         trackEvent('campaign_view', {
-          marketer_slug: config.marketerSlug,
-          campaign_slug: config.campaignSlug,
+          ...campaignContext(),
           template: config.template,
         });
       }
@@ -1906,8 +1935,7 @@ const moneyWrapCls =
         }
         renderSavedList();
         trackEvent('simulation_saved', {
-          marketer_slug: config.marketerSlug,
-          campaign_slug: config.campaignSlug,
+          ...campaignContext(),
           template: config.template,
           result_status: lastStatus,
         });
@@ -2505,8 +2533,7 @@ const moneyWrapCls =
         if (!el) return;
         const cta = el.getAttribute('data-campaign-cta') ?? 'default';
         const context = {
-          marketer_slug: config.marketerSlug,
-          campaign_slug: config.campaignSlug,
+          ...campaignContext(),
           template: config.template,
           cta,
           result_status: lastStatus,
@@ -2521,8 +2548,7 @@ const moneyWrapCls =
             return;
           }
           trackEvent('whatsapp_click', {
-            marketer_slug: config.marketerSlug,
-            campaign_slug: config.campaignSlug,
+            ...campaignContext(),
             template: config.template,
             result_status: lastStatus,
           });
