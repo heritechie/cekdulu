@@ -68,6 +68,7 @@ export default function WishlistDetail({
         onBack={onBack}
         onShare={shareSupported ? onShare : () => {}}
         onDelete={onDelete}
+        shareSupported={shareSupported}
       />
 
       <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-3xl border border-border bg-muted shadow-sm">

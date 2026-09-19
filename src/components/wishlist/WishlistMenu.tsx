@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 interface WishlistMenuProps {
   onShare: () => void;
   onDelete: () => void;
+  shareSupported: boolean;
 }
 
 /**
@@ -13,10 +14,12 @@ export function WishlistAppHeader({
   onBack,
   onShare,
   onDelete,
+  shareSupported,
 }: {
   onBack: () => void;
   onShare: () => void;
   onDelete: () => void;
+  shareSupported: boolean;
 }) {
   return (
     <div className="flex items-center justify-between">
@@ -31,7 +34,7 @@ export function WishlistAppHeader({
         </span>
       </button>
       <span className="text-base font-semibold tracking-tight text-foreground">Wishlist</span>
-      <WishlistMenu onShare={onShare} onDelete={onDelete} />
+      <WishlistMenu onShare={onShare} onDelete={onDelete} shareSupported={shareSupported} />
     </div>
   );
 }
@@ -42,7 +45,7 @@ export function WishlistAppHeader({
  * class so SSR (and tests) can assert the actions exist; opening/closing is
  * pure UI state. Clicking outside closes it, exactly like the vanilla page.
  */
-export default function WishlistMenu({ onShare, onDelete }: WishlistMenuProps) {
+export default function WishlistMenu({ onShare, onDelete, shareSupported }: WishlistMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
@@ -91,11 +94,12 @@ export default function WishlistMenu({ onShare, onDelete }: WishlistMenuProps) {
       >
         <button
           type="button"
+          disabled={!shareSupported}
           onClick={() => {
             setOpen(false);
             onShare();
           }}
-          className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-foreground transition-colors hover:bg-muted"
+          className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
         >
           Bagikan
         </button>

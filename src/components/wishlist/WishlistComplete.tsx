@@ -1,6 +1,7 @@
 import { formatNumber, type WishlistItem } from './item';
 import { PixelRevealCanvas } from './WishlistDetail';
 import { WishlistAppHeader } from './WishlistMenu';
+import { SHARE_UNSUPPORTED_NOTE } from '../../lib/browser-capabilities';
 
 interface WishlistCompleteProps {
   item: WishlistItem;
@@ -32,6 +33,7 @@ export default function WishlistComplete({
         onBack={onBack}
         onShare={shareSupported ? onShare : () => {}}
         onDelete={onDelete}
+        shareSupported={shareSupported}
       />
 
       <p className="text-center text-5xl" aria-hidden="true">
@@ -76,9 +78,7 @@ export default function WishlistComplete({
           Bagikan Pencapaian
         </button>
         {!shareSupported ? (
-          <p className="text-center text-xs text-muted-foreground">
-            Buka di browser untuk pengalaman maksimal.
-          </p>
+          <p className="text-center text-xs text-muted-foreground">{SHARE_UNSUPPORTED_NOTE}</p>
         ) : null}
         <button
           type="button"

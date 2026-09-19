@@ -6,6 +6,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { WishlistScreen } from '../src/components/wishlist/WishlistScreen.tsx';
 import { createWishlistNavigation, showDetail } from '../src/components/wishlist/navigation.ts';
 import { goalToWishlistItem } from '../src/components/wishlist/item.ts';
+import { SHARE_UNSUPPORTED_NOTE } from '../src/lib/browser-capabilities.ts';
 
 const noop = () => {};
 
@@ -145,7 +146,7 @@ describe('wishlist React owned surfaces (Hapus / Bagikan / reset)', () => {
       shareSupported: false,
     }));
     assert.ok(html.includes('Hapus'), 'completion must still offer delete');
-    assert.ok(html.includes('Buka di browser untuk pengalaman maksimal.'), 'unsupported-share note');
+    assert.ok(html.includes(SHARE_UNSUPPORTED_NOTE), 'unsupported-share note');
     assert.ok(/Bagikan Pencapaian<\/button>/.test(html), 'share CTA must stay but be disabled');
   });
 });

@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { CHALLENGE_DAYS } from '../../lib/paylater-challenge';
+import { SHARE_UNSUPPORTED_NOTE } from '../../lib/browser-capabilities';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
@@ -260,7 +261,7 @@ const milestoneRow = [7, 14, 21, 30] as const;
         <button
           id="activeShareBtn"
           type="button"
-          class="inline-flex h-auto w-full items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-primary/40 bg-white px-3 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          class="inline-flex h-auto w-full items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-primary/40 bg-white px-3 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <img
             src="/cekdulu-30-hari-tanpa-paylater-assets/icons/share.svg"
@@ -271,6 +272,9 @@ const milestoneRow = [7, 14, 21, 30] as const;
           />
           <span id="activeShareBtnLabel">Bagikan</span>
         </button>
+        <p id="activeShareUnsupportedNote" hidden class="text-center text-xs text-muted-foreground">
+          {SHARE_UNSUPPORTED_NOTE}
+        </p>
       </div>
 
       <!-- ============ HISTORY ============ -->
@@ -498,6 +502,9 @@ const milestoneRow = [7, 14, 21, 30] as const;
             class="h-4 w-4"
           />
         </button>
+        <p id="shareUnsupportedNote" hidden class="text-center text-xs text-muted-foreground">
+          {SHARE_UNSUPPORTED_NOTE}
+        </p>
         <button
           id="restartBtn"
           type="button"
@@ -517,6 +524,7 @@ const milestoneRow = [7, 14, 21, 30] as const;
   <script>
     import { formatRupiah } from '../../lib/calculator/engine';
     import { trackEvent } from '../../lib/analytics';
+    import { canShareImageFiles, applyCapabilityGate } from '../../lib/browser-capabilities';
     import {
       challengeEntrySource,
       completeParamsFromState,
@@ -974,6 +982,8 @@ const milestoneRow = [7, 14, 21, 30] as const;
      * and shares it via the Web Share file API when supported; otherwise the PNG
      * is downloaded. Falls back to a short text share if the template fails.
      */
+    const shareImageSupported = canShareImageFiles();
+
     async function shareWithImage(context: ChallengeShareContext, labelId: string) {
       if (sharePending) return;
       sharePending = true;
@@ -1150,6 +1160,12 @@ const milestoneRow = [7, 14, 21, 30] as const;
         }
       }
     }
+
+    // ---- share capability gating ----
+    applyCapabilityGate(shareImageSupported, {
+      buttons: ['activeShareBtn', 'shareBtn'],
+      notes: ['activeShareUnsupportedNote', 'shareUnsupportedNote'],
+    });
 
     init();
   </script>

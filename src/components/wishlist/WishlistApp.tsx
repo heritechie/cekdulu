@@ -12,7 +12,7 @@ import {
 import type { WishlistItem } from './item';
 import type { SaveEntryFormData } from './SavingBottomSheet';
 import { buildWishlistShareCanvas } from '../../lib/wishlist-share';
-import { canShareImageFiles } from '../../lib/share-capability';
+import { canShareImageFiles } from '../../lib/browser-capabilities';
 import { fireShareClick, fireShareSuccess, trackEvent } from '../../lib/analytics';
 
 /**

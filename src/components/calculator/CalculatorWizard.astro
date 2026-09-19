@@ -10,6 +10,7 @@ import { Info, ArrowLeft, ArrowRight, Share2, RefreshCw, Download, ChevronDown }
 import AdSlotBetween from '../ad-slot-between.astro';
 import AdSlotAfterResult from '../ad-slot-after-result.astro';
 import { resolveContext } from '../../lib/calculator/contexts';
+import { SHARE_UNSUPPORTED_NOTE } from '../../lib/browser-capabilities';
 
 interface Props {
   /** Financing context slug (e.g. 'rumah'). Unknown values fall back to 'lainnya'. */
@@ -386,6 +387,12 @@ const cfg = resolveContext(slug);
           <Share2 class="h-4 w-4" aria-hidden="true" />
           Bagikan Hasil
         </Button>
+        <p id="shareUnsupportedNote" hidden class="text-center text-xs text-muted-foreground">
+          {SHARE_UNSUPPORTED_NOTE}
+        </p>
+        <p id="saveUnsupportedNote" hidden class="text-center text-xs text-muted-foreground">
+          {SHARE_UNSUPPORTED_NOTE}
+        </p>
         <Button id="ubahDataBtn" type="button" variant="secondary" className="h-auto w-full rounded-full px-6 py-3 text-base">
           Ubah Data
         </Button>
@@ -414,6 +421,7 @@ const cfg = resolveContext(slug);
   import { calculateFinancialBalance, calculateLoanPrincipal, calculateMonthlyInstallment } from '../../lib/calculator/engine';
   import { generateShareFile } from '../../lib/share-image';
   import { renderCalculatorShareImagePng } from '../../lib/calculator-share-image';
+  import { canShareImageFiles, canSaveImageDownload, applyCapabilityGate } from '../../lib/browser-capabilities';
   import { resolveContext } from '../../lib/calculator/contexts';
   import {
     clearCalculatorState,
@@ -953,8 +961,14 @@ function fillResult() {
       totalBebanEl.textContent = formatRupiah(result.totalMonthlyDebt + totalExpenses);
       breakdownSisaEl.textContent = formatRupiah(result.remainingAfterDebtAndExpenses);
 
-      shareBtn.disabled = false;
-      saveBtn.disabled = false;
+      applyCapabilityGate(shareImageSupported, {
+        buttons: [shareBtn],
+        notes: ['shareUnsupportedNote'],
+      });
+      applyCapabilityGate(saveImageSupported, {
+        buttons: [saveBtn],
+        notes: ['saveUnsupportedNote'],
+      });
       initScenario(newInst, existing, totalExpenses, hasExpensesInput);
     }
 
@@ -1214,6 +1228,11 @@ function fillResult() {
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 10_000);
     }
+
+    /** Bagikan Hasil: social/invitation image -> image-only Web Share. */
+    const shareImageSupported = canShareImageFiles();
+    /** Simpan Hasil: PNG download via <a download> + object URL. */
+    const saveImageSupported = canSaveImageDownload();
 
     /** Bagikan Hasil: social/invitation image -> image-only Web Share -> download. */
     async function shareResult() {
