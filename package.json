@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "rm -rf .astro/cekdulu-tests && esbuild tests/*.test.mjs --bundle --format=esm --platform=node --outdir=.astro/cekdulu-tests --out-extension:.js=.mjs && node --test .astro/cekdulu-tests/*.test.mjs",
+    "test": "rm -rf .astro/cekdulu-tests && esbuild tests/*.test.mjs --bundle --format=esm --platform=node --external:react --external:react/* --external:react-dom --external:react-dom/* --outdir=.astro/cekdulu-tests --out-extension:.js=.mjs && node --test .astro/cekdulu-tests/*.test.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",

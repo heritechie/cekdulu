@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WishlistApp from '../components/wishlist/WishlistApp';
+
+const canonical = new URL('wishlist', Astro.site).href;
+---
+
+<Layout
+  title="Wishlist — Nabung untuk Barang Impian | CekDulu"
+  description="Upload barang yang kamu inginkan, mulai menabung, dan lihat progresnya sampai barang impianmu tercapai."
+  canonical={canonical}
+  ogTitle="Wishlist — Nabung untuk Barang Impian"
+  ogDescription="Upload barang yang kamu inginkan, mulai menabung, dan lihat progresnya sampai barang impianmu tercapai."
+  ogUrl={canonical}
+  hideGlobalHeader
+  hideGlobalFooter
+>
+  <main class="mx-auto flex w-full max-w-[560px] flex-col px-4 pb-16 pt-2 sm:px-6 sm:pt-3">
+    <WishlistApp client:load />
+  </main>
+</Layout>

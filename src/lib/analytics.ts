@@ -152,6 +152,60 @@ export function remainingIncomeRange(value: number): RemainingIncomeRange {
   return '10jt_plus';
 }
 
+// ---- standardized share funnel ----
+// Fired by every share surface (calculator, challenge, wishlist) so funnel
+// health is comparable across tools. Existing tool-specific share events
+// (result_share, paylater_challenge_share) are kept unchanged.
+//
+//   share_click     user taps a share action (before any attempt)
+//   share_success   native Web Share completed
+
+export type ShareContext = 'calculator' | 'challenge' | 'wishlist';
+export type ShareTarget = 'image' | 'text';
+export type NativeShareMethod = 'web_share' | 'native';
+
+export interface ShareClickParams {
+  share_context: ShareContext;
+  share_target: ShareTarget;
+  /** Calculator-specific, e.g. "kpr" | "mobil" — omitted for other tools. */
+  financing_type?: string;
+}
+
+export function shareClickParams(params: ShareClickParams): AnalyticsParams {
+  return {
+    share_context: params.share_context,
+    share_target: params.share_target,
+    financing_type: params.financing_type,
+  };
+}
+
+export interface ShareSuccessParams extends ShareClickParams {
+  share_method: NativeShareMethod;
+}
+
+export function shareSuccessParams(params: ShareSuccessParams): AnalyticsParams {
+  return {
+    share_context: params.share_context,
+    share_target: params.share_target,
+    share_method: params.share_method,
+    financing_type: params.financing_type,
+  };
+}
+
+export function fireShareClick(
+  emit: (name: string, params?: AnalyticsParams) => void,
+  params: ShareClickParams
+): void {
+  emit('share_click', shareClickParams(params));
+}
+
+export function fireShareSuccess(
+  emit: (name: string, params?: AnalyticsParams) => void,
+  params: ShareSuccessParams
+): void {
+  emit('share_success', shareSuccessParams(params));
+}
+
 // ---- result category ----
 
 export type ResultCategory = 'healthy' | 'warning' | 'critical' | 'negative_balance';

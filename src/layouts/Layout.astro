@@ -19,6 +19,8 @@ interface Props {
   twitterCard?: string;
   twitterTitle?: string;
   twitterDescription?: string;
+  hideGlobalHeader?: boolean;
+  hideGlobalFooter?: boolean;
 }
 
 const {
@@ -35,6 +37,8 @@ const {
   twitterCard = 'summary_large_image',
   twitterTitle = 'CekDulu',
   twitterDescription = description,
+  hideGlobalHeader = false,
+  hideGlobalFooter = false,
 } = Astro.props;
 
 const publicMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
@@ -124,7 +128,7 @@ const publicGoogleAdsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID as string | undef
     ></script>
   </head>
   <body class="font-sans antialiased min-h-screen bg-background text-foreground">
-    <header class="relative border-b border-border/60">
+    {!hideGlobalHeader && (<header class="relative border-b border-border/60">
       <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <SiteLogo />
         <div class="flex items-center gap-2">
@@ -180,10 +184,11 @@ const publicGoogleAdsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID as string | undef
         </div>
       </nav>
     </header>
+    )}
 
     <slot />
 
-    <footer class="mt-16 border-t border-border/60">
+    {!hideGlobalFooter && (<footer class="mt-16 border-t border-border/60">
       <div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -204,6 +209,7 @@ const publicGoogleAdsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID as string | undef
         </div>
       </div>
     </footer>
+    )}
 
     <script>
       const menuBtn = document.getElementById('menuBtn');
